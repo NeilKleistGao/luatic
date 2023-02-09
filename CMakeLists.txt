@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(LuaR)
+project(luatic)
 
 set(CMAKE_CXX_STANDARD 17)
 set(EXECUTABLE_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/bin")
@@ -12,8 +12,8 @@ if (BUILD_TEST)
   include_directories(${GTEST_INCLUDE_DIRS})
 endif()
 
-add_executable(luar main/luar/main.cc)
-add_executable(luarc main/luarc/main.cc)
+add_executable(luatic main/luatic/main.cc)
+add_executable(luaticc main/luaticc/main.cc)
 
 if (BUILD_TEST)
   add_executable(diff_tests test/diff_tests.cc)
