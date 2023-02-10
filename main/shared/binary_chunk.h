@@ -25,4 +25,44 @@
 #ifndef LUATIC_BINARY_CHUNK_H
 #define LUATIC_BINARY_CHUNK_H
 
+#include <string>
+#include <variant>
+
+#pragma pack(1) // cancel the alignment
+
+namespace chunk {
+  using byte = unsigned char;
+
+  constexpr byte MAGIC_NUMBER[4] = {27u, 76u, 117u, 97u}; // \x1bLua
+  constexpr byte VERSION_NUMBER = 84u; // for 5.4.x
+  constexpr byte FORMAT_NUMBER = 0u;
+  constexpr byte LUAC_DATA[6] = {25u, 147u, 13u, 10u, 26u, 10u};
+  constexpr byte INSTRUCTION_SIZE = 4u;
+  constexpr byte LUA_INTEGER_SIZE = 8u;
+  constexpr byte LUA_NUMBER_SIZE = 8u;
+  constexpr long long LUAC_INT = 0x5678;
+  constexpr double LUAC_NUMBER = 370.5;
+
+  struct Header {
+    byte signature[4];
+    byte version;
+    byte format;
+    byte luac_data[6];
+    byte instruction_size;
+    byte lua_integer_size;
+    byte lua_number_size;
+    long long luac_int;
+    double luac_num;
+  };
+
+  struct BinaryChunk {
+    Header header;
+  };
+
+  std::variant<BinaryChunk, std::string>
+    ReadAndCheckBinaryChunk(const std::string& p_filename);
+} // namespace chunk
+
+#pragma pack()
+
 #endif //LUATIC_BINARY_CHUNK_H

@@ -23,7 +23,18 @@
  */
 
 #include <gtest/gtest.h>
+#include <filesystem>
 
-TEST(LuaticTests, DiffTests) {
-  // TODO:
+#include "shared/binary_chunk.h"
+
+TEST(LuaticTests, BinaryChunkTest) {
+  const auto dir = std::filesystem::path{"../test/luac"};
+  for (const auto& it : std::filesystem::directory_iterator{dir}) {
+    const std::string filename = it.path().string();
+    const auto res = chunk::ReadAndCheckBinaryChunk(filename);
+    if (res.index() > 0) {
+      std::cerr << std::get<1>(res) << std::endl;
+    }
+    EXPECT_EQ(res.index(), 0);
+  }
 }

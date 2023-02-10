@@ -13,6 +13,8 @@ if (BUILD_TEST)
   include_directories(${GTEST_INCLUDE_DIRS})
 endif()
 
+include_directories(main)
+
 add_library(chunk STATIC main/shared/binary_chunk.cc main/shared/binary_chunk.h)
 
 add_executable(luatic main/luatic/main.cc)
@@ -22,8 +24,8 @@ target_link_libraries(luatic ${LIBRARY_OUTPUT_PATH}/libchunk.a)
 target_link_libraries(luaticc ${LIBRARY_OUTPUT_PATH}/libchunk.a)
 
 if (BUILD_TEST)
-  add_executable(diff_tests test/cpp/diff_tests.cc)
-  target_link_libraries(diff_tests ${GTEST_BOTH_LIBRARIES})
-  target_link_libraries(diff_tests ${CMAKE_THREAD_LIBS_INIT})
-  target_link_libraries(diff_tests ${LIBRARY_OUTPUT_PATH}/libchunk.a)
+  add_executable(tests test/cpp/diff_tests.cc test/cpp/binary_chunk_tests.cc)
+  target_link_libraries(tests ${GTEST_BOTH_LIBRARIES})
+  target_link_libraries(tests ${CMAKE_THREAD_LIBS_INIT})
+  target_link_libraries(tests ${LIBRARY_OUTPUT_PATH}/libchunk.a)
 endif()
