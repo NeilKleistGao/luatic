@@ -1,4 +1,4 @@
-name: Luatic Linux Tests
+name: Luatic Format Tests
 
 on:
   push:

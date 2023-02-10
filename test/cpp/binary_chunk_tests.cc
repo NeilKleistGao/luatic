@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#include <gtest/gtest.h>
 #include <filesystem>
+#include <gtest/gtest.h>
 
 #include "shared/binary_chunk.h"
 
