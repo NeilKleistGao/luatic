@@ -22,7 +22,7 @@ target_link_libraries(luatic ${LIBRARY_OUTPUT_PATH}/libchunk.a)
 target_link_libraries(luaticc ${LIBRARY_OUTPUT_PATH}/libchunk.a)
 
 if (BUILD_TEST)
-  add_executable(diff_tests test/diff_tests.cc)
+  add_executable(diff_tests test/cpp/diff_tests.cc)
   target_link_libraries(diff_tests ${GTEST_BOTH_LIBRARIES})
   target_link_libraries(diff_tests ${CMAKE_THREAD_LIBS_INIT})
   target_link_libraries(diff_tests ${LIBRARY_OUTPUT_PATH}/libchunk.a)
