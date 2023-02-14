@@ -17,11 +17,11 @@ include_directories(main)
 
 add_library(chunk STATIC main/shared/binary_chunk.cc main/shared/binary_chunk.h)
 
-add_executable(luatic main/luatic/main.cc)
-add_executable(luaticc main/luaticc/main.cc)
+add_executable(luna main/luna/main.cc)
+add_executable(lunac main/lunac/main.cc)
 
-target_link_libraries(luatic ${LIBRARY_OUTPUT_PATH}/libchunk.a)
-target_link_libraries(luaticc ${LIBRARY_OUTPUT_PATH}/libchunk.a)
+target_link_libraries(luna ${LIBRARY_OUTPUT_PATH}/libchunk.a)
+target_link_libraries(lunac ${LIBRARY_OUTPUT_PATH}/libchunk.a)
 
 if (BUILD_TEST)
   add_executable(tests test/cpp/diff_tests.cc test/cpp/binary_chunk_tests.cc)
