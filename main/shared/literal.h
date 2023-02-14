@@ -22,49 +22,31 @@
  * SOFTWARE.
  */
 
-#ifndef LUATIC_BINARY_CHUNK_H
-#define LUATIC_BINARY_CHUNK_H
+#ifndef LUATIC_LITERAL_H
+#define LUATIC_LITERAL_H
 
-#include <string>
 #include <variant>
+#include <string>
+#include <cstdio>
 
-#include "prototype.h"
-
-#pragma pack(1) // cancel the alignment
+#include "l_string.h"
 
 namespace chunk {
-  constexpr byte MAGIC_NUMBER[4] = {27u, 76u, 117u, 97u}; // \x1bLua
-  constexpr byte VERSION_NUMBER = 84u; // for 5.4.x
-  constexpr byte FORMAT_NUMBER = 0u;
-  constexpr byte LUAC_DATA[6] = {25u, 147u, 13u, 10u, 26u, 10u};
-  constexpr byte INSTRUCTION_SIZE = 4u;
-  constexpr byte LUA_INTEGER_SIZE = 8u;
-  constexpr byte LUA_NUMBER_SIZE = 8u;
-  constexpr long long LUAC_INT = 0x5678;
-  constexpr double LUAC_NUMBER = 370.5;
+  constexpr byte TAG_NIL = 0u;
+  constexpr byte TAG_BOOLEAN = 1u;
+  constexpr byte TAG_NUMBER = 3u;
+  constexpr byte TAG_INTEGER = 19u;
+  constexpr byte TAG_SHORT_STR = 4u;
+  constexpr byte TAG_LONG_STR = 20u;
 
-  struct Header {
-    byte signature[4];
-    byte version;
-    byte format;
-    byte luac_data[6];
-    byte instruction_size;
-    byte lua_integer_size;
-    byte lua_number_size;
-    long long luac_int;
-    double luac_num;
-  };
+  using NilLiteral = std::nullptr_t;
+  using BooleanLiteral = byte;
+  using NumberLiteral = double;
+  using IntLiteral = long long;
+  using StrLiteral = LString;
 
-  struct BinaryChunk {
-    Header header;
-    byte size_up_values;
-    Prototype main_proto;
-  };
-
-  std::variant<BinaryChunk, std::string>
-    ReadAndCheckBinaryChunk(const std::string& p_filename);
+  using Literal = std::variant<NilLiteral, BooleanLiteral, NumberLiteral, IntLiteral, StrLiteral>;
+  std::variant<Literal, std::string> ReadLiteral(FILE* p_fp);
 } // namespace chunk
 
-#pragma pack()
-
-#endif //LUATIC_BINARY_CHUNK_H
+#endif //LUATIC_LITERAL_H

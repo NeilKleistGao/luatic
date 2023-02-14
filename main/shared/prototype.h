@@ -22,49 +22,45 @@
  * SOFTWARE.
  */
 
-#ifndef LUATIC_BINARY_CHUNK_H
-#define LUATIC_BINARY_CHUNK_H
+#ifndef LUATIC_PROTOTYPE_H
+#define LUATIC_PROTOTYPE_H
 
-#include <string>
-#include <variant>
-
-#include "prototype.h"
-
-#pragma pack(1) // cancel the alignment
+#include "l_string.h"
+#include "literal.h"
 
 namespace chunk {
-  constexpr byte MAGIC_NUMBER[4] = {27u, 76u, 117u, 97u}; // \x1bLua
-  constexpr byte VERSION_NUMBER = 84u; // for 5.4.x
-  constexpr byte FORMAT_NUMBER = 0u;
-  constexpr byte LUAC_DATA[6] = {25u, 147u, 13u, 10u, 26u, 10u};
-  constexpr byte INSTRUCTION_SIZE = 4u;
-  constexpr byte LUA_INTEGER_SIZE = 8u;
-  constexpr byte LUA_NUMBER_SIZE = 8u;
-  constexpr long long LUAC_INT = 0x5678;
-  constexpr double LUAC_NUMBER = 370.5;
+  using uint32 = unsigned int;
 
-  struct Header {
-    byte signature[4];
-    byte version;
-    byte format;
-    byte luac_data[6];
-    byte instruction_size;
-    byte lua_integer_size;
-    byte lua_number_size;
-    long long luac_int;
-    double luac_num;
+  struct UpValue {
+    byte in_stack;
+    byte index;
   };
 
-  struct BinaryChunk {
-    Header header;
-    byte size_up_values;
-    Prototype main_proto;
+  struct LocalVar {
+    LString var_name;
+    uint32 start_pc;
+    uint32 end_pc;
   };
 
-  std::variant<BinaryChunk, std::string>
-    ReadAndCheckBinaryChunk(const std::string& p_filename);
+  struct Prototype {
+    LString source;
+    uint32 line_defined;
+    uint32 last_line_defined;
+    byte num_params;
+    byte is_vararg;
+    byte max_stack_size;
+    long long* code;
+    Literal* constants;
+    UpValue* up_values;
+    Prototype* proto;
+    uint32* line_info;
+    LocalVar* local_var;
+    LString* up_value_names;
+  };
+
+  std::variant<LocalVar, std::string> ReadLocalVar(FILE* p_fp);
+  std::variant<Prototype, std::string> ReadPrototype(FILE* p_fp, LString p_parent_source);
+  std::variant<Prototype*, std::string> ReadPrototypes(FILE* p_fp, LString p_parent_source);
 } // namespace chunk
 
-#pragma pack()
-
-#endif //LUATIC_BINARY_CHUNK_H
+#endif //LUATIC_PROTOTYPE_H

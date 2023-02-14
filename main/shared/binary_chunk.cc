@@ -41,10 +41,20 @@ namespace chunk {
       return "can't open file " + p_filename;
     }
 
-    const size_t file_size =
-      sizeof(BinaryChunk); // TODO: get real file size. this is only for test.
+    const size_t header_size = sizeof(Header);
     BinaryChunk chunk{};
-    fread(&chunk, file_size, 1, fp);
+    if (fread(&chunk.header, header_size, 1, fp) != 1) {
+      return "can't read header of " + p_filename;
+    }
+
+    chunk.size_up_values = fgetc(fp);
+    // FIXME:
+    //    auto main_proto = ReadPrototype(fp, NullString{0});
+    //    if (main_proto.index() == 1) {
+    //      return std::get<1>(main_proto);
+    //    }
+    //    chunk.main_proto = std::get<0>(main_proto);
+    fclose(fp);
 
     const auto& header = chunk.header;
     const auto are_bytes_same =
