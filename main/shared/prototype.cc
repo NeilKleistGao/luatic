@@ -25,19 +25,19 @@
 #include "prototype.h"
 #include "read_array.hpp"
 
-#define READ_ARRAY(__PROTO__, __FIELD__, __FP__, __TYPE__) \
-  auto __FIELD__ = ReadArray<__TYPE__>(__FP__); \
-  if (__FIELD__.index() == 1) { \
-    return std::get<1>(__FIELD__); \
-  } \
-  __PROTO__.__FIELD__ = std::get<0>(__FIELD__)
+#define READ_ARRAY(__PROTO__, __FIELD__, __FP__, __TYPE__)                     \
+auto __FIELD__ = ReadArray<__TYPE__>(__FP__);                                  \
+if (__FIELD__.index() == 1) {                                                  \
+return std::get<1>(__FIELD__);                                                 \
+}                                                                              \
+__PROTO__.__FIELD__ = std::get<0>(__FIELD__)
 
-#define READ_PROTOTYPE_ARRAY(__PARENT__, __PARENT_SRC__, __FP__) \
-  auto __PROTO__ = ReadPrototypes(__FP__, __PARENT_SRC__); \
-  if (__PROTO__.index() == 1) { \
-    return std::get<1>(__PROTO__); \
-  } \
-  __PARENT__.proto = std::get<0>(__PROTO__)
+#define READ_PROTOTYPE_ARRAY(__PARENT__, __PARENT_SRC__, __FP__)               \
+auto __PROTO__ = ReadPrototypes(__FP__, __PARENT_SRC__);                       \
+if (__PROTO__.index() == 1) {                                                  \
+return std::get<1>(__PROTO__);                                                 \
+}                                                                              \
+__PARENT__.proto = std::get<0>(__PROTO__)
 
 namespace chunk {
   std::variant<LocalVar, std::string> ReadLocalVar(FILE* p_fp) {
@@ -58,9 +58,11 @@ namespace chunk {
     return var;
   }
 
-  std::variant<Prototype, std::string> ReadPrototype(FILE* p_fp, LString p_parent_source) {
+  std::variant<Prototype, std::string> ReadPrototype(FILE* p_fp,
+                                                     LString p_parent_source) {
     auto res = Prototype{};
-    auto src = (p_parent_source.index() == 0) ? ReadLString(p_fp) : p_parent_source;
+    auto src =
+      (p_parent_source.index() == 0) ? ReadLString(p_fp) : p_parent_source;
     if (src.index() == 1) {
       return std::get<1>(src);
     }
@@ -88,13 +90,14 @@ namespace chunk {
     return res;
   }
 
-  std::variant<Prototype*, std::string> ReadPrototypes(FILE* p_fp, LString p_parent_source) {
+  std::variant<Prototype*, std::string>
+    ReadPrototypes(FILE* p_fp, LString p_parent_source) {
     uint32 length;
     if (fread(&length, sizeof(uint32), 1, p_fp) != 1) {
       return "can't read array's length.";
     }
 
-    auto res = new(std::nothrow) Prototype[length];
+    auto res = new (std::nothrow) Prototype[length];
     if (res == nullptr) {
       return "out of memory.";
     }

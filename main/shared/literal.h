@@ -25,9 +25,9 @@
 #ifndef LUATIC_LITERAL_H
 #define LUATIC_LITERAL_H
 
-#include <variant>
-#include <string>
 #include <cstdio>
+#include <string>
+#include <variant>
 
 #include "l_string.h"
 
@@ -45,7 +45,8 @@ namespace chunk {
   using IntLiteral = long long;
   using StrLiteral = LString;
 
-  using Literal = std::variant<NilLiteral, BooleanLiteral, NumberLiteral, IntLiteral, StrLiteral>;
+  using Literal = std::
+    variant<NilLiteral, BooleanLiteral, NumberLiteral, IntLiteral, StrLiteral>;
   std::variant<Literal, std::string> ReadLiteral(FILE* p_fp);
 } // namespace chunk
 

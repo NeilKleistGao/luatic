@@ -25,10 +25,10 @@
 #ifndef LUATIC_L_STRING_H
 #define LUATIC_L_STRING_H
 
-#include <variant>
 #include <cstdio>
-#include <string>
 #include <optional>
+#include <string>
+#include <variant>
 
 namespace chunk {
   using byte = unsigned char;

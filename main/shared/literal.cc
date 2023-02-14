@@ -28,46 +28,38 @@ namespace chunk {
   std::variant<Literal, std::string> ReadLiteral(FILE* p_fp) {
     byte tag = fgetc(p_fp);
     if (tag == TAG_NIL) {
-      return std::variant<Literal, std::string>{Literal {nullptr}};
-    }
-    else if (tag == TAG_BOOLEAN) {
+      return std::variant<Literal, std::string>{Literal{nullptr}};
+    } else if (tag == TAG_BOOLEAN) {
       const BooleanLiteral value = fgetc(p_fp);
       return value;
-    }
-    else if (tag == TAG_NUMBER) {
+    } else if (tag == TAG_NUMBER) {
       NumberLiteral value;
       if (fread(&value, sizeof(NumberLiteral), 1, p_fp) != 1) {
         return "can't read number literal.";
-      }
-      else {
+      } else {
         return value;
       }
-    }
-    else if (tag == TAG_INTEGER) {
+    } else if (tag == TAG_INTEGER) {
       IntLiteral value;
       if (fread(&value, sizeof(IntLiteral), 1, p_fp) != 1) {
         return "can't read integer literal.";
-      }
-      else {
+      } else {
         return value;
       }
-    }
-    else if (tag == TAG_SHORT_STR || tag == TAG_LONG_STR) {
+    } else if (tag == TAG_SHORT_STR || tag == TAG_LONG_STR) {
       const auto value = ReadLString(p_fp);
       if (value.index() == 1) {
         return std::get<1>(value);
-      }
-      else {
+      } else {
         const LString str = std::get<0>(value);
-        if ((str.index() == 2 && tag == TAG_LONG_STR) || (str.index() < 2 && tag == TAG_SHORT_STR)) {
+        if ((str.index() == 2 && tag == TAG_LONG_STR) ||
+            (str.index() < 2 && tag == TAG_SHORT_STR)) {
           return str;
-        }
-        else {
+        } else {
           return "wrong string literal tag.";
         }
       }
-    }
-    else {
+    } else {
       return "wrong literal tag.";
     }
   }
