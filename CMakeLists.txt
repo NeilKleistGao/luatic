@@ -15,7 +15,7 @@ endif()
 
 include_directories(main)
 
-add_library(chunk STATIC main/shared/binary_chunk.cc main/shared/binary_chunk.h main/shared/prototype.cc main/shared/prototype.h main/shared/l_string.cc main/shared/l_string.h main/shared/literal.cc main/shared/literal.h)
+add_library(chunk STATIC main/shared/binary/binary_chunk.cc main/shared/binary/binary_chunk.h main/shared/binary/prototype.cc main/shared/binary/prototype.h main/shared/binary/l_string.cc main/shared/binary/l_string.h main/shared/binary/literal.cc main/shared/binary/literal.h)
 
 add_executable(luna main/luna/main.cc)
 add_executable(lunac main/lunac/main.cc)
