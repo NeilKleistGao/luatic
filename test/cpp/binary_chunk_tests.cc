@@ -25,7 +25,7 @@
 #include <filesystem>
 #include <gtest/gtest.h>
 
-#include "shared/binary/binary_chunk.h"
+#include "shared/chunk//binary_chunk.h"
 
 TEST(LuaticTests, BinaryChunkTest) {
   const auto dir = std::filesystem::path{"../test/luac"};

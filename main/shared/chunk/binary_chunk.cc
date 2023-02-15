@@ -69,7 +69,7 @@ namespace chunk {
       };
 
     if (!are_bytes_same(sizeof(MAGIC_NUMBER), header.signature, MAGIC_NUMBER)) {
-      return "this is not a lua binary chunk file.";
+      return "this is not a lua chunk chunk file.";
     }
     if (header.version != VERSION_NUMBER) {
       return "only 5.4.x lua files are supported.";
