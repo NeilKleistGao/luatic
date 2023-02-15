@@ -23,7 +23,7 @@
  */
 
 #include "prototype.h"
-#include "read_array.hpp"
+#include "helper.hpp"
 
 #define READ_ARRAY(__PROTO__, __FIELD__, __FP__, __TYPE__)                     \
 auto __FIELD__ = ReadArray<__TYPE__>(__FP__);                                  \
@@ -40,9 +40,9 @@ return std::get<1>(__PROTO__);                                                 \
 __PARENT__.proto = std::get<0>(__PROTO__)
 
 namespace chunk {
-  std::variant<LocalVar, std::string> ReadLocalVar(FILE* p_fp) {
+  std::variant<LocalVar, Error> ReadLocalVar(FILE* p_fp) {
     auto var = LocalVar{};
-    const auto name = ReadLString(p_fp);
+    const auto name = ReadString(p_fp);
     if (name.index() == 1) {
       return "can't read local variable's name.";
     }
@@ -58,49 +58,40 @@ namespace chunk {
     return var;
   }
 
-  std::variant<Prototype, std::string> ReadPrototype(FILE* p_fp,
-                                                     LString p_parent_source) {
+  std::variant<Prototype, Error> ReadPrototype(FILE* p_fp,
+                                                     const std::string& p_parent_source) {
     auto res = Prototype{};
+
     auto src =
-      (p_parent_source.index() == 0) ? ReadLString(p_fp) : p_parent_source;
+      (p_parent_source.empty()) ? ReadString(p_fp) : p_parent_source;
     if (src.index() == 1) {
       return std::get<1>(src);
     }
-
     res.source = std::get<0>(src);
-    if (fread(&res.line_defined, sizeof(uint32), 1, p_fp) != 1) {
-      return "can't read prototype's line defined.";
-    }
-    if (fread(&res.last_line_defined, sizeof(uint32), 1, p_fp) != 1) {
-      return "can't read prototype's last line defined.";
-    }
 
+    res.line_defined = ReadVarInt(p_fp);
+    res.last_line_defined = ReadVarInt(p_fp);
     res.num_params = fgetc(p_fp);
     res.is_vararg = fgetc(p_fp);
     res.max_stack_size = fgetc(p_fp);
 
-    READ_ARRAY(res, code, p_fp, long long);
+    READ_ARRAY(res, code, p_fp, int);
     READ_ARRAY(res, constants, p_fp, Literal);
     READ_ARRAY(res, up_values, p_fp, UpValue);
     READ_PROTOTYPE_ARRAY(res, p_parent_source, p_fp);
-    READ_ARRAY(res, line_info, p_fp, uint32);
+    READ_ARRAY(res, line_info, p_fp, byte);
+    READ_ARRAY(res, abs_line_info, p_fp, AbsLineInfo);
     READ_ARRAY(res, local_var, p_fp, LocalVar);
-    READ_ARRAY(res, up_value_names, p_fp, LString);
+    READ_ARRAY(res, up_value_names, p_fp, std::string);
 
     return res;
   }
 
-  std::variant<Prototype*, std::string>
-    ReadPrototypes(FILE* p_fp, LString p_parent_source) {
-    uint32 length;
-    if (fread(&length, sizeof(uint32), 1, p_fp) != 1) {
-      return "can't read array's length.";
-    }
-
-    auto res = new (std::nothrow) Prototype[length];
-    if (res == nullptr) {
-      return "out of memory.";
-    }
+  std::variant<std::vector<Prototype>, Error>
+    ReadPrototypes(FILE* p_fp, const std::string& p_parent_source) {
+    size_t length = ReadVarInt(p_fp);
+    auto res = std::vector<Prototype>{};
+    res.resize(length);
 
     for (int i = 0; i < length; ++i) {
       auto proto = ReadPrototype(p_fp, p_parent_source);

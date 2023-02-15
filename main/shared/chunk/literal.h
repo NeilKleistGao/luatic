@@ -29,11 +29,13 @@
 #include <string>
 #include <variant>
 
-#include "l_string.h"
-
 namespace chunk {
+  using byte = unsigned char;
+  using Error = const char*;
+
   constexpr byte TAG_NIL = 0u;
-  constexpr byte TAG_BOOLEAN = 1u;
+  constexpr byte TAG_FALSE = 1u;
+  constexpr byte TAG_TRUE = 17u;
   constexpr byte TAG_NUMBER = 3u;
   constexpr byte TAG_INTEGER = 19u;
   constexpr byte TAG_SHORT_STR = 4u;
@@ -43,11 +45,11 @@ namespace chunk {
   using BooleanLiteral = byte;
   using NumberLiteral = double;
   using IntLiteral = long long;
-  using StrLiteral = LString;
+  using StrLiteral = std::string;
 
   using Literal = std::
     variant<NilLiteral, BooleanLiteral, NumberLiteral, IntLiteral, StrLiteral>;
-  std::variant<Literal, std::string> ReadLiteral(FILE* p_fp);
+  std::variant<Literal, Error> ReadLiteral(FILE* p_fp);
 } // namespace chunk
 
 #endif //LUATIC_LITERAL_H

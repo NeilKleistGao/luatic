@@ -48,12 +48,11 @@ namespace chunk {
     }
 
     chunk.size_up_values = fgetc(fp);
-    // FIXME:
-    //    auto main_proto = ReadPrototype(fp, NullString{0});
-    //    if (main_proto.index() == 1) {
-    //      return std::get<1>(main_proto);
-    //    }
-    //    chunk.main_proto = std::get<0>(main_proto);
+    auto main_proto = ReadPrototype(fp, "");
+    if (main_proto.index() == 1) {
+      return std::get<1>(main_proto);
+    }
+    chunk.main_proto = std::get<0>(main_proto);
     fclose(fp);
 
     const auto& header = chunk.header;

@@ -23,16 +23,19 @@
  */
 
 #include "literal.h"
+#include "helper.h"
 
 namespace chunk {
-  std::variant<Literal, std::string> ReadLiteral(FILE* p_fp) {
+  std::variant<Literal, Error> ReadLiteral(FILE* p_fp) {
     byte tag = fgetc(p_fp);
     if (tag == TAG_NIL) {
-      return std::variant<Literal, std::string>{Literal{nullptr}};
-    } else if (tag == TAG_BOOLEAN) {
-      const BooleanLiteral value = fgetc(p_fp);
-      return value;
-    } else if (tag == TAG_NUMBER) {
+      return std::variant<Literal, Error>{Literal{nullptr}};
+    } else if (tag == TAG_FALSE) {
+      return byte{0};
+    } else if (tag == TAG_TRUE) {
+      return byte{1};
+    }
+    else if (tag == TAG_NUMBER) {
       NumberLiteral value;
       if (fread(&value, sizeof(NumberLiteral), 1, p_fp) != 1) {
         return "can't read number literal.";
@@ -47,17 +50,11 @@ namespace chunk {
         return value;
       }
     } else if (tag == TAG_SHORT_STR || tag == TAG_LONG_STR) {
-      const auto value = ReadLString(p_fp);
+      const auto value = ReadString(p_fp);
       if (value.index() == 1) {
         return std::get<1>(value);
       } else {
-        const LString str = std::get<0>(value);
-        if ((str.index() == 2 && tag == TAG_LONG_STR) ||
-            (str.index() < 2 && tag == TAG_SHORT_STR)) {
-          return str;
-        } else {
-          return "wrong string literal tag.";
-        }
+        return std::get<0>(value);
       }
     } else {
       return "wrong literal tag.";

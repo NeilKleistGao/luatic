@@ -22,31 +22,19 @@
  * SOFTWARE.
  */
 
-#ifndef LUATIC_L_STRING_H
-#define LUATIC_L_STRING_H
+#ifndef LUATIC_HELPER_H
+#define LUATIC_HELPER_H
 
-#include <cstdio>
-#include <optional>
+#include <vector>
 #include <string>
+#include <cstdio>
 #include <variant>
 
+#include "literal.h"
+
 namespace chunk {
-  using byte = unsigned char;
-
-  using NullString = byte; // should always be 0.
-  struct ShortString {
-    byte length;
-    char* buff;
-  };
-  struct LongString {
-    byte long_string_num; // should always be 0xff
-    size_t length;
-    char* buff;
-  };
-
-  using LString = std::variant<NullString, ShortString, LongString>;
-
-  std::variant<LString, std::string> ReadLString(FILE* p_fp);
+  size_t ReadVarInt(FILE* p_fp);
+  std::variant<std::string, Error> ReadString(FILE* p_fp);
 } // namespace chunk
 
-#endif //LUATIC_L_STRING_H
+#endif //LUATIC_HELPER_H
