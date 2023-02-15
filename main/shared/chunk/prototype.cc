@@ -58,12 +58,11 @@ namespace chunk {
     return var;
   }
 
-  std::variant<Prototype, Error> ReadPrototype(FILE* p_fp,
-                                                     const std::string& p_parent_source) {
+  std::variant<Prototype, Error>
+    ReadPrototype(FILE* p_fp, const std::string& p_parent_source) {
     auto res = Prototype{};
 
-    auto src =
-      (p_parent_source.empty()) ? ReadString(p_fp) : p_parent_source;
+    auto src = (p_parent_source.empty()) ? ReadString(p_fp) : p_parent_source;
     if (src.index() == 1) {
       return std::get<1>(src);
     }

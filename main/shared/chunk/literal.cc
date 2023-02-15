@@ -34,8 +34,7 @@ namespace chunk {
       return byte{0};
     } else if (tag == TAG_TRUE) {
       return byte{1};
-    }
-    else if (tag == TAG_NUMBER) {
+    } else if (tag == TAG_NUMBER) {
       NumberLiteral value;
       if (fread(&value, sizeof(NumberLiteral), 1, p_fp) != 1) {
         return "can't read number literal.";

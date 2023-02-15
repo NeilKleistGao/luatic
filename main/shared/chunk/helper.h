@@ -25,10 +25,10 @@
 #ifndef LUATIC_HELPER_H
 #define LUATIC_HELPER_H
 
-#include <vector>
-#include <string>
 #include <cstdio>
+#include <string>
 #include <variant>
+#include <vector>
 
 #include "literal.h"
 

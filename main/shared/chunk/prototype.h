@@ -65,10 +65,10 @@ namespace chunk {
   };
 
   std::variant<LocalVar, Error> ReadLocalVar(FILE* p_fp);
-  std::variant<Prototype, Error> ReadPrototype(FILE* p_fp,
-                                                     const std::string& p_parent_source);
-  std::variant<std::vector<Prototype>, Error> ReadPrototypes(FILE* p_fp,
-                                                       const std::string& p_parent_source);
+  std::variant<Prototype, Error>
+    ReadPrototype(FILE* p_fp, const std::string& p_parent_source);
+  std::variant<std::vector<Prototype>, Error>
+    ReadPrototypes(FILE* p_fp, const std::string& p_parent_source);
 } // namespace chunk
 
 #endif //LUATIC_PROTOTYPE_H
