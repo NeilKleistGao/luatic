@@ -22,32 +22,18 @@
  * SOFTWARE.
  */
 
-#include <cstdio>
-#include <filesystem>
-#include <gtest/gtest.h>
+#ifndef LUATIC_BINARY_PRETTY_PRINTER_H
+#define LUATIC_BINARY_PRETTY_PRINTER_H
 
-#include "binary_pretty_printer.h"
+#include <cstdio>
+
 #include "shared/chunk/binary_chunk.h"
 
-TEST(LuaticTests, BinaryChunkTest) {
-  const auto dir = std::filesystem::path{"../test/luac"};
-  const auto out_dir = std::filesystem::path{"../test/dump"};
-  for (const auto& it : std::filesystem::directory_iterator{dir}) {
-    const auto filename = it.path().filename().string();
-    const auto path = it.path().string();
-    const auto res = chunk::ReadAndCheckBinaryChunk(path);
+namespace chunk {
+  void PrintProperty(FILE* p_fp,
+                     const Prototype& p_prop,
+                     const std::string& p_indent);
+  void PrintChunk(FILE* p_fp, const BinaryChunk& p_chunk);
+} // namespace chunk
 
-    // luac -> lua
-    const auto output =
-      (out_dir / filename.substr(0, filename.length() - 1)).string();
-    FILE* fp = fopen(output.c_str(), "w");
-    EXPECT_NE(fp, nullptr);
-    if (res.index() == 0) {
-      chunk::PrintChunk(fp, std::get<0>(res));
-    } else {
-      fputs(std::get<1>(res).c_str(), fp);
-    }
-
-    fclose(fp);
-  }
-}
+#endif //LUATIC_BINARY_PRETTY_PRINTER_H

@@ -1,0 +1,14 @@
+-- BINARY CHUNK
+-- up values size: 1
+-- PROPERTY
+-- source: @hello_world.lua
+-- define: line 0 to line 0
+-- num params: 0
+-- is var arg: yes
+-- max stack size: 2
+-- code: 
+---- 81
+---- 11
+---- 32899
+---- 16908356
+---- 16842822

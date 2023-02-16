@@ -24,7 +24,7 @@ target_link_libraries(luna ${LIBRARY_OUTPUT_PATH}/libchunk.a)
 target_link_libraries(lunac ${LIBRARY_OUTPUT_PATH}/libchunk.a)
 
 if (BUILD_TEST)
-  add_executable(tests test/cpp/diff_tests.cc test/cpp/binary_chunk_tests.cc)
+  add_executable(tests test/cpp/diff_tests.cc test/cpp/binary_chunk_tests.cc test/cpp/binary_pretty_printer.cc test/cpp/binary_pretty_printer.h)
   target_link_libraries(tests ${GTEST_BOTH_LIBRARIES})
   target_link_libraries(tests ${CMAKE_THREAD_LIBS_INIT})
   target_link_libraries(tests ${LIBRARY_OUTPUT_PATH}/libchunk.a)
