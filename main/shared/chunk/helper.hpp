@@ -29,6 +29,7 @@
 
 #include "prototype.h"
 #include "helper.h"
+#include "shared/instructions/instructions.h"
 
 namespace chunk {
   template<typename T> std::variant<std::vector<T>, Error> ReadArray(FILE* p_fp) {
@@ -87,6 +88,27 @@ namespace chunk {
         return std::get<1>(lit);
       }
       res[i] = std::get<0>(lit);
+    }
+
+    return res;
+  }
+
+  template<> std::variant<std::vector<instructions::Instruction>, Error> ReadArray(FILE* p_fp) {
+    size_t length = ReadVarInt(p_fp);
+    auto res = std::vector<instructions::Instruction>{};
+
+    for (int i = 0; i < length; ++i) {
+      unsigned int code;
+      if (fread(&code, sizeof(code), 1, p_fp) != 1) {
+        return "can't read instruction.";
+      }
+
+      const auto ins = instructions::Parse(code);
+      if (ins.index() == 1) {
+        return std::get<1>(ins);
+      }
+
+      res.push_back(std::get<0>(ins));
     }
 
     return res;

@@ -24,6 +24,8 @@
 
 #include "binary_pretty_printer.h"
 
+#include "instructions_pretty_printer.h"
+
 namespace chunk {
   void PrintProperty(FILE* p_fp,
                      const Prototype& p_prop,
@@ -47,7 +49,7 @@ namespace chunk {
 
     fprintf(p_fp, "%s code: \n", p_indent.c_str());
     for (const auto& code : p_prop.code) {
-      fprintf(p_fp, "--%s %u\n", p_indent.c_str(), code);
+      instructions::PrintInstruction(p_fp, code, p_indent + "--");
     }
 
     // TODO: add more

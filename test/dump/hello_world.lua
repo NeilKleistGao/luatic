@@ -7,8 +7,8 @@
 -- is var arg: yes
 -- max stack size: 2
 -- code: 
----- 81
----- 11
----- 32899
----- 16908356
----- 16842822
+---- VAR ARG PREP
+---- GET TAB UP
+---- LOAD K
+---- CALL
+---- RETURN
