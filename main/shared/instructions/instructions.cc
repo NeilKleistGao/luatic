@@ -37,11 +37,11 @@ namespace instructions {
 
   InstABx::InstABx(uint p_code) {}
 
-  bool InstIAsBx::operator==(uint p_code) {
+  bool InstAsBx::operator==(uint p_code) {
     return false; // TODO:
   }
 
-  InstIAsBx::InstIAsBx(uint p_code) {}
+  InstAsBx::InstAsBx(uint p_code) {}
 
   bool InstAx::operator==(uint p_code) {
     return false; // TODO:
@@ -49,4 +49,7 @@ namespace instructions {
 
   InstAx::InstAx(uint p_code) {}
 
+  bool InstsJ::operator==(uint p_code) { return false; }
+
+  InstsJ::InstsJ(uint p_code) {}
 } // namespace instructions

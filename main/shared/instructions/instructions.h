@@ -31,51 +31,84 @@ namespace instructions {
   using uchar = unsigned char;
 
   struct Instruction {
-    static constexpr uint OP_CODE_MASK = 0b00111111;
+    static constexpr uint OP_CODE_MASK = 0b01111111;
     virtual bool operator==(uint p_code) = 0;
   };
 
   struct InstABC: public Instruction {
     enum class OpCode {
       MOVE = 0,
-      LOAD_BOOL = 3,
-      LOAD_INT = 4,
-      GET_UP_VAL = 5,
-      GET_TAB_UP = 6,
-      GET_TABLE = 7,
-      SET_TAB_UP = 8,
-      SET_UP_VAL = 9,
-      SET_TABLE = 10,
-      NEW_TABLE = 11,
-      SELF = 12,
-      ADD = 13,
-      SUB = 14,
-      MUL = 15,
-      MOD = 16,
-      POW = 17,
-      DIV = 18,
-      IDIV = 19,
-      BAND = 20,
-      BOR = 21,
-      BXOR = 22,
-      SHL = 23,
-      SHR = 24,
-      UNM = 25,
-      BNOT = 26,
-      NOT = 27,
-      LEN = 28,
-      CONCAT = 29,
-      EQ = 31,
-      LT = 32,
-      LE = 33,
-      TEST = 34,
-      TEST_SET = 35,
-      CALL = 36,
-      TAIL_CALL = 37,
-      RETURN = 38,
-      TFOR_CALL = 41,
-      SET_LIST = 43,
-      VAR_ARG = 45
+      LOAD_FALSE = 5,
+      LFALSE_SKIP = 6,
+      LOAD_TRUE = 7,
+      LOAD_NIL = 8,
+      GET_UP_VAL = 9,
+      SET_UP_VAL = 10,
+      GET_TAB_UP = 11,
+      GET_TABLE = 12,
+      GET_I = 13,
+      GET_FIELD = 14,
+      SET_TAB_UP = 15,
+      SET_TABLE = 16,
+      SET_I = 17,
+      SET_FIELD = 18,
+      NEW_TABLE = 19,
+      SELF = 20,
+      ADD_I = 21,
+      ADD_K = 22,
+      SUB_K = 23,
+      MUL_K = 24,
+      MOD_K = 25,
+      POW_K = 26,
+      DIV_K = 27,
+      I_DIV_K = 28,
+      B_AND_K = 29,
+      B_OR_K = 30,
+      B_XOR_K = 31,
+      SHR_I = 32,
+      SHL_I = 33,
+      ADD = 34,
+      SUB = 35,
+      MUL = 36,
+      MOD = 37,
+      POW = 38,
+      DIV = 39,
+      I_DIV = 40,
+      B_AND = 41,
+      B_OR = 42,
+      B_XOR = 43,
+      SHL = 44,
+      SHR = 45,
+      MM_BIN = 46,
+      MM_BIN_I = 47,
+      MM_BIN_K = 48,
+      UNM = 49,
+      B_NOT = 50,
+      NOT = 51,
+      LEN = 52,
+      CONCAT = 53,
+      CLOSE = 54,
+      TBC = 55,
+      EQ = 57,
+      LT = 58,
+      LE = 59,
+      EQ_K = 60,
+      EQ_I = 61,
+      LT_I = 62,
+      LE_I = 63,
+      GT_I = 64,
+      GE_I = 65,
+      TEST = 66,
+      TEST_SET = 67,
+      CALL = 68,
+      TAIL_CALL = 69,
+      RETURN = 70,
+      RETURN_0 = 71,
+      RETURN_1 = 72,
+      T_FOR_CALL = 76,
+      SET_LIST = 78,
+      VAR_ARG = 80,
+      VAR_ARG_PREP = 81
     } code;
 
     ushort b;
@@ -90,7 +123,15 @@ namespace instructions {
   };
 
   struct InstABx: public Instruction {
-    enum class OpCode { LOAD_K = 1, LOAD_KX = 2, CLOSURE = 44 } code;
+    enum class OpCode {
+      LOAD_K = 3,
+      LOAD_KX = 4,
+      FOR_LOOP = 73,
+      FOR_PREP = 74,
+      T_FOR_PREP = 75,
+      T_FOR_LOOP = 77,
+      CLOSURE = 79
+    } code;
 
     uint bx;
     uchar a;
@@ -102,31 +143,37 @@ namespace instructions {
     bool operator==(uint p_code) override;
   };
 
-  struct InstIAsBx: public Instruction {
-    enum class OpCode {
-      JMP = 30,
-      FOR_LOOP = 39,
-      FOR_PREP = 40,
-      TFOR_LOOP = 42
-    } code;
+  struct InstAsBx: public Instruction {
+    enum class OpCode { LOAD_I = 1, LOAD_F = 2 } code;
 
     int sbx;
     uchar a;
 
-    explicit InstIAsBx(uint p_code);
-    InstIAsBx(OpCode p_code, int p_sbx, uchar p_a):
+    explicit InstAsBx(uint p_code);
+    InstAsBx(OpCode p_code, int p_sbx, uchar p_a):
       code(p_code), sbx(p_sbx), a(p_a) {}
 
     bool operator==(uint p_code) override;
   };
 
   struct InstAx: public Instruction {
-    enum class OpCode { EXTRA_ARG = 46 } code;
+    enum class OpCode { EXTRA_ARG = 82 } code;
 
     uint ax;
 
     explicit InstAx(uint p_code);
     InstAx(OpCode p_code, uint p_ax): code(p_code), ax(p_ax) {}
+
+    bool operator==(uint p_code) override;
+  };
+
+  struct InstsJ: public Instruction {
+    enum class OpCode { JMP = 56 } code;
+
+    uint sj;
+
+    explicit InstsJ(uint p_code);
+    InstsJ(OpCode p_code, uint p_sj): code(p_code), sj(p_sj) {}
 
     bool operator==(uint p_code) override;
   };
