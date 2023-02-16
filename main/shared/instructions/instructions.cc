@@ -24,4 +24,29 @@
 
 #include "instructions.h"
 
-namespace instructions {} // namespace instructions
+namespace instructions {
+  bool InstABC::operator==(uint p_code) {
+    return false; // TODO:
+  }
+
+  InstABC::InstABC(uint p_code) {}
+
+  bool InstABx::operator==(uint p_code) {
+    return false; // TODO:
+  }
+
+  InstABx::InstABx(uint p_code) {}
+
+  bool InstIAsBx::operator==(uint p_code) {
+    return false; // TODO:
+  }
+
+  InstIAsBx::InstIAsBx(uint p_code) {}
+
+  bool InstAx::operator==(uint p_code) {
+    return false; // TODO:
+  }
+
+  InstAx::InstAx(uint p_code) {}
+
+} // namespace instructions

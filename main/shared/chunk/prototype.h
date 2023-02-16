@@ -54,7 +54,7 @@ namespace chunk {
     byte num_params;
     byte is_vararg;
     byte max_stack_size;
-    std::vector<int> code;
+    std::vector<unsigned int> code;
     std::vector<Literal> constants;
     std::vector<UpValue> up_values;
     std::vector<Prototype> proto;

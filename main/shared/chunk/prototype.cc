@@ -74,7 +74,7 @@ namespace chunk {
     res.is_vararg = fgetc(p_fp);
     res.max_stack_size = fgetc(p_fp);
 
-    READ_ARRAY(res, code, p_fp, int);
+    READ_ARRAY(res, code, p_fp, unsigned int);
     READ_ARRAY(res, constants, p_fp, Literal);
     READ_ARRAY(res, up_values, p_fp, UpValue);
     READ_PROTOTYPE_ARRAY(res, p_parent_source, p_fp);
