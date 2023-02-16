@@ -25,21 +25,28 @@
 #ifndef LUATIC_INSTRUCTIONS_H
 #define LUATIC_INSTRUCTIONS_H
 
+#include <variant>
+
 namespace instructions {
+  struct InstABC;
+  struct InstABx;
+  struct InstAsBx;
+  struct InstAx;
+  struct InstsJ;
+
   using uint = unsigned int;
   using ushort = unsigned short;
   using uchar = unsigned char;
+  using Error = const char*;
+  using Instruction = std::variant<InstABC, InstABx, InstAsBx, InstAx, InstsJ>;
 
-  struct Instruction {
-    static constexpr uint OP_CODE_MASK = 0b01111111;
-    virtual bool operator==(uint p_code) = 0;
-  };
+  constexpr uint OP_CODE_MASK = 0x7F;
 
-  struct InstABC: public Instruction {
+  struct InstABC {
     enum class OpCode {
       MOVE = 0,
       LOAD_FALSE = 5,
-      LFALSE_SKIP = 6,
+      L_FALSE_SKIP = 6,
       LOAD_TRUE = 7,
       LOAD_NIL = 8,
       GET_UP_VAL = 9,
@@ -111,18 +118,22 @@ namespace instructions {
       VAR_ARG_PREP = 81
     } code;
 
-    ushort b;
-    ushort c;
+    uchar b;
+    uchar c;
+    bool k;
     uchar a;
 
-    explicit InstABC(uint p_code);
-    InstABC(OpCode p_code, ushort p_b, ushort p_a, uchar p_c):
-      code(p_code), b(p_b), c(p_c), a(p_a) {}
+    InstABC(OpCode p_code, uchar p_b, uchar p_a, bool p_k, uchar p_c):
+      code(p_code), b(p_b), c(p_c), k(p_k), a(p_a) {}
 
-    bool operator==(uint p_code) override;
+    static bool Is(uint p_code);
+
+  private:
+    explicit InstABC(uint p_code);
+    friend std::variant<Instruction, Error> Parse(uint p_code);
   };
 
-  struct InstABx: public Instruction {
+  struct InstABx {
     enum class OpCode {
       LOAD_K = 3,
       LOAD_KX = 4,
@@ -136,47 +147,61 @@ namespace instructions {
     uint bx;
     uchar a;
 
-    explicit InstABx(uint p_code);
     InstABx(OpCode p_code, uint p_bx, uchar p_a):
       code(p_code), bx(p_bx), a(p_a) {}
 
-    bool operator==(uint p_code) override;
+    static bool Is(uint p_code);
+
+  private:
+    explicit InstABx(uint p_code);
+    friend std::variant<Instruction, Error> Parse(uint p_code);
   };
 
-  struct InstAsBx: public Instruction {
+  struct InstAsBx {
     enum class OpCode { LOAD_I = 1, LOAD_F = 2 } code;
 
-    int sbx;
+    short sbx;
     uchar a;
 
-    explicit InstAsBx(uint p_code);
-    InstAsBx(OpCode p_code, int p_sbx, uchar p_a):
+    InstAsBx(OpCode p_code, short p_sbx, uchar p_a):
       code(p_code), sbx(p_sbx), a(p_a) {}
 
-    bool operator==(uint p_code) override;
+    static bool Is(uint p_code);
+
+  private:
+    explicit InstAsBx(uint p_code);
+    friend std::variant<Instruction, Error> Parse(uint p_code);
   };
 
-  struct InstAx: public Instruction {
+  struct InstAx {
     enum class OpCode { EXTRA_ARG = 82 } code;
 
     uint ax;
 
-    explicit InstAx(uint p_code);
     InstAx(OpCode p_code, uint p_ax): code(p_code), ax(p_ax) {}
 
-    bool operator==(uint p_code) override;
+    static bool Is(uint p_code);
+
+  private:
+    explicit InstAx(uint p_code);
+    friend std::variant<Instruction, Error> Parse(uint p_code);
   };
 
-  struct InstsJ: public Instruction {
+  struct InstsJ {
     enum class OpCode { JMP = 56 } code;
 
     uint sj;
 
-    explicit InstsJ(uint p_code);
     InstsJ(OpCode p_code, uint p_sj): code(p_code), sj(p_sj) {}
 
-    bool operator==(uint p_code) override;
+    static bool Is(uint p_code);
+
+  private:
+    explicit InstsJ(uint p_code);
+    friend std::variant<Instruction, Error> Parse(uint p_code);
   };
+
+  std::variant<Instruction, Error> Parse(uint p_code);
 } // namespace instructions
 
 #endif //LUATIC_INSTRUCTIONS_H
