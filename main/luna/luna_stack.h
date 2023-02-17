@@ -22,19 +22,34 @@
  * SOFTWARE.
  */
 
-#ifndef LUATIC_LUNA_STATE_H
-#define LUATIC_LUNA_STATE_H
+#ifndef LUATIC_LUNA_STACK_H
+#define LUATIC_LUNA_STACK_H
 
-#include <memory>
+#include <optional>
+#include <vector>
 
-#include "luna_stack.h"
+#include "luna_values.h"
 
-class LunaState {
+class LunaStack {
 public:
-  LunaState(): m_stack(new LunaStack{32}){};
+  explicit LunaStack(size_t p_capacity);
+
+  void Push(const LunaValue& p_value);
+  void Push(LunaValue&& p_value);
+  std::optional<LunaValue> Pop();
+
+  inline size_t Top() const { return m_slots.size() - 1; }
+
+  LunaValue Get(int p_index);
+  void Set(int p_index, const LunaValue& p_value);
+  void Set(int p_index, LunaValue&& p_value);
 
 private:
-  std::shared_ptr<LunaStack> m_stack;
+  std::vector<LunaValue> m_slots;
+
+  inline bool IsValidIndex(size_t p_index) { return p_index < m_slots.size(); }
+
+  size_t GetAbsIndex(int p_index);
 };
 
-#endif //LUATIC_LUNA_STATE_H
+#endif //LUATIC_LUNA_STACK_H
