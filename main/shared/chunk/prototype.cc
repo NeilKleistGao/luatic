@@ -77,7 +77,7 @@ namespace chunk {
     READ_ARRAY(res, code, p_fp, instructions::Instruction);
     READ_ARRAY(res, constants, p_fp, Literal);
     READ_ARRAY(res, up_values, p_fp, UpValue);
-    READ_PROTOTYPE_ARRAY(res, p_parent_source, p_fp);
+    READ_PROTOTYPE_ARRAY(res, res.source, p_fp);
     READ_ARRAY(res, line_info, p_fp, byte);
     READ_ARRAY(res, abs_line_info, p_fp, AbsLineInfo);
     READ_ARRAY(res, local_var, p_fp, LocalVar);

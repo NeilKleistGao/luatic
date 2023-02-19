@@ -35,6 +35,27 @@ namespace instructions {
         case InstABC::OpCode::GET_TAB_UP:
           fprintf(p_fp, "%s GET TAB UP\n", p_indent.c_str());
           break;
+        case InstABC::OpCode::SET_TAB_UP:
+          fprintf(p_fp, "%s SET TAB UP\n", p_indent.c_str());
+          break;
+        case InstABC::OpCode::SUB_K:
+          fprintf(p_fp, "%s SUB K\n", p_indent.c_str());
+          break;
+        case InstABC::OpCode::MUL_K:
+          fprintf(p_fp, "%s MUL K\n", p_indent.c_str());
+          break;
+        case InstABC::OpCode::DIV_K:
+          fprintf(p_fp, "%s DIV K\n", p_indent.c_str());
+          break;
+        case InstABC::OpCode::ADD:
+          fprintf(p_fp, "%s ADD\n", p_indent.c_str());
+          break;
+        case InstABC::OpCode::MM_BIN:
+          fprintf(p_fp, "%s MM BIN\n", p_indent.c_str());
+          break;
+        case InstABC::OpCode::MM_BIN_K:
+          fprintf(p_fp, "%s MM BIN K\n", p_indent.c_str());
+          break;
         case InstABC::OpCode::CALL:
           fprintf(p_fp, "%s CALL\n", p_indent.c_str());
           break;

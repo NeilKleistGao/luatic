@@ -45,7 +45,7 @@ TEST(LuaticTests, BinaryChunkTest) {
     if (res.index() == 0) {
       chunk::PrintChunk(fp, std::get<0>(res));
     } else {
-      fputs(std::get<1>(res).c_str(), fp);
+      fputs(("-- " + std::get<1>(res)).c_str(), fp);
     }
 
     fclose(fp);
