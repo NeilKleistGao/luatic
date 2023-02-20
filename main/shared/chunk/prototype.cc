@@ -48,12 +48,8 @@ namespace chunk {
     }
 
     var.var_name = std::get<0>(name);
-    if (fread(&var.start_pc, sizeof(var.start_pc), 1, p_fp) != 1) {
-      return "can't read local variable's start pc.";
-    }
-    if (fread(&var.end_pc, sizeof(var.end_pc), 1, p_fp) != 1) {
-      return "can't read local variable's end pc.";
-    }
+    var.start_pc = ReadVarInt(p_fp);
+    var.end_pc = ReadVarInt(p_fp);
 
     return var;
   }
@@ -62,11 +58,14 @@ namespace chunk {
     ReadPrototype(FILE* p_fp, const std::string& p_parent_source) {
     auto res = Prototype{};
 
-    auto src = (p_parent_source.empty()) ? ReadString(p_fp) : p_parent_source;
+    auto src = ReadString(p_fp);
     if (src.index() == 1) {
       return std::get<1>(src);
     }
     res.source = std::get<0>(src);
+    if (res.source.empty()) {
+      res.source = p_parent_source;
+    }
 
     res.line_defined = ReadVarInt(p_fp);
     res.last_line_defined = ReadVarInt(p_fp);

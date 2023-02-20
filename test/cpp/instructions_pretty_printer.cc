@@ -75,6 +75,9 @@ namespace instructions {
         case InstABx::OpCode::LOAD_K:
           fprintf(p_fp, "%s LOAD K\n", p_indent.c_str());
           break;
+        case InstABx::OpCode::CLOSURE:
+          fprintf(p_fp, "%s CLOSURE\n", p_indent.c_str());
+          break;
         // TODO: finish pretty printer
         default:
           fprintf(p_fp, "%s %d\n", p_indent.c_str(), ins.code);

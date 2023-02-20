@@ -37,6 +37,10 @@ namespace chunk {
 
   std::variant<std::string, Error> ReadString(FILE* p_fp) {
     size_t length = ReadVarInt(p_fp) - 1;
+    if (length == -1) {
+      return std::string{}; // empty string
+    }
+
     char* buffer = new (std::nothrow) char[length + 1];
     if (buffer == nullptr) {
       return "out of memory.";

@@ -25,15 +25,24 @@
 #include <cstdio>
 #include <filesystem>
 #include <gtest/gtest.h>
+#include <unordered_set>
 
 #include "binary_pretty_printer.h"
 #include "shared/chunk/binary_chunk.h"
+
+// help you skip some tests
+static const std::unordered_set<std::string> TEST_FILTER = {};
 
 TEST(LuaticTests, BinaryChunkTest) {
   const auto dir = std::filesystem::path{"../test/luac"};
   const auto out_dir = std::filesystem::path{"../test/dump"};
   for (const auto& it : std::filesystem::directory_iterator{dir}) {
     const auto filename = it.path().filename().string();
+    if (TEST_FILTER.find(filename) != TEST_FILTER.end()) {
+      continue;
+    }
+
+    std::cout << "check binary chunk in " << filename << std::endl;
     const auto path = it.path().string();
     const auto res = chunk::ReadAndCheckBinaryChunk(path);
 
