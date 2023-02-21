@@ -1,0 +1,24 @@
+-- BINARY CHUNK
+-- up values size: 1
+-- PROPERTY
+-- source: @calculations2.lua
+-- define: line 0 to line 0
+-- num params: 0
+-- is var arg: yes
+-- max stack size: 2
+-- code: 
+---- VAR ARG PREP
+---- SET TAB UP
+---- GET TAB UP
+---- B AND K
+---- MM BIN K
+---- SET TAB UP
+---- GET TAB UP
+---- B OR K
+---- MM BIN K
+---- SET TAB UP
+---- GET TAB UP
+---- POW K
+---- MM BIN K
+---- SET TAB UP
+---- RETURN

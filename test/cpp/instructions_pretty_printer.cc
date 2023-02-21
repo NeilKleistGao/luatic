@@ -44,8 +44,17 @@ namespace instructions {
         case InstABC::OpCode::MUL_K:
           fprintf(p_fp, "%s MUL K\n", p_indent.c_str());
           break;
+        case InstABC::OpCode::POW_K:
+          fprintf(p_fp, "%s POW K\n", p_indent.c_str());
+          break;
         case InstABC::OpCode::DIV_K:
           fprintf(p_fp, "%s DIV K\n", p_indent.c_str());
+          break;
+        case InstABC::OpCode::B_AND_K:
+          fprintf(p_fp, "%s B AND K\n", p_indent.c_str());
+          break;
+        case InstABC::OpCode::B_OR_K:
+          fprintf(p_fp, "%s B OR K\n", p_indent.c_str());
           break;
         case InstABC::OpCode::ADD:
           fprintf(p_fp, "%s ADD\n", p_indent.c_str());
@@ -85,7 +94,9 @@ namespace instructions {
     } else if (index == 2) {
       const auto& ins = std::get<2>(p_ins);
       switch (ins.code) {
-        // TODO: finish pretty printer
+        case InstAsBx::OpCode::LOAD_I:
+          fprintf(p_fp, "%s LOAD I\n", p_indent.c_str());
+          break;
         default:
           fprintf(p_fp, "%s %d\n", p_indent.c_str(), ins.code);
       }

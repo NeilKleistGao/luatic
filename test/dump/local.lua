@@ -1,0 +1,14 @@
+-- BINARY CHUNK
+-- up values size: 1
+-- PROPERTY
+-- source: @local.lua
+-- define: line 0 to line 0
+-- num params: 0
+-- is var arg: yes
+-- max stack size: 2
+-- code: 
+---- VAR ARG PREP
+---- LOAD I
+---- CLOSURE
+---- SET TAB UP
+---- RETURN
