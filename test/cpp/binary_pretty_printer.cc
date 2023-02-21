@@ -27,37 +27,42 @@
 #include "instructions_pretty_printer.h"
 
 namespace chunk {
-  void PrintProperty(FILE* p_fp,
-                     const Prototype& p_prop,
-                     const std::string& p_indent) {
-    fputs((p_indent + " PROPERTY\n").c_str(), p_fp);
-    fprintf(p_fp, "%s source: %s\n", p_indent.c_str(), p_prop.source.c_str());
+  void PrintPrototype(FILE* p_fp,
+                      const Prototype& p_pro,
+                      const std::string& p_indent) {
+    fputs((p_indent + " PROTOTYPE\n").c_str(), p_fp);
+    fprintf(p_fp, "%s source: %s\n", p_indent.c_str(), p_pro.source.c_str());
     fprintf(p_fp,
             "%s define: line %lu to line %lu\n",
             p_indent.c_str(),
-            p_prop.line_defined,
-            p_prop.last_line_defined);
-    fprintf(p_fp, "%s num params: %d\n", p_indent.c_str(), p_prop.num_params);
+            p_pro.line_defined,
+            p_pro.last_line_defined);
+    fprintf(p_fp, "%s num params: %d\n", p_indent.c_str(), p_pro.num_params);
     fprintf(p_fp,
             "%s is var arg: %s\n",
             p_indent.c_str(),
-            (p_prop.is_vararg) ? "yes" : "no");
+            (p_pro.is_vararg) ? "yes" : "no");
     fprintf(p_fp,
             "%s max stack size: %d\n",
             p_indent.c_str(),
-            p_prop.max_stack_size);
+            p_pro.max_stack_size);
 
     fprintf(p_fp, "%s code: \n", p_indent.c_str());
-    for (const auto& code : p_prop.code) {
+    for (const auto& code : p_pro.code) {
       instructions::PrintInstruction(p_fp, code, p_indent + "--");
     }
 
-    // TODO: add more
+    if (!p_pro.proto.empty()) {
+      fprintf(p_fp, "%s sub prototypes: \n", p_indent.c_str());
+      for (const auto& pro : p_pro.proto) {
+        PrintPrototype(p_fp, pro, p_indent + "--");
+      }
+    }
   }
 
   void PrintChunk(FILE* p_fp, const BinaryChunk& p_chunk) {
     fputs("-- BINARY CHUNK\n", p_fp);
     fprintf(p_fp, "-- up values size: %d\n", p_chunk.size_up_values);
-    PrintProperty(p_fp, p_chunk.main_proto, "--");
+    PrintPrototype(p_fp, p_chunk.main_proto, "--");
   }
 } // namespace chunk

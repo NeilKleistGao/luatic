@@ -1,6 +1,6 @@
 -- BINARY CHUNK
 -- up values size: 1
--- PROPERTY
+-- PROTOTYPE
 -- source: @local.lua
 -- define: line 0 to line 0
 -- num params: 0
@@ -12,3 +12,18 @@
 ---- CLOSURE
 ---- SET TAB UP
 ---- RETURN
+-- sub prototypes: 
+---- PROTOTYPE
+---- source: @local.lua
+---- define: line 26 to line 29
+---- num params: 0
+---- is var arg: no
+---- max stack size: 3
+---- code: 
+------ LOAD I
+------ GET TAB UP
+------ GET UP VAL
+------ ADD
+------ MM BIN
+------ CALL
+------ RETURN 0

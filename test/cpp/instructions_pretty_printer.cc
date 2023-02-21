@@ -32,6 +32,12 @@ namespace instructions {
     if (index == 0) {
       const auto& ins = std::get<0>(p_ins);
       switch (ins.code) {
+        case InstABC::OpCode::MOVE:
+          fprintf(p_fp, "%s MOVE\n", p_indent.c_str());
+          break;
+        case InstABC::OpCode::GET_UP_VAL:
+          fprintf(p_fp, "%s GET UP VAL\n", p_indent.c_str());
+          break;
         case InstABC::OpCode::GET_TAB_UP:
           fprintf(p_fp, "%s GET TAB UP\n", p_indent.c_str());
           break;
@@ -70,6 +76,9 @@ namespace instructions {
           break;
         case InstABC::OpCode::RETURN:
           fprintf(p_fp, "%s RETURN\n", p_indent.c_str());
+          break;
+        case InstABC::OpCode::RETURN_0:
+          fprintf(p_fp, "%s RETURN 0\n", p_indent.c_str());
           break;
         case InstABC::OpCode::VAR_ARG_PREP:
           fprintf(p_fp, "%s VAR ARG PREP\n", p_indent.c_str());

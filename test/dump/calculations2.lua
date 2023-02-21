@@ -1,6 +1,6 @@
 -- BINARY CHUNK
 -- up values size: 1
--- PROPERTY
+-- PROTOTYPE
 -- source: @calculations2.lua
 -- define: line 0 to line 0
 -- num params: 0
