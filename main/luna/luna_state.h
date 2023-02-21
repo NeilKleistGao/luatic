@@ -33,8 +33,6 @@ class LunaState {
 public:
   LunaState(): m_stack(new LunaStack{32}){};
 
-  inline size_t Top() const { return m_stack->Top() + 1; }
-
   void PopN(size_t p_n);
   void Copy(int p_from, int p_to);
   void PushAt(int p_index);
@@ -43,8 +41,13 @@ public:
   void Remove(int p_index);
   void SetTop(size_t p_new_top);
 
+  inline size_t Top() const { return m_stack->Top() + 1; }
   inline void InsertTop(int p_index) { this->Rotate(p_index, 1); }
-  inline void PushNil() { m_stack->Push(LunaNil{}); }
+  inline void Push(const LunaValue& p_v) { m_stack->Push(p_v); }
+  inline void Push(LunaValue&& p_v) { m_stack->Push(p_v); }
+  inline std::optional<LunaValue> Access(int p_index) const {
+    return m_stack->Get(m_stack->GetAbsIndex(p_index));
+  }
 
 private:
   std::shared_ptr<LunaStack> m_stack;

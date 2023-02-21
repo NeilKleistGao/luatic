@@ -25,6 +25,7 @@
 #ifndef LUATIC_LUNA_VALUES_H
 #define LUATIC_LUNA_VALUES_H
 
+#include <string>
 #include <variant>
 
 enum class LunaType {
@@ -41,10 +42,11 @@ enum class LunaType {
 };
 
 struct LunaNone {};
-struct LunaNil {};
+using LunaNil = nullptr_t;
+using LunaBoolean = bool;
 struct LunaLightUserdata {};
-struct LunaNumber {};
-struct LunaString {};
+using LunaNumber = std::variant<double, long long>;
+using LunaString = std::string;
 struct LunaTable {};
 struct LunaFunction {};
 struct LunaUserdata {};
@@ -52,6 +54,7 @@ struct LunaThread {};
 
 using LunaValue = std::variant<LunaNone,
                                LunaNil,
+                               LunaBoolean,
                                LunaLightUserdata,
                                LunaNumber,
                                LunaString,
@@ -61,5 +64,6 @@ using LunaValue = std::variant<LunaNone,
                                LunaThread>;
 
 LunaType GetTypeOf(const LunaValue& p_value);
+std::string GetTypeName(LunaType p_type);
 
 #endif //LUATIC_LUNA_VALUES_H

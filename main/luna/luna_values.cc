@@ -48,3 +48,26 @@ LunaType GetTypeOf(const LunaValue& p_value) {
       return LunaType::LUNA_NONE;
   }
 }
+
+std::string GetTypeName(LunaType p_type) {
+  switch (p_type) {
+    case LunaType::LUNA_NONE:
+      return "no value";
+    case LunaType::LUNA_NIL:
+      return "nil";
+    case LunaType::LUNA_BOOLEAN:
+      return "boolean";
+    case LunaType::LUNA_NUMBER:
+      return "number";
+    case LunaType::LUNA_STRING:
+      return "string";
+    case LunaType::LUNA_TABLE:
+      return "table";
+    case LunaType::LUNA_FUNCTION:
+      return "function";
+    case LunaType::LUNA_THREAD:
+      return "thread";
+    default:
+      return "userdata";
+  }
+}
