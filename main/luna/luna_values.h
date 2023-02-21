@@ -42,7 +42,7 @@ enum class LunaType {
 };
 
 struct LunaNone {};
-using LunaNil = nullptr_t;
+using LunaNil = std::nullptr_t;
 using LunaBoolean = bool;
 struct LunaLightUserdata {};
 using LunaNumber = std::variant<double, long long>;
