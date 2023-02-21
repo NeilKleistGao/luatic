@@ -40,16 +40,16 @@ public:
 
   inline size_t Top() const { return m_slots.size() - 1; }
 
-  LunaValue Get(int p_index);
-  void Set(int p_index, const LunaValue& p_value);
-  void Set(int p_index, LunaValue&& p_value);
+  std::optional<LunaValue> Get(size_t p_index);
+  void Set(size_t p_index, const LunaValue& p_value);
+  void Set(size_t p_index, LunaValue&& p_value);
+  size_t GetAbsIndex(int p_index);
+  void Reverse(size_t p_from, size_t p_to);
 
 private:
   std::vector<LunaValue> m_slots;
 
   inline bool IsValidIndex(size_t p_index) { return p_index < m_slots.size(); }
-
-  size_t GetAbsIndex(int p_index);
 };
 
 #endif //LUATIC_LUNA_STACK_H

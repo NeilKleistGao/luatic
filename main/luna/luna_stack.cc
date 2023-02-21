@@ -46,28 +46,25 @@ std::optional<LunaValue> LunaStack::Pop() {
   return res;
 }
 
-LunaValue LunaStack::Get(int p_index) {
-  size_t abs_index = GetAbsIndex(p_index);
-  if (IsValidIndex(abs_index)) {
-    return m_slots[abs_index];
+std::optional<LunaValue> LunaStack::Get(size_t p_index) {
+  if (IsValidIndex(p_index)) {
+    return m_slots[p_index];
   } else {
-    return LunaNil{};
+    return {};
   }
 }
 
-void LunaStack::Set(int p_index, const LunaValue& p_value) {
-  size_t abs_index = GetAbsIndex(p_index);
-  if (IsValidIndex(abs_index)) {
-    m_slots[abs_index] = p_value;
+void LunaStack::Set(size_t p_index, const LunaValue& p_value) {
+  if (IsValidIndex(p_index)) {
+    m_slots[p_index] = p_value;
   }
 
   // TODO: throw error
 }
 
-void LunaStack::Set(int p_index, LunaValue&& p_value) {
-  size_t abs_index = GetAbsIndex(p_index);
-  if (IsValidIndex(abs_index)) {
-    m_slots[abs_index] = std::move(p_value);
+void LunaStack::Set(size_t p_index, LunaValue&& p_value) {
+  if (IsValidIndex(p_index)) {
+    m_slots[p_index] = std::move(p_value);
   }
 
   // TODO: throw error
@@ -76,4 +73,12 @@ void LunaStack::Set(int p_index, LunaValue&& p_value) {
 size_t LunaStack::GetAbsIndex(int p_index) {
   return static_cast<size_t>((p_index > -1) ? p_index
                                             : m_slots.size() + p_index);
+}
+
+void LunaStack::Reverse(size_t p_from, size_t p_to) {
+  while (p_from < p_to) {
+    std::swap(m_slots[p_from], m_slots[p_to]);
+    ++p_from;
+    --p_to;
+  }
 }
