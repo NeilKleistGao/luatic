@@ -40,13 +40,14 @@ public:
   void Rotate(int p_index, int p_n);
   void Remove(int p_index);
   void SetTop(size_t p_new_top);
+  LunaType GetTypeAt(int p_index);
 
-  inline size_t Top() const { return m_stack->Top() + 1; }
+  inline size_t Top() const { return m_stack->Top(); }
   inline void InsertTop(int p_index) { this->Rotate(p_index, 1); }
   inline void Push(const LunaValue& p_v) { m_stack->Push(p_v); }
   inline void Push(LunaValue&& p_v) { m_stack->Push(p_v); }
   inline std::optional<LunaValue> Access(int p_index) const {
-    return m_stack->Get(m_stack->GetAbsIndex(p_index));
+    return m_stack->Get(p_index);
   }
 
 private:

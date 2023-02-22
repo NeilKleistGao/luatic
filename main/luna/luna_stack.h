@@ -38,17 +38,17 @@ public:
   void Push(LunaValue&& p_value);
   std::optional<LunaValue> Pop();
 
-  inline size_t Top() const { return m_slots.size() - 1; }
+  inline size_t Top() const { return m_slots.size(); }
 
-  std::optional<LunaValue> Get(size_t p_index);
-  void Set(size_t p_index, const LunaValue& p_value);
-  void Set(size_t p_index, LunaValue&& p_value);
-  size_t GetAbsIndex(int p_index);
-  void Reverse(size_t p_from, size_t p_to);
+  std::optional<LunaValue> Get(int p_index);
+  void Set(int p_index, const LunaValue& p_value);
+  void Set(int p_index, LunaValue&& p_value);
+  void Reverse(int p_from, int p_to);
 
 private:
   std::vector<LunaValue> m_slots;
 
+  size_t GetAbsIndex(int p_index);
   inline bool IsValidIndex(size_t p_index) { return p_index < m_slots.size(); }
 };
 

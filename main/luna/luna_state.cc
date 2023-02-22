@@ -31,15 +31,15 @@ void LunaState::PopN(size_t p_n) {
 }
 
 void LunaState::Copy(int p_from, int p_to) {
-  const auto val = m_stack->Get(m_stack->GetAbsIndex(p_from) - 1);
+  const auto val = m_stack->Get(p_from);
   if (val.has_value()) {
-    m_stack->Set(m_stack->GetAbsIndex(p_to) - 1, val.value());
+    m_stack->Set(p_to, val.value());
   }
   // TODO: throw?
 }
 
 void LunaState::PushAt(int p_index) {
-  const auto val = m_stack->Get(m_stack->GetAbsIndex(p_index) - 1);
+  const auto val = m_stack->Get(p_index);
   if (val.has_value()) {
     m_stack->Push(val.value());
   }
@@ -49,14 +49,14 @@ void LunaState::PushAt(int p_index) {
 void LunaState::ReplaceWithTop(int p_index) {
   const auto top = m_stack->Pop();
   if (top.has_value()) {
-    m_stack->Set(m_stack->GetAbsIndex(p_index) - 1, top.value());
+    m_stack->Set(p_index, top.value());
   }
   // TODO: throw?
 }
 
 void LunaState::Rotate(int p_index, int p_n) {
-  const auto top = m_stack->Top();
-  const auto pos = m_stack->GetAbsIndex(p_index) - 1;
+  const auto top = static_cast<int>(m_stack->Top());
+  const auto pos = p_index;
   const auto pilot = (p_n >= 0) ? top - p_n : pos - p_n - 1;
   m_stack->Reverse(pos, pilot);
   m_stack->Reverse(pilot + 1, top);
@@ -79,4 +79,8 @@ void LunaState::SetTop(size_t p_new_top) {
   } else if (sub < 0) {
     this->PopN(-sub);
   }
+}
+
+LunaType LunaState::GetTypeAt(int p_index) {
+  return LunaType::LUNA_NONE; // TODO:
 }
