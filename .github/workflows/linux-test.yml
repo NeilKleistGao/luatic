@@ -21,7 +21,7 @@ jobs:
           submodules: recursive
       - name: build project
         shell: bash
-        run: mkdir bin && cmake -DBUILD_TEST=OFF . && cmake --build . --target chunk -j 12 && cmake --build . --target luna -j 12 && cmake --build . --target lunac -j 12
+        run: mkdir bin && cmake -DBUILD_TEST=OFF . && cmake --build . --target chunk -j 12 && cmake --build . --target core -j 12 cmake --build . --target luna -j 12 && cmake --build . --target lunac -j 12
   test:
     runs-on: ubuntu-latest
     steps:
@@ -33,7 +33,7 @@ jobs:
         run: sudo apt-get install libgtest-dev && cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make
       - name: build diff tests
         shell: bash
-        run: mkdir bin && cmake . && cmake --build . --target chunk -j 12 && cmake --build . --target tests -j 12
+        run: mkdir bin && cmake . && cmake --build . --target chunk -j 12 && cmake --build . --target core -j 12 && cmake --build . --target tests -j 12
       - name: execute diff tests
         shell: bash
         run: cd bin && ./tests

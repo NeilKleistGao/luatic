@@ -82,5 +82,10 @@ void LunaState::SetTop(size_t p_new_top) {
 }
 
 LunaType LunaState::GetTypeAt(int p_index) {
-  return LunaType::LUNA_NONE; // TODO:
+  const auto& res = m_stack->Get(p_index);
+  if (res.has_value()) {
+    return GetTypeOf(res.value());
+  }
+
+  return LunaType::LUNA_NONE;
 }
