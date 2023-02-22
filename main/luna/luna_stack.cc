@@ -79,12 +79,14 @@ size_t LunaStack::GetAbsIndex(int p_index) {
 }
 
 void LunaStack::Reverse(int p_from, int p_to) {
-  if (GetAbsIndex(p_from) == GetAbsIndex(p_to)) {
-    return;
-  }
-
   while (p_from < p_to) {
-    std::swap(m_slots[p_from], m_slots[p_to]);
+    const auto from = GetAbsIndex(p_from);
+    const auto to = GetAbsIndex(p_to);
+    if (from == to) {
+      return;
+    }
+
+    std::swap(m_slots[from], m_slots[to]);
     ++p_from;
     --p_to;
   }
