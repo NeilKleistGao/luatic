@@ -25,4 +25,23 @@
 #ifndef LUATIC_LUNA_MATH_H
 #define LUATIC_LUNA_MATH_H
 
+#include "luna_values.h"
+
+/**
+ * 1. We contain some implicit conversion(e.g. int to float) in the math module;
+ * 2. We will remove other implicit conversion to make code safer;
+ * @see Parser
+ */
+namespace math {
+  LunaNumber Add(LunaNumber p1, LunaNumber p2);
+  LunaNumber Sub(LunaNumber p1, LunaNumber p2);
+  LunaNumber Multiply(LunaNumber p1, LunaNumber p2);
+  LunaNumber Divide(LunaNumber p1, LunaNumber p2);
+  LunaNumber Power(LunaNumber p1, LunaNumber p2);
+  LunaInt DivideFloor(LunaNumber p1, LunaNumber p2);
+  LunaInt ShiftLeft(LunaInt p1, LunaInt p2);
+  LunaInt ShiftRight(LunaInt p1, LunaInt p2);
+  LunaInt GetLength(LunaString p); // TODO: overload for tables
+} // namespace math
+
 #endif //LUATIC_LUNA_MATH_H

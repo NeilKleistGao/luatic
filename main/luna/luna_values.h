@@ -45,12 +45,17 @@ struct LunaNone {};
 using LunaNil = std::nullptr_t;
 using LunaBoolean = bool;
 struct LunaLightUserdata {};
-using LunaNumber = std::variant<double, long long>;
+using LunaFloat = double;
+using LunaInt = long long;
+using LunaNumber = std::variant<LunaFloat, LunaInt>;
 using LunaString = std::string;
 struct LunaTable {};
 struct LunaFunction {};
 struct LunaUserdata {};
 struct LunaThread {};
+
+constexpr size_t LUNA_FLOAT = 0;
+constexpr size_t LUNA_INT = 1;
 
 using LunaValue = std::variant<LunaNone,
                                LunaNil,
