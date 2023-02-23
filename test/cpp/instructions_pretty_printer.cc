@@ -35,6 +35,15 @@ namespace instructions {
         case InstABC::OpCode::MOVE:
           fprintf(p_fp, "%s MOVE\n", p_indent.c_str());
           break;
+        case InstABC::OpCode::LOAD_FALSE:
+          fprintf(p_fp, "%s LOAD FALSE\n", p_indent.c_str());
+          break;
+        case InstABC::OpCode::L_FALSE_SKIP:
+          fprintf(p_fp, "%s L FALSE SKIP\n", p_indent.c_str());
+          break;
+        case InstABC::OpCode::LOAD_TRUE:
+          fprintf(p_fp, "%s LOAD TRUE\n", p_indent.c_str());
+          break;
         case InstABC::OpCode::GET_UP_VAL:
           fprintf(p_fp, "%s GET UP VAL\n", p_indent.c_str());
           break;
@@ -70,6 +79,21 @@ namespace instructions {
           break;
         case InstABC::OpCode::MM_BIN_K:
           fprintf(p_fp, "%s MM BIN K\n", p_indent.c_str());
+          break;
+        case InstABC::OpCode::NOT:
+          fprintf(p_fp, "%s NOT\n", p_indent.c_str());
+          break;
+        case InstABC::OpCode::EQ_I:
+          fprintf(p_fp, "%s EQ I\n", p_indent.c_str());
+          break;
+        case InstABC::OpCode::LT_I:
+          fprintf(p_fp, "%s LT I\n", p_indent.c_str());
+          break;
+        case InstABC::OpCode::LE_I:
+          fprintf(p_fp, "%s LE I\n", p_indent.c_str());
+          break;
+        case InstABC::OpCode::TEST:
+          fprintf(p_fp, "%s TEST\n", p_indent.c_str());
           break;
         case InstABC::OpCode::CALL:
           fprintf(p_fp, "%s CALL\n", p_indent.c_str());
@@ -119,9 +143,9 @@ namespace instructions {
     } else {
       const auto& ins = std::get<4>(p_ins);
       switch (ins.code) {
-        // TODO: finish pretty printer
-        default:
-          fprintf(p_fp, "%s %d\n", p_indent.c_str(), ins.code);
+        case InstsJ::OpCode::JMP:
+          fprintf(p_fp, "%s JMP\n", p_indent.c_str());
+          break;
       }
     }
   }
