@@ -9,3 +9,6 @@
 > I'll see you on the dark side of the moon
 
 A lua dialect with some interesting ideas.
+
+## Dependencies
+- [cxxopts 3.1.1](https://github.com/jarro2783/cxxopts)
