@@ -43,6 +43,16 @@ return static_cast<LunaFloat>(std::get<LUNA_INT>(__P1__))                      \
 else                                                                           \
 return std::get<LUNA_FLOAT>(__P1__) __OP__ std::get<LUNA_FLOAT>(__P2__)
 
+#define RETURN_IF_DIFF_TYPES(__P1__, __P2__, __T1__, __T2__)                   \
+const auto __T1__ = __P1__.index();                                            \
+const auto __T2__ = __P2__.index();                                            \
+if (__T1__ != __T2__) return false // TODO: add type checking
+
+#define EXTRACT_VALUES(__P1__, __P2__, __V1__, __V2__, __TYPE__)               \
+const auto __V1__ = std::get<__TYPE__>(__P1__);                                \
+const auto __V2__ = std::get<__TYPE__>(__P2__);                                \
+if (true)
+
 namespace math {
   LunaNumber Neg(LunaNumber p) {
     if (p.index() == LUNA_INT) {
@@ -141,6 +151,8 @@ namespace math {
 
   LunaInt GetLength(LunaString p) { return p.size(); }
 
+  LunaString Concat(LunaString p1, LunaString p2) { return p1 + p2; }
+
   LunaNumber CalcArith(ArithOperator p_ao, LunaNumber p1, LunaNumber p2) {
     static const auto lams =
       std::array<std::function<LunaNumber(LunaNumber, LunaNumber)>, 6>{
@@ -169,6 +181,107 @@ namespace math {
         }};
 
     return lams[static_cast<int>(p_io)](p1, p2);
+  }
+
+  LunaBoolean Equal(const LunaValue& p1, const LunaValue& p2) {
+    RETURN_IF_DIFF_TYPES(p1, p2, t1, t2);
+    switch (t1) {
+      case LunaType::LUNA_NONE:
+      case LunaType::LUNA_NIL:
+        return true;
+      case LunaType::LUNA_BOOLEAN: {
+        EXTRACT_VALUES(p1, p2, v1, v2, LunaType::LUNA_BOOLEAN) {
+          return v1 == v2;
+        }
+      }
+      case LunaType::LUNA_LIGHT_USERDATA:
+        return false; // TODO: implement type
+      case LunaType::LUNA_NUMBER: {
+        EXTRACT_VALUES(p1, p2, v1, v2, LunaType::LUNA_NUMBER) {
+          const auto sub = Sub(v1, v2);
+          if (sub.index() == LUNA_INT) {
+            return std::get<LUNA_INT>(sub) == 0;
+          } else {
+            return std::get<LUNA_FLOAT>(sub) == 0.0;
+          }
+        }
+      }
+      case LunaType::LUNA_STRING: {
+        EXTRACT_VALUES(p1, p2, v1, v2, LunaType::LUNA_STRING) {
+          return v1 == v2;
+        }
+      }
+      case LunaType::LUNA_TABLE:
+      case LunaType::LUNA_FUNCTION:
+      case LunaType::LUNA_USERDATA:
+      case LunaType::LUNA_THREAD:
+      default:
+        return false; // TODO: implement type
+    }
+  }
+
+  LunaBoolean LessThan(const LunaValue& p1, const LunaValue& p2) {
+    RETURN_IF_DIFF_TYPES(p1, p2, t1, t2);
+    switch (t1) {
+      case LunaType::LUNA_NONE:
+      case LunaType::LUNA_NIL:
+      case LunaType::LUNA_BOOLEAN:
+      case LunaType::LUNA_LIGHT_USERDATA:
+        return false; // TODO: implement type
+      case LunaType::LUNA_NUMBER: {
+        EXTRACT_VALUES(p1, p2, v1, v2, LunaType::LUNA_NUMBER) {
+          const auto sub = Sub(v1, v2);
+          if (sub.index() == LUNA_INT) {
+            return std::get<LUNA_INT>(sub) < 0;
+          } else {
+            return std::get<LUNA_FLOAT>(sub) < 0.0;
+          }
+        }
+      }
+      case LunaType::LUNA_STRING: {
+        EXTRACT_VALUES(p1, p2, v1, v2, LunaType::LUNA_STRING) {
+          return v1 < v2;
+        }
+      }
+      case LunaType::LUNA_TABLE:
+      case LunaType::LUNA_FUNCTION:
+      case LunaType::LUNA_USERDATA:
+      case LunaType::LUNA_THREAD:
+      default:
+        return false; // TODO: implement type
+    }
+  }
+
+  LunaBoolean LessEqual(const LunaValue& p1, const LunaValue& p2) {
+    RETURN_IF_DIFF_TYPES(p1, p2, t1, t2);
+    switch (t1) {
+      case LunaType::LUNA_NONE:
+      case LunaType::LUNA_NIL:
+      case LunaType::LUNA_BOOLEAN:
+      case LunaType::LUNA_LIGHT_USERDATA:
+        return false; // TODO: implement type
+      case LunaType::LUNA_NUMBER: {
+        EXTRACT_VALUES(p1, p2, v1, v2, LunaType::LUNA_NUMBER) {
+          const auto sub = Sub(v1, v2);
+          if (sub.index() == LUNA_INT) {
+            return std::get<LUNA_INT>(sub) <= 0;
+          } else {
+            return std::get<LUNA_FLOAT>(sub) <= 0.0;
+          }
+        }
+      }
+      case LunaType::LUNA_STRING: {
+        EXTRACT_VALUES(p1, p2, v1, v2, LunaType::LUNA_STRING) {
+          return v1 <= v2;
+        }
+      }
+      case LunaType::LUNA_TABLE:
+      case LunaType::LUNA_FUNCTION:
+      case LunaType::LUNA_USERDATA:
+      case LunaType::LUNA_THREAD:
+      default:
+        return false; // TODO: implement type
+    }
   }
 
 } // namespace math

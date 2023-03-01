@@ -47,6 +47,8 @@ namespace math {
 
   LunaNumber CalcArith(ArithOperator p_ao, LunaNumber p1, LunaNumber p2);
   LunaInt CalcBit(IntOperator p_io, LunaInt p1, LunaInt p2);
+  LunaBoolean
+    Compare(ComOperator p_co, const LunaValue& p1, const LunaValue& p2);
 
   LunaNumber Neg(LunaNumber p);
   LunaNumber Add(LunaNumber p1, LunaNumber p2);
@@ -58,6 +60,10 @@ namespace math {
   LunaInt ShiftLeft(LunaInt p1, LunaInt p2);
   LunaInt ShiftRight(LunaInt p1, LunaInt p2);
   LunaInt GetLength(LunaString p); // TODO: overload for tables
+  LunaString Concat(LunaString p1, LunaString p2);
+  LunaBoolean Equal(const LunaValue& p1, const LunaValue& p2);
+  LunaBoolean LessThan(const LunaValue& p1, const LunaValue& p2);
+  LunaBoolean LessEqual(const LunaValue& p1, const LunaValue& p2);
 } // namespace math
 
 #endif //LUATIC_LUNA_MATH_H

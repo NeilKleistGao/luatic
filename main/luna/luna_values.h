@@ -28,7 +28,10 @@
 #include <string>
 #include <variant>
 
-enum class LunaType {
+/**
+ * This enum is designed for implicit conversion.
+ */
+enum LunaType {
   LUNA_NONE,
   LUNA_NIL,
   LUNA_BOOLEAN,

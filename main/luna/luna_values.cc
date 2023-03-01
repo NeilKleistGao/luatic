@@ -25,27 +25,11 @@
 #include "luna_values.h"
 
 LunaType GetTypeOf(const LunaValue& p_value) {
-  switch (p_value.index()) {
-    case 1:
-      return LunaType::LUNA_NIL;
-    case 2:
-      return LunaType::LUNA_BOOLEAN;
-    case 3:
-      return LunaType::LUNA_LIGHT_USERDATA;
-    case 4:
-      return LunaType::LUNA_NUMBER;
-    case 5:
-      return LunaType::LUNA_STRING;
-    case 6:
-      return LunaType::LUNA_TABLE;
-    case 7:
-      return LunaType::LUNA_FUNCTION;
-    case 8:
-      return LunaType::LUNA_USERDATA;
-    case 9:
-      return LunaType::LUNA_THREAD;
-    default:
-      return LunaType::LUNA_NONE;
+  const auto index = p_value.index();
+  if (index > 0 && index < 10) {
+    return static_cast<LunaType>(index);
+  } else {
+    return LunaType::LUNA_NONE;
   }
 }
 
