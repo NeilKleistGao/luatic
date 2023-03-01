@@ -36,20 +36,14 @@ namespace math {
   /**
    * We only store binary operators.
    */
-  enum class ArithOperator {
-    ADD, SUB, MUL, POW, DIV, I_DIV
-  };
+  enum class ArithOperator { ADD, SUB, MUL, POW, DIV, I_DIV };
 
   /**
    * We only store binary operators.
    */
-  enum class IntOperator {
-    MOD, AND, OR, XOR, SHL, SHR
-  };
+  enum class IntOperator { MOD, AND, OR, XOR, SHL, SHR };
 
-  enum class ComOperator {
-    EQ, LT, LE
-  };
+  enum class ComOperator { EQ, LT, LE };
 
   LunaNumber CalcArith(ArithOperator p_ao, LunaNumber p1, LunaNumber p2);
   LunaInt CalcBit(IntOperator p_io, LunaInt p1, LunaInt p2);

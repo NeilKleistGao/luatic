@@ -24,8 +24,8 @@
 
 #include "luna_math.h"
 
-#include <cmath>
 #include <array>
+#include <cmath>
 #include <functional>
 
 // Convert int to float if necessary.
@@ -47,8 +47,7 @@ namespace math {
   LunaNumber Neg(LunaNumber p) {
     if (p.index() == LUNA_INT) {
       return -std::get<LUNA_INT>(p);
-    }
-    else {
+    } else {
       return -std::get<LUNA_FLOAT>(p);
     }
   }
@@ -143,51 +142,31 @@ namespace math {
   LunaInt GetLength(LunaString p) { return p.size(); }
 
   LunaNumber CalcArith(ArithOperator p_ao, LunaNumber p1, LunaNumber p2) {
-    static const auto lams = std::array<std::function<LunaNumber(LunaNumber, LunaNumber)>, 6>{
-            [](LunaNumber x, LunaNumber  y) {
-              return Add(x, y);
-            },
-            [](LunaNumber x, LunaNumber  y) {
-              return Sub(x, y);
-            },
-            [](LunaNumber x, LunaNumber  y) {
-              return Multiply(x, y);
-            },
-            [](LunaNumber x, LunaNumber  y) {
-              return Power(x, y);
-            },
-            [](LunaNumber x, LunaNumber  y) {
-              return Divide(x, y);
-            },
-            [](LunaNumber x, LunaNumber  y) {
-              return DivideFloor(x, y);
-            }
-    };
+    static const auto lams =
+      std::array<std::function<LunaNumber(LunaNumber, LunaNumber)>, 6>{
+        [](LunaNumber x, LunaNumber y) { return Add(x, y); },
+        [](LunaNumber x, LunaNumber y) { return Sub(x, y); },
+        [](LunaNumber x, LunaNumber y) { return Multiply(x, y); },
+        [](LunaNumber x, LunaNumber y) { return Power(x, y); },
+        [](LunaNumber x, LunaNumber y) { return Divide(x, y); },
+        [](LunaNumber x, LunaNumber y) {
+          return DivideFloor(x, y);
+        }};
 
     return lams[static_cast<int>(p_ao)](p1, p2);
   }
 
   LunaInt CalcBit(IntOperator p_io, LunaInt p1, LunaInt p2) {
-    static const auto lams = std::array<std::function<LunaInt(LunaInt, LunaInt)>, 6>{
-            [](LunaInt x, LunaInt  y) {
-              return x % y;
-            },
-            [](LunaInt x, LunaInt  y) {
-              return x & y;
-            },
-            [](LunaInt x, LunaInt  y) {
-              return x | y;
-            },
-            [](LunaInt x, LunaInt  y) {
-              return x ^ y;
-            },
-            [](LunaInt x, LunaInt  y) {
-              return ShiftLeft(x, y);
-            },
-            [](LunaInt x, LunaInt  y) {
-              return ShiftRight(x, y);
-            }
-    };
+    static const auto lams =
+      std::array<std::function<LunaInt(LunaInt, LunaInt)>, 6>{
+        [](LunaInt x, LunaInt y) { return x % y; },
+        [](LunaInt x, LunaInt y) { return x & y; },
+        [](LunaInt x, LunaInt y) { return x | y; },
+        [](LunaInt x, LunaInt y) { return x ^ y; },
+        [](LunaInt x, LunaInt y) { return ShiftLeft(x, y); },
+        [](LunaInt x, LunaInt y) {
+          return ShiftRight(x, y);
+        }};
 
     return lams[static_cast<int>(p_io)](p1, p2);
   }
