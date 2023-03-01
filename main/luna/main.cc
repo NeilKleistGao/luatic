@@ -24,7 +24,21 @@
 
 #include <iostream>
 
-int main() {
-  std::cout << "Hello, World!" << std::endl;
+#include "cxxopts/cxxopts.hpp"
+
+int main(int argc, char* argv[]) {
+  cxxopts::Options options("Luatic", "luna [options] [script [args]]");
+  /* clang-format off */
+  options.add_options()
+          ("r,repl", "start REPL")
+          ("b,binary", "execute binary file")
+          ("filename", "script filename", cxxopts::value<std::string>())
+          ("arguments", "arguments", cxxopts::value<std::vector<std::string>>());
+  // TODO: add more options.
+
+  /* clang-format on */
+  options.parse_positional({"filename", "arguments"});
+  options.parse(argc, argv);
+
   return 0;
 }
