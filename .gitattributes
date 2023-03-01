@@ -2,4 +2,3 @@
 *.h linguist-language=c++
 *.luna linguist-language=lua
 *.luac binary
-libraries/* linguist-vendored
