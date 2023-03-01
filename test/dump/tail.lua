@@ -1,0 +1,37 @@
+-- BINARY CHUNK
+-- up values size: 1
+-- PROTOTYPE
+-- source: @tail.lua
+-- define: line 0 to line 0
+-- num params: 0
+-- is var arg: yes
+-- max stack size: 3
+-- code: 
+---- VAR ARG PREP
+---- CLOSURE
+---- SET TAB UP
+---- GET TAB UP
+---- LOAD I
+---- LOAD I
+---- CALL
+---- RETURN
+-- sub prototypes: 
+---- PROTOTYPE
+---- source: @tail.lua
+---- define: line 25 to line 31
+---- num params: 2
+---- is var arg: no
+---- max stack size: 5
+---- code: 
+------ EQ I
+------ JMP
+------ RETURN 1
+------ JMP
+------ GET TAB UP
+------ ADD I
+------ MM BIN I
+------ MUL
+------ MM BIN
+------ TAIL CALL
+------ RETURN
+------ RETURN 0

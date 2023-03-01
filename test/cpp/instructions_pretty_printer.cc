@@ -53,6 +53,9 @@ namespace instructions {
         case InstABC::OpCode::SET_TAB_UP:
           fprintf(p_fp, "%s SET TAB UP\n", p_indent.c_str());
           break;
+        case InstABC::OpCode::ADD_I:
+          fprintf(p_fp, "%s ADD I\n", p_indent.c_str());
+          break;
         case InstABC::OpCode::SUB_K:
           fprintf(p_fp, "%s SUB K\n", p_indent.c_str());
           break;
@@ -74,8 +77,14 @@ namespace instructions {
         case InstABC::OpCode::ADD:
           fprintf(p_fp, "%s ADD\n", p_indent.c_str());
           break;
+        case InstABC::OpCode::MUL:
+          fprintf(p_fp, "%s MUL\n", p_indent.c_str());
+          break;
         case InstABC::OpCode::MM_BIN:
           fprintf(p_fp, "%s MM BIN\n", p_indent.c_str());
+          break;
+        case InstABC::OpCode::MM_BIN_I:
+          fprintf(p_fp, "%s MM BIN I\n", p_indent.c_str());
           break;
         case InstABC::OpCode::MM_BIN_K:
           fprintf(p_fp, "%s MM BIN K\n", p_indent.c_str());
@@ -98,11 +107,17 @@ namespace instructions {
         case InstABC::OpCode::CALL:
           fprintf(p_fp, "%s CALL\n", p_indent.c_str());
           break;
+        case InstABC::OpCode::TAIL_CALL:
+          fprintf(p_fp, "%s TAIL CALL\n", p_indent.c_str());
+          break;
         case InstABC::OpCode::RETURN:
           fprintf(p_fp, "%s RETURN\n", p_indent.c_str());
           break;
         case InstABC::OpCode::RETURN_0:
           fprintf(p_fp, "%s RETURN 0\n", p_indent.c_str());
+          break;
+        case InstABC::OpCode::RETURN_1:
+          fprintf(p_fp, "%s RETURN 1\n", p_indent.c_str());
           break;
         case InstABC::OpCode::VAR_ARG_PREP:
           fprintf(p_fp, "%s VAR ARG PREP\n", p_indent.c_str());
