@@ -22,12 +22,9 @@
 - SOFTWARE.
 --]]
 
-local foo = 42
-function f()
-  local bar = 0
-  print(foo + bar)
-end
-
-local function g()
-  print("foo")
+a = {}
+b = {1, 2, 3}
+c = {}
+c.foo = function(x)
+  return x + 1
 end

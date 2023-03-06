@@ -11,6 +11,7 @@
 ---- LOAD I
 ---- CLOSURE
 ---- SET TAB UP
+---- CLOSURE
 ---- RETURN
 -- sub prototypes: 
 ---- PROTOTYPE
@@ -25,5 +26,16 @@
 ------ GET UP VAL
 ------ ADD
 ------ MM BIN
+------ CALL
+------ RETURN 0
+---- PROTOTYPE
+---- source: @local.lua
+---- define: line 31 to line 33
+---- num params: 0
+---- is var arg: no
+---- max stack size: 2
+---- code: 
+------ GET TAB UP
+------ LOAD K
 ------ CALL
 ------ RETURN 0

@@ -1,0 +1,39 @@
+-- BINARY CHUNK
+-- up values size: 1
+-- PROTOTYPE
+-- source: @tables.lua
+-- define: line 0 to line 0
+-- num params: 0
+-- is var arg: yes
+-- max stack size: 4
+-- code: 
+---- VAR ARG PREP
+---- NEW TABLE
+---- EXTRA ARG
+---- SET TAB UP
+---- NEW TABLE
+---- EXTRA ARG
+---- LOAD I
+---- LOAD I
+---- LOAD I
+---- SET LIST
+---- SET TAB UP
+---- NEW TABLE
+---- EXTRA ARG
+---- SET TAB UP
+---- GET TAB UP
+---- CLOSURE
+---- SET FIELD
+---- RETURN
+-- sub prototypes: 
+---- PROTOTYPE
+---- source: @tables.lua
+---- define: line 28 to line 30
+---- num params: 1
+---- is var arg: no
+---- max stack size: 2
+---- code: 
+------ ADD I
+------ MM BIN I
+------ RETURN 1
+------ RETURN 0

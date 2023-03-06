@@ -22,12 +22,23 @@
 - SOFTWARE.
 --]]
 
-local foo = 42
-function f()
-  local bar = 0
-  print(foo + bar)
+if (1 > 2) then
+  print(true)
+elseif (1 < 2) then
+  print(false)
+else
+  print(nil)
 end
 
-local function g()
-  print("foo")
+while (false)
+do
+  print("rua")
 end
+
+for i = 1, 10 do
+  print(i)
+end
+
+repeat
+  print("something")
+until (false)

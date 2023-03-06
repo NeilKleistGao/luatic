@@ -44,6 +44,9 @@ namespace instructions {
         case InstABC::OpCode::LOAD_TRUE:
           fprintf(p_fp, "%s LOAD TRUE\n", p_indent.c_str());
           break;
+        case InstABC::OpCode::LOAD_NIL:
+          fprintf(p_fp, "%s LOAD NIL\n", p_indent.c_str());
+          break;
         case InstABC::OpCode::GET_UP_VAL:
           fprintf(p_fp, "%s GET UP VAL\n", p_indent.c_str());
           break;
@@ -52,6 +55,12 @@ namespace instructions {
           break;
         case InstABC::OpCode::SET_TAB_UP:
           fprintf(p_fp, "%s SET TAB UP\n", p_indent.c_str());
+          break;
+        case InstABC::OpCode::SET_FIELD:
+          fprintf(p_fp, "%s SET FIELD\n", p_indent.c_str());
+          break;
+        case InstABC::OpCode::NEW_TABLE:
+          fprintf(p_fp, "%s NEW TABLE\n", p_indent.c_str());
           break;
         case InstABC::OpCode::ADD_I:
           fprintf(p_fp, "%s ADD I\n", p_indent.c_str());
@@ -119,6 +128,9 @@ namespace instructions {
         case InstABC::OpCode::RETURN_1:
           fprintf(p_fp, "%s RETURN 1\n", p_indent.c_str());
           break;
+        case InstABC::OpCode::SET_LIST:
+          fprintf(p_fp, "%s SET LIST\n", p_indent.c_str());
+          break;
         case InstABC::OpCode::VAR_ARG_PREP:
           fprintf(p_fp, "%s VAR ARG PREP\n", p_indent.c_str());
           break;
@@ -131,6 +143,12 @@ namespace instructions {
       switch (ins.code) {
         case InstABx::OpCode::LOAD_K:
           fprintf(p_fp, "%s LOAD K\n", p_indent.c_str());
+          break;
+        case InstABx::OpCode::FOR_LOOP:
+          fprintf(p_fp, "%s FOR LOOP\n", p_indent.c_str());
+          break;
+        case InstABx::OpCode::FOR_PREP:
+          fprintf(p_fp, "%s FOR PREP\n", p_indent.c_str());
           break;
         case InstABx::OpCode::CLOSURE:
           fprintf(p_fp, "%s CLOSURE\n", p_indent.c_str());
@@ -151,9 +169,9 @@ namespace instructions {
     } else if (index == 3) {
       const auto& ins = std::get<3>(p_ins);
       switch (ins.code) {
-        // TODO: finish pretty printer
-        default:
-          fprintf(p_fp, "%s %d\n", p_indent.c_str(), ins.code);
+        case InstAx::OpCode::EXTRA_ARG:
+          fprintf(p_fp, "%s EXTRA ARG\n", p_indent.c_str());
+          break;
       }
     } else {
       const auto& ins = std::get<4>(p_ins);
