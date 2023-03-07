@@ -23,8 +23,25 @@
  */
 
 #include <iostream>
+#include <memory>
 
 #include "cxxopts/cxxopts.hpp"
+#include "luna/luna_vm.h"
+#include "shared/version.h"
+
+void StartRepl() {
+  const auto vm = std::make_shared<LunaVirtualMachine>();
+  std::cout << "Luna v" << LUNA_MAJOR_VERSION << "." << LUNA_MINOR_VERSION
+            << "." << LUNA_PATCH_VERSION << std::endl;
+  std::cout << "Press Ctrl-D to exit." << std::endl;
+
+  std::string cmd;
+  std::cout << "> ";
+  while (std::getline(std::cin, cmd)) { // stop when meeting a Ctrl-D
+    std::cout << cmd << std::endl; // TODO: implement real repl
+    std::cout << "> ";
+  }
+}
 
 int main(int argc, char* argv[]) {
   cxxopts::Options options("Luatic", "luna [options] [script [args]]");
@@ -33,12 +50,22 @@ int main(int argc, char* argv[]) {
           ("r,repl", "start REPL")
           ("b,binary", "execute binary file")
           ("filename", "script filename", cxxopts::value<std::string>())
-          ("arguments", "arguments", cxxopts::value<std::vector<std::string>>());
+          ("arguments", "arguments", cxxopts::value<std::vector<std::string>>())
+          ("h, help", "help");
   // TODO: add more options.
 
   /* clang-format on */
   options.parse_positional({"filename", "arguments"});
-  options.parse(argc, argv);
+  const auto results = options.parse(argc, argv);
+
+  if (results.count("help") > 0) {
+    std::cout << options.help() << std::endl;
+  } else if (results.count("repl") > 0) {
+    StartRepl();
+  } else {
+    std::cout << options.help() << std::endl;
+  }
+  // TODO: add more functions.
 
   return 0;
 }

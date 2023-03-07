@@ -31,7 +31,7 @@
 
 class LunaState {
 public:
-  LunaState(): m_stack(new LunaStack{32}){};
+  LunaState(): m_stack(new LunaStack{32}), m_pc(0){};
 
   void PopN(size_t p_n);
   void Copy(int p_from, int p_to);
@@ -52,6 +52,12 @@ public:
 
 private:
   std::shared_ptr<LunaStack> m_stack;
+  unsigned int m_pc;
+
+protected:
+  inline unsigned int GetPC() const noexcept { return m_pc; }
+
+  inline void AddPC(unsigned int p_delta) noexcept { m_pc += p_delta; }
 };
 
 #endif //LUATIC_LUNA_STATE_H

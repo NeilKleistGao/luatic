@@ -22,14 +22,11 @@
  * SOFTWARE.
  */
 
-#include "luna_vm.h"
+#ifndef LUATIC_VERSION_H
+#define LUATIC_VERSION_H
 
-std::optional<instructions::Instruction> LunaVirtualMachine::Fetch() {
-  const auto pc = GetPC();
-  if (pc >= this->m_proto->code.size()) {
-    return {};
-  }
-  const auto code = this->m_proto->code[GetPC()];
-  AddPC(1);
-  return code;
-}
+constexpr unsigned int LUNA_MAJOR_VERSION = 0;
+constexpr unsigned int LUNA_MINOR_VERSION = 1;
+constexpr unsigned int LUNA_PATCH_VERSION = 0;
+
+#endif //LUATIC_VERSION_H
