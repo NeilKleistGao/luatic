@@ -27,4 +27,11 @@
 ---- DIV K
 ---- MM BIN K
 ---- SET TAB UP
+---- LOAD K
+---- LEN
+---- SET TAB UP
+---- LOAD K
+---- LOAD K
+---- CONCAT
+---- SET TAB UP
 ---- RETURN

@@ -42,3 +42,16 @@ end
 repeat
   print("something")
 until (false)
+
+while (true)
+do
+  break
+end
+
+for i = 1, 10 do
+  for j = 1, 10 do
+    goto label
+  end
+end
+
+::label::

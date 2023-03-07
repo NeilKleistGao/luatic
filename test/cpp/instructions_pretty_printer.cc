@@ -101,6 +101,12 @@ namespace instructions {
         case InstABC::OpCode::NOT:
           fprintf(p_fp, "%s NOT\n", p_indent.c_str());
           break;
+        case InstABC::OpCode::LEN:
+          fprintf(p_fp, "%s LEN\n", p_indent.c_str());
+          break;
+        case InstABC::OpCode::CONCAT:
+          fprintf(p_fp, "%s CONCAT\n", p_indent.c_str());
+          break;
         case InstABC::OpCode::EQ_I:
           fprintf(p_fp, "%s EQ I\n", p_indent.c_str());
           break;

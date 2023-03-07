@@ -28,3 +28,5 @@ c = a + b
 d = b - 514
 e = 2 * a
 f = a / 2
+g = #"abc"
+h = "abc".."def"

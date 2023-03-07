@@ -5,7 +5,7 @@
 -- define: line 0 to line 0
 -- num params: 0
 -- is var arg: yes
--- max stack size: 6
+-- max stack size: 8
 -- code: 
 ---- VAR ARG PREP
 ---- LOAD I
@@ -46,4 +46,17 @@
 ---- LOAD FALSE
 ---- TEST
 ---- JMP
+---- JMP
+---- JMP
+---- LOAD I
+---- LOAD I
+---- LOAD I
+---- FOR PREP
+---- LOAD I
+---- LOAD I
+---- LOAD I
+---- FOR PREP
+---- JMP
+---- FOR LOOP
+---- FOR LOOP
 ---- RETURN
