@@ -34,14 +34,15 @@
 
 class LunaVirtualMachine: public LunaState {
 public:
-  LunaVirtualMachine(): LunaState() {}
-  explicit LunaVirtualMachine(std::shared_ptr<chunk::Prototype> p_proto):
-    LunaState(), m_proto(std::move(p_proto)) {}
+  LunaVirtualMachine(): LunaState(), m_proto(nullptr) {}
+  explicit LunaVirtualMachine(chunk::Prototype* p_proto):
+    LunaState(), m_proto(p_proto) {}
 
-  void Update();
+  bool Update();
 
 private:
-  std::shared_ptr<chunk::Prototype> m_proto;
+  // NOTE: you should never release the prototype in the vm
+  chunk::Prototype* m_proto;
 
   std::optional<instructions::Instruction> Fetch();
 };

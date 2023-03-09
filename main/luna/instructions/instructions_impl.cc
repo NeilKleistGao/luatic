@@ -37,11 +37,27 @@ namespace instructions {
     return 1;
   }
 
+  static int Return(const InstABC& p_inst,
+                    const std::shared_ptr<LunaStack>& p_stack) {
+    // TODO: implement
+    return 1;
+  }
+
+  static int PrepareVarArgs(const InstABC& p_inst,
+                            const std::shared_ptr<LunaStack>& p_stack) {
+    // TODO: implement
+    return 1;
+  }
+
   static int Execute(const InstABC& p_inst,
                      const std::shared_ptr<LunaStack>& p_stack) {
     switch (p_inst.code) {
       case InstABC::OpCode::MOVE:
         return Move(p_inst, p_stack);
+      case InstABC::OpCode::RETURN:
+        return Return(p_inst, p_stack);
+      case InstABC::OpCode::VAR_ARG_PREP:
+        return PrepareVarArgs(p_inst, p_stack);
       default:
         return 0;
     }

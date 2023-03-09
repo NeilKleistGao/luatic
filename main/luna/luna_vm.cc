@@ -32,17 +32,17 @@ std::optional<instructions::Instruction> LunaVirtualMachine::Fetch() {
     return {};
   }
   const auto code = this->m_proto->code[GetPC()];
-  AddPC(1);
   return code;
 }
 
-void LunaVirtualMachine::Update() {
+bool LunaVirtualMachine::Update() {
   const auto instruction = Fetch();
   if (instruction.has_value()) {
     const auto delta_pc =
       instructions::Execute(instruction.value(), this->m_stack);
     AddPC(delta_pc);
+    return false;
   }
 
-  // TODO: throw
+  return true; // TODO: throw?
 }

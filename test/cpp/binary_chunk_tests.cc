@@ -28,10 +28,21 @@
 #include <unordered_set>
 
 #include "binary_pretty_printer.h"
+#include "luna/luna_vm.h"
 #include "shared/chunk/binary_chunk.h"
 
 // help you skip some tests
 static const std::unordered_set<std::string> TEST_FILTER = {};
+static const std::unordered_set<std::string> EXECUTION_FILTER = {
+  "calculations1.luac",
+  "calculations2.luac",
+  "calculations3.luac",
+  "flow.luac",
+  "functions.luac",
+  "hello_world.luac",
+  "local.luac",
+  "tables.luac",
+  "tail.luac"};
 
 TEST(LuaticTests, BinaryChunkTest) {
   const auto dir = std::filesystem::path{"../test/luac"};
@@ -52,7 +63,14 @@ TEST(LuaticTests, BinaryChunkTest) {
     FILE* fp = fopen(output.c_str(), "w");
     EXPECT_NE(fp, nullptr);
     if (res.index() == 0) {
-      chunk::PrintChunk(fp, std::get<0>(res));
+      auto chunk = std::get<0>(res);
+      chunk::PrintChunk(fp, chunk);
+      if (EXECUTION_FILTER.find(filename) == EXECUTION_FILTER.end()) {
+        fputs("-- Execution Results: \n", fp);
+        auto vm = std::make_shared<LunaVirtualMachine>(&chunk.main_proto);
+        while (!vm->Update())
+          ;
+      }
     } else {
       fputs(("-- " + std::get<1>(res)).c_str(), fp);
     }
