@@ -24,6 +24,8 @@
 
 #include "luna_vm.h"
 
+#include "instructions/instructions_impl.h"
+
 std::optional<instructions::Instruction> LunaVirtualMachine::Fetch() {
   const auto pc = GetPC();
   if (pc >= this->m_proto->code.size()) {
@@ -32,4 +34,15 @@ std::optional<instructions::Instruction> LunaVirtualMachine::Fetch() {
   const auto code = this->m_proto->code[GetPC()];
   AddPC(1);
   return code;
+}
+
+void LunaVirtualMachine::Update() {
+  const auto instruction = Fetch();
+  if (instruction.has_value()) {
+    const auto delta_pc =
+      instructions::Execute(instruction.value(), this->m_stack);
+    AddPC(delta_pc);
+  }
+
+  // TODO: throw
 }

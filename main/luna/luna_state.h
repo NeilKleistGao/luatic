@@ -51,13 +51,13 @@ public:
   }
 
 private:
-  std::shared_ptr<LunaStack> m_stack;
   unsigned int m_pc;
 
 protected:
+  std::shared_ptr<LunaStack> m_stack;
   inline unsigned int GetPC() const noexcept { return m_pc; }
 
-  inline void AddPC(unsigned int p_delta) noexcept { m_pc += p_delta; }
+  inline void AddPC(int p_delta) noexcept { m_pc += p_delta; }
 };
 
 #endif //LUATIC_LUNA_STATE_H

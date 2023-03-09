@@ -17,7 +17,7 @@ include_directories(main)
 include_directories(libraries)
 
 add_library(chunk STATIC main/shared/chunk/binary_chunk.cc main/shared/chunk/binary_chunk.h main/shared/chunk/prototype.cc main/shared/chunk/prototype.h main/shared/chunk/literal.cc main/shared/chunk/literal.h main/shared/chunk/helper.cc main/shared/chunk/helper.h main/shared/instructions/instructions.cc main/shared/instructions/instructions.h)
-add_library(core STATIC main/luna/luna_state.cc main/luna/luna_state.h main/luna/luna_values.cc main/luna/luna_values.h main/luna/luna_stack.cc main/luna/luna_stack.h main/luna/luna_math.cc main/luna/luna_math.h main/luna/luna_vm.cc main/luna/luna_vm.h)
+add_library(core STATIC main/luna/luna_state.cc main/luna/luna_state.h main/luna/luna_values.cc main/luna/luna_values.h main/luna/luna_stack.cc main/luna/luna_stack.h main/luna/luna_math.cc main/luna/luna_math.h main/luna/luna_vm.cc main/luna/luna_vm.h main/luna/instructions/instructions_impl.cc main/luna/instructions/instructions_impl.h)
 
 add_executable(luna main/luna/main.cc)
 add_executable(lunac main/lunac/main.cc)

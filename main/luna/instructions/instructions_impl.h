@@ -22,28 +22,17 @@
  * SOFTWARE.
  */
 
-#ifndef LUATIC_LUNA_VM_H
-#define LUATIC_LUNA_VM_H
+#ifndef LUATIC_INSTRUCTIONS_IMPL_H
+#define LUATIC_INSTRUCTIONS_IMPL_H
 
 #include <memory>
-#include <optional>
-#include <utility>
 
-#include "luna_state.h"
-#include "shared/chunk/prototype.h"
+#include "luna/luna_stack.h"
+#include "shared/instructions/instructions.h"
 
-class LunaVirtualMachine: public LunaState {
-public:
-  LunaVirtualMachine(): LunaState() {}
-  explicit LunaVirtualMachine(std::shared_ptr<chunk::Prototype> p_proto):
-    LunaState(), m_proto(std::move(p_proto)) {}
+namespace instructions {
+  int Execute(const Instruction& p_inst,
+              const std::shared_ptr<LunaStack>& p_stack);
+} // namespace instructions
 
-  void Update();
-
-private:
-  std::shared_ptr<chunk::Prototype> m_proto;
-
-  std::optional<instructions::Instruction> Fetch();
-};
-
-#endif //LUATIC_LUNA_VM_H
+#endif //LUATIC_INSTRUCTIONS_IMPL_H
