@@ -7,12 +7,12 @@
 -- is var arg: yes
 -- max stack size: 2
 -- code: 
----- VAR ARG PREP
+---- VAR ARG PREP: 0
 ---- LOAD I
 ---- CLOSURE
 ---- SET TAB UP
 ---- CLOSURE
----- RETURN
+---- RETURN: 2, 1
 -- sub prototypes: 
 ---- PROTOTYPE
 ---- source: @local.lua

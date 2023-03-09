@@ -7,7 +7,7 @@
 -- is var arg: yes
 -- max stack size: 2
 -- code: 
----- VAR ARG PREP
+---- VAR ARG PREP: 0
 ---- SET TAB UP
 ---- GET TAB UP
 ---- TEST
@@ -55,4 +55,4 @@
 ---- L FALSE SKIP
 ---- LOAD TRUE
 ---- SET TAB UP
----- RETURN
+---- RETURN: 0, 1

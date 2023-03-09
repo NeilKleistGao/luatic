@@ -7,7 +7,7 @@
 -- is var arg: yes
 -- max stack size: 4
 -- code: 
----- VAR ARG PREP
+---- VAR ARG PREP: 0
 ---- NEW TABLE
 ---- EXTRA ARG
 ---- SET TAB UP
@@ -24,7 +24,7 @@
 ---- GET TAB UP
 ---- CLOSURE
 ---- SET FIELD
----- RETURN
+---- RETURN: 0, 1
 -- sub prototypes: 
 ---- PROTOTYPE
 ---- source: @tables.lua

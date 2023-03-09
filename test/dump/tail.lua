@@ -7,14 +7,14 @@
 -- is var arg: yes
 -- max stack size: 3
 -- code: 
----- VAR ARG PREP
+---- VAR ARG PREP: 0
 ---- CLOSURE
 ---- SET TAB UP
 ---- GET TAB UP
 ---- LOAD I
 ---- LOAD I
 ---- CALL
----- RETURN
+---- RETURN: 1, 1
 -- sub prototypes: 
 ---- PROTOTYPE
 ---- source: @tail.lua
@@ -33,5 +33,5 @@
 ------ MUL
 ------ MM BIN
 ------ TAIL CALL
------- RETURN
+------ RETURN: 2, 0
 ------ RETURN 0

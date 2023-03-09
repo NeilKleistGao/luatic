@@ -126,7 +126,7 @@ namespace instructions {
           fprintf(p_fp, "%s TAIL CALL\n", p_indent.c_str());
           break;
         case InstABC::OpCode::RETURN:
-          fprintf(p_fp, "%s RETURN\n", p_indent.c_str());
+          fprintf(p_fp, "%s RETURN: %d, %d\n", p_indent.c_str(), ins.a, ins.b);
           break;
         case InstABC::OpCode::RETURN_0:
           fprintf(p_fp, "%s RETURN 0\n", p_indent.c_str());
@@ -138,7 +138,7 @@ namespace instructions {
           fprintf(p_fp, "%s SET LIST\n", p_indent.c_str());
           break;
         case InstABC::OpCode::VAR_ARG_PREP:
-          fprintf(p_fp, "%s VAR ARG PREP\n", p_indent.c_str());
+          fprintf(p_fp, "%s VAR ARG PREP: %d\n", p_indent.c_str(), ins.a);
           break;
         // TODO: finish pretty printer
         default:

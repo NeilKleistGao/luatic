@@ -7,7 +7,7 @@
 -- is var arg: yes
 -- max stack size: 8
 -- code: 
----- VAR ARG PREP
+---- VAR ARG PREP: 0
 ---- LOAD I
 ---- LT I
 ---- JMP
@@ -59,4 +59,4 @@
 ---- JMP
 ---- FOR LOOP
 ---- FOR LOOP
----- RETURN
+---- RETURN: 0, 1
