@@ -24,31 +24,9 @@
 
 #include "instructions_impl.h"
 
+#include "abc_impl.h"
+
 namespace instructions {
-  static int Move(const InstABC& p_inst,
-                  const std::shared_ptr<LunaStack>& p_stack) {
-    const auto value = p_stack->Get(p_inst.a);
-    if (value.has_value()) {
-      p_stack->Set(p_inst.b, value.value());
-    } else {
-      // TODO: throw
-    }
-
-    return 1;
-  }
-
-  static int Return(const InstABC& p_inst,
-                    const std::shared_ptr<LunaStack>& p_stack) {
-    // TODO: implement
-    return 1;
-  }
-
-  static int PrepareVarArgs(const InstABC& p_inst,
-                            const std::shared_ptr<LunaStack>& p_stack) {
-    // TODO: implement
-    return 1;
-  }
-
   static int Execute(const InstABC& p_inst,
                      const std::shared_ptr<LunaStack>& p_stack) {
     switch (p_inst.code) {
