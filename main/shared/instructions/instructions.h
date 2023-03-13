@@ -25,6 +25,10 @@
 #ifndef LUATIC_INSTRUCTIONS_H
 #define LUATIC_INSTRUCTIONS_H
 
+/**
+ * NOTE: This file is auto-generated. **DO NOT** modify it manumally.
+ */
+
 #include <variant>
 
 namespace instructions {
