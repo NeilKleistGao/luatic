@@ -68,6 +68,8 @@ namespace instructions {
   static int Execute(const InstsJ& p_inst,
                      const std::shared_ptr<LunaStack>& p_stack) {
     switch (p_inst.code) {
+      case InstsJ::OpCode::JMP:
+        break;
       default:
         return 0;
     }

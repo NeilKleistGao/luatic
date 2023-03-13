@@ -190,9 +190,9 @@ namespace instructions {
   struct InstsJ {
     enum class OpCode { JMP = 56 } code;
 
-    uint sj;
+    int sj;
 
-    InstsJ(OpCode p_code, uint p_sj): code(p_code), sj(p_sj) {}
+    InstsJ(OpCode p_code, int p_sj): code(p_code), sj(p_sj) {}
 
     static bool Is(uint p_code);
 
