@@ -25,6 +25,7 @@
 #include "instructions_impl.h"
 
 #include "abc_impl.h"
+#include "sj_impl.h"
 
 namespace instructions {
   static int Execute(const InstABC& p_inst,
@@ -69,7 +70,7 @@ namespace instructions {
                      const std::shared_ptr<LunaStack>& p_stack) {
     switch (p_inst.code) {
       case InstsJ::OpCode::JMP:
-        break;
+        return Jump(p_inst);
       default:
         return 0;
     }

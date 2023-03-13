@@ -31,7 +31,7 @@
 #include "shared/instructions/instructions.h"
 
 namespace instructions {
-  int Jump(const InstAsBx& p_inst, const std::shared_ptr<LunaStack>& p_stack);
+  inline int Jump(const InstsJ& p_inst) { return p_inst.sj; }
 
 } // namespace instructions
 
