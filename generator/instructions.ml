@@ -90,10 +90,16 @@ let execute lst =
   "}\n";;
 
 (* put instructions in order *)
+(* TODO: add more check for C++ AST *)
 let instructions = [
   InstABC ( (* 0 *)
     (fun ins -> ["Move"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [
+      "const auto value = p_stack->Get(" ^ a(ins) ^ ");";
+      "const auto pos = " ^ b(ins) ^ ");";
+      "if (value.has_value()) { p_stack->Set(pos, value.value()); }"; (* TODO: throw *)
+      "return 1;"
+    ])
   );
   InstAsBx (
     (fun ins -> ["Load I"]),
@@ -317,7 +323,7 @@ let instructions = [
   );
   InstsJ (
     (fun ins -> ["Jump"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> ["return " ^ sj(ins) ^ ";"])
   );
   InstABC (
     (fun ins -> ["Equal"]),
@@ -442,4 +448,3 @@ let impl_cpp = (execute
   | InstAx(_, stmts) as ins -> stmts ins
   | InstsJ(_, stmts) as ins -> stmts ins
 ) instructions));;
-print_endline impl_cpp;;
