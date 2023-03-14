@@ -69,6 +69,26 @@ let pretty_print lst =
   "}\n" ^
   "}\n";;
 
+let lambda lst =
+  (List.fold_left (fun r s -> r ^ s ^ "\n") ("[](Instruction p_ins, const std::shared_ptr<LunaStack>& p_stack){\n") lst) ^ "}";;
+
+let rec execute_rec lst res =
+  match lst with
+    | [] -> res
+    | head :: tail -> (execute_rec tail (res ^ (lambda head) ^ ",\n"));;
+
+let execute lst =
+  "#include <array>\n" ^
+  "#include <functional>\n" ^
+  "#include \"instructions_impl.h\"\n" ^
+  "namespace instructions {\n" ^
+  "static const std::array<std::function<int(Instruction, const std::shared_ptr<LunaStack>&)>," ^ (string_of_int (List.length lst)) ^ ">s_execution = {\n" ^
+  (execute_rec lst "") ^ "};\n" ^
+  "int Execute(Instruction p_ins, const std::shared_ptr<LunaStack>& p_stack) {\n" ^
+  "return s_execution[" ^ op_code ^ "](p_ins, p_stack);\n" ^
+  "}\n" ^
+  "}\n";;
+
 (* put instructions in order *)
 let instructions = [
   InstABC ( (* 0 *)
@@ -405,7 +425,7 @@ let instructions = [
   );
 ];;
 
-print_endline (pretty_print
+let pretty_print_cpp = (pretty_print
   (List.map (fun ins -> match ins with
     | InstABC(pp, _) as ins -> pp ins
     | InstABx (pp, _) as ins -> pp ins
@@ -413,3 +433,13 @@ print_endline (pretty_print
     | InstAx(pp, _) as ins -> pp ins
     | InstsJ(pp, _) as ins -> pp ins
   ) instructions));;
+
+let impl_cpp = (execute
+(List.map (fun ins -> match ins with
+  | InstABC(_, stmts) as ins -> stmts ins
+  | InstABx (_, stmts) as ins -> stmts ins
+  | InstAsBx(_, stmts) as ins -> stmts ins
+  | InstAx(_, stmts) as ins -> stmts ins
+  | InstsJ(_, stmts) as ins -> stmts ins
+) instructions));;
+print_endline impl_cpp;;
