@@ -1,12 +1,14 @@
 (* pretty_printer, execution *)
 type instruction =
-  | InstABC of (unit -> string list) * (unit -> string list)
-  | InstABx of (unit -> string list) * (unit -> string list)
-  | InstAsBx of (unit -> string list) * (unit -> string list)
-  | InstAx of (unit -> string list) * (unit -> string list)
-  | InstsJ of (unit -> string list) * (unit -> string list);;
+  | InstABC of (instruction -> string list) * (instruction -> string list)
+  | InstABx of (instruction -> string list) * (instruction -> string list)
+  | InstAsBx of (instruction -> string list) * (instruction -> string list)
+  | InstAx of (instruction -> string list) * (instruction -> string list)
+  | InstsJ of (instruction -> string list) * (instruction -> string list);;
 
 exception WrongField of string;;
+
+let op_code = "(p_code & 0x7F)";;
 
 let a ins = match ins with
   | InstABC (_, _) | InstABx (_, _) -> "((p_code >> 7) & 0xFF)"
@@ -40,338 +42,374 @@ let sj ins = match ins with
   | InstsJ(_, _) -> "((p_code >> 7) & 0x1FFFFFF)"
   | _ -> raise (WrongField "no field sJ found.");;
 
+let fprintf params =
+  match params with
+    | [] -> ""
+    | format :: values ->
+      (List.fold_left (fun r s -> r ^ "," ^ s) ("fprintf(p_fp, \"%s" ^ format ^ "\\n\", p_indent.c_str()") values) ^
+      ");";;
+
+let rec pretty_print_rec i lst res = 
+  match lst with
+    | [] -> res
+    | head :: tail ->
+      pretty_print_rec (i + 1) tail (res ^ "case " ^ (string_of_int i) ^ ": " ^ (fprintf head) ^ "break;\n");;
+
+let pretty_print lst =
+  "#include \"instructions_pretty_printer.h\"\n" ^
+  "\n" ^
+  "namespace instructions {\n" ^
+  "void PrintInstruction(FILE* p_fp,\n" ^
+  "Instruction p_ins," ^
+  "const std::string& p_indent) {\n" ^
+  "switch" ^ op_code ^ "{\n" ^
+  (pretty_print_rec 0 lst "") ^
+  "default: fprintf(p_fp, \"%sInvalid Op Code %d\n\", p_indent.c_str(), p_ins);\n" ^
+  "}\n" ^
+  "}\n" ^
+  "}\n";;
+
 (* put instructions in order *)
 let instructions = [
   InstABC ( (* 0 *)
-    (fun _ -> ["Move"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Move"]),
+    (fun ins -> ["return 1;"])
   );
   InstAsBx (
-    (fun _ -> ["Load I"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Load I"]),
+    (fun ins -> ["return 1;"])
   );
   InstAsBx (
-    (fun _ -> ["Load F"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Load F"]),
+    (fun ins -> ["return 1;"])
   );
   InstABx (
-    (fun _ -> ["Load K"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Load K"]),
+    (fun ins -> ["return 1;"])
   );
   InstABx (
-    (fun _ -> ["Load KX"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Load KX"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC ( (* 5 *)
-    (fun _ -> ["Load False"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Load False"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["L False Skip"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["L False Skip"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Load True"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Load True"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Load Nil"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Load Nil"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Get Up Value"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Get Up Value"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC ( (* 10 *)
-    (fun _ -> ["Set Up Value"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Set Up Value"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Get Table Up"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Get Table Up"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Get Table"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Get Table"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Get I"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Get I"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Get Field"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Get Field"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC ( (* 15 *)
-    (fun _ -> ["Set Table Up"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Set Table Up"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Set Table"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Set Table"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Set I"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Set I"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Set Field"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Set Field"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["New Table"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["New Table"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC ( (* 20 *)
-    (fun _ -> ["Self"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Self"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Add I"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Add I"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Add K"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Add K"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Sub K"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Sub K"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Mul K"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Mul K"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC ( (* 25 *)
-    (fun _ -> ["Mod K"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Mod K"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Pow K"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Pow K"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Div K"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Div K"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["I Div K"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["I Div K"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Bit And K"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Bit And K"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC ( (* 30 *)
-    (fun _ -> ["Bit Or K"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Bit Or K"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Bit Xor K"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Bit Xor K"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Shift Right I"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Shift Right I"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Shift Left I"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Shift Left I"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Add"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Add"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC ( (* 35 *)
-    (fun _ -> ["Sub"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Sub"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Mul"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Mul"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Mod"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Mod"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Pow"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Pow"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Div"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Div"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC ( (* 40 *)
-    (fun _ -> ["I Div"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["I Div"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Bit And"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Bit And"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Bit Or"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Bit Or"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Bit Xor"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Bit Xor"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Shift Left"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Shift Left"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC ( (* 45 *)
-    (fun _ -> ["Shift Right"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Shift Right"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["MM Bin"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["MM Bin"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["MM Bin I"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["MM Bin I"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["MM Bin K"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["MM Bin K"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["UNM"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["UNM"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC ( (* 50 *)
-    (fun _ -> ["Bit Not"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Bit Not"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Not"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Not"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Len"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Len"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Concat"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Concat"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Close"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Close"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC ( (* 55 *)
-    (fun _ -> ["TBC"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["TBC"]),
+    (fun ins -> ["return 1;"])
   );
   InstsJ (
-    (fun _ -> ["Jump"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Jump"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Equal"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Equal"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Less Than"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Less Than"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Less Equal"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Less Equal"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC ( (* 60 *)
-    (fun _ -> ["Equal K"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Equal K"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Equal I"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Equal I"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Less Than I"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Less Than I"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Less Equal I"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Less Equal I"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Greater Than I"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Greater Than I"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC ( (* 65 *)
-    (fun _ -> ["Greater Equal I"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Greater Equal I"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Test"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Test"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Test Set"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Test Set"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Call"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Call"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Tail Call"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Tail Call"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC ( (* 70 *)
-    (fun _ -> ["Return"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Return %d, %d"; (a ins); (b ins)]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Return 0"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Return 0"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Return 1"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Return 1"]),
+    (fun ins -> ["return 1;"])
   );
   InstABx (
-    (fun _ -> ["For Loop"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["For Loop"]),
+    (fun ins -> ["return 1;"])
   );
   InstABx (
-    (fun _ -> ["For Prepare"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["For Prepare"]),
+    (fun ins -> ["return 1;"])
   );
   InstABx ( (* 75 *)
-    (fun _ -> ["T For Prepare"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["T For Prepare"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["T For Call"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["T For Call"]),
+    (fun ins -> ["return 1;"])
   );
   InstABx (
-    (fun _ -> ["T For Loop"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["T For Loop"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Set List"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Set List"]),
+    (fun ins -> ["return 1;"])
   );
   InstABx (
-    (fun _ -> ["Closure"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Closure"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC ( (* 80 *)
-    (fun _ -> ["Variable Arguments"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Variable Arguments"]),
+    (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun _ -> ["Variable Arguments Prepare"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Variable Arguments Prepare"]),
+    (fun ins -> ["return 1;"])
   );
   InstAx (
-    (fun _ -> ["Extra Arguments"]),
-    (fun _ -> ["return 1;"])
+    (fun ins -> ["Extra Arguments"]),
+    (fun ins -> ["return 1;"])
   );
 ];;
+
+print_endline (pretty_print
+  (List.map (fun ins -> match ins with
+    | InstABC(pp, _) as ins -> pp ins
+    | InstABx (pp, _) as ins -> pp ins
+    | InstAsBx(pp, _) as ins -> pp ins
+    | InstAx(pp, _) as ins -> pp ins
+    | InstsJ(pp, _) as ins -> pp ins
+  ) instructions));;

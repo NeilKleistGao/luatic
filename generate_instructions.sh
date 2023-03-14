@@ -1,2 +1,2 @@
-ocamlc -o bin/generator.byte generator/instructions.ml
-./bin/generator.byte
+ocamlc -o bin/instruction_generator generator/instructions.ml
+./bin/instruction_generator
