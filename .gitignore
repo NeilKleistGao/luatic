@@ -35,3 +35,7 @@
 bin/
 cmake-build-debug/
 .idea/
+
+# OCaml
+*.cmi
+*.cmo
