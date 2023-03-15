@@ -31,8 +31,7 @@
 #include "shared/instructions/instructions.h"
 
 namespace instructions {
-  int Execute(Instruction p_inst,
-              const std::shared_ptr<LunaStack>& p_stack);
+  int Execute(Instruction p_inst, const std::shared_ptr<LunaStack>& p_stack);
 } // namespace instructions
 
 #endif //LUATIC_INSTRUCTIONS_IMPL_H
