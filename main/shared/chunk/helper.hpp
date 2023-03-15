@@ -92,27 +92,6 @@ namespace chunk {
 
     return res;
   }
-
-  template<> std::variant<std::vector<instructions::Instruction>, Error> ReadArray(FILE* p_fp) {
-    size_t length = ReadVarInt(p_fp);
-    auto res = std::vector<instructions::Instruction>{};
-
-    for (int i = 0; i < length; ++i) {
-      unsigned int code;
-      if (fread(&code, sizeof(code), 1, p_fp) != 1) {
-        return "can't read instruction.";
-      }
-
-      const auto ins = instructions::Parse(code);
-      if (ins.index() == 1) {
-        return std::get<1>(ins);
-      }
-
-      res.push_back(std::get<0>(ins));
-    }
-
-    return res;
-  }
 } // namespace chunk
 
 #endif //LUATIC_HELPER_HPP

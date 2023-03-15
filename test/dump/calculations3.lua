@@ -7,52 +7,52 @@
 -- is var arg: yes
 -- max stack size: 2
 -- code: 
----- VAR ARG PREP: 0
----- SET TAB UP
----- GET TAB UP
----- TEST
----- JMP
----- LOAD FALSE
----- SET TAB UP
----- GET TAB UP
----- SET TAB UP
----- GET TAB UP
----- NOT
----- SET TAB UP
----- LOAD I
----- EQ I
----- JMP
----- L FALSE SKIP
----- LOAD TRUE
----- SET TAB UP
----- LOAD I
----- LT I
----- JMP
----- L FALSE SKIP
----- LOAD TRUE
----- SET TAB UP
----- LOAD I
----- LT I
----- JMP
----- L FALSE SKIP
----- LOAD TRUE
----- SET TAB UP
----- LOAD I
----- LE I
----- JMP
----- L FALSE SKIP
----- LOAD TRUE
----- SET TAB UP
----- LOAD I
----- LE I
----- JMP
----- L FALSE SKIP
----- LOAD TRUE
----- SET TAB UP
----- LOAD I
----- EQ I
----- JMP
----- L FALSE SKIP
----- LOAD TRUE
----- SET TAB UP
----- RETURN: 0, 1
+---- Variable Arguments Prepare
+---- Set Table Up
+---- Get Table Up
+---- Test
+---- Jump
+---- Load False
+---- Set Table Up
+---- Get Table Up
+---- Set Table Up
+---- Get Table Up
+---- Not
+---- Set Table Up
+---- Load I
+---- Equal I
+---- Jump
+---- L False Skip
+---- Load True
+---- Set Table Up
+---- Load I
+---- Less Than I
+---- Jump
+---- L False Skip
+---- Load True
+---- Set Table Up
+---- Load I
+---- Less Than I
+---- Jump
+---- L False Skip
+---- Load True
+---- Set Table Up
+---- Load I
+---- Less Equal I
+---- Jump
+---- L False Skip
+---- Load True
+---- Set Table Up
+---- Load I
+---- Less Equal I
+---- Jump
+---- L False Skip
+---- Load True
+---- Set Table Up
+---- Load I
+---- Equal I
+---- Jump
+---- L False Skip
+---- Load True
+---- Set Table Up
+---- Return 0, 1

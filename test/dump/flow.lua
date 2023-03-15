@@ -7,56 +7,56 @@
 -- is var arg: yes
 -- max stack size: 8
 -- code: 
----- VAR ARG PREP: 0
----- LOAD I
----- LT I
----- JMP
----- GET TAB UP
----- LOAD TRUE
----- CALL
----- JMP
----- LOAD I
----- LT I
----- JMP
----- GET TAB UP
----- LOAD FALSE
----- CALL
----- JMP
----- GET TAB UP
----- LOAD NIL
----- CALL
----- LOAD FALSE
----- TEST
----- JMP
----- GET TAB UP
----- LOAD K
----- CALL
----- JMP
----- LOAD I
----- LOAD I
----- LOAD I
----- FOR PREP
----- GET TAB UP
----- MOVE
----- CALL
----- FOR LOOP
----- GET TAB UP
----- LOAD K
----- CALL
----- LOAD FALSE
----- TEST
----- JMP
----- JMP
----- JMP
----- LOAD I
----- LOAD I
----- LOAD I
----- FOR PREP
----- LOAD I
----- LOAD I
----- LOAD I
----- FOR PREP
----- JMP
----- FOR LOOP
----- FOR LOOP
----- RETURN: 0, 1
+---- Variable Arguments Prepare
+---- Load I
+---- Less Than I
+---- Jump
+---- Get Table Up
+---- Load True
+---- Call
+---- Jump
+---- Load I
+---- Less Than I
+---- Jump
+---- Get Table Up
+---- Load False
+---- Call
+---- Jump
+---- Get Table Up
+---- Load Nil
+---- Call
+---- Load False
+---- Test
+---- Jump
+---- Get Table Up
+---- Load K
+---- Call
+---- Jump
+---- Load I
+---- Load I
+---- Load I
+---- For Prepare
+---- Get Table Up
+---- Move
+---- Call
+---- For Loop
+---- Get Table Up
+---- Load K
+---- Call
+---- Load False
+---- Test
+---- Jump
+---- Jump
+---- Jump
+---- Load I
+---- Load I
+---- Load I
+---- For Prepare
+---- Load I
+---- Load I
+---- Load I
+---- For Prepare
+---- Jump
+---- For Loop
+---- For Loop
+---- Return 0, 1

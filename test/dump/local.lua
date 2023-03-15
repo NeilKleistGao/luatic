@@ -7,12 +7,12 @@
 -- is var arg: yes
 -- max stack size: 2
 -- code: 
----- VAR ARG PREP: 0
----- LOAD I
----- CLOSURE
----- SET TAB UP
----- CLOSURE
----- RETURN: 2, 1
+---- Variable Arguments Prepare
+---- Load I
+---- Closure
+---- Set Table Up
+---- Closure
+---- Return 2, 1
 -- sub prototypes: 
 ---- PROTOTYPE
 ---- source: @local.lua
@@ -21,13 +21,13 @@
 ---- is var arg: no
 ---- max stack size: 3
 ---- code: 
------- LOAD I
------- GET TAB UP
------- GET UP VAL
------- ADD
------- MM BIN
------- CALL
------- RETURN 0
+------ Load I
+------ Get Table Up
+------ Get Up Value
+------ Add
+------ MM Bin
+------ Call
+------ Return 0
 ---- PROTOTYPE
 ---- source: @local.lua
 ---- define: line 31 to line 33
@@ -35,7 +35,7 @@
 ---- is var arg: no
 ---- max stack size: 2
 ---- code: 
------- GET TAB UP
------- LOAD K
------- CALL
------- RETURN 0
+------ Get Table Up
+------ Load K
+------ Call
+------ Return 0

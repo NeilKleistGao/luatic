@@ -7,24 +7,24 @@
 -- is var arg: yes
 -- max stack size: 4
 -- code: 
----- VAR ARG PREP: 0
----- NEW TABLE
----- EXTRA ARG
----- SET TAB UP
----- NEW TABLE
----- EXTRA ARG
----- LOAD I
----- LOAD I
----- LOAD I
----- SET LIST
----- SET TAB UP
----- NEW TABLE
----- EXTRA ARG
----- SET TAB UP
----- GET TAB UP
----- CLOSURE
----- SET FIELD
----- RETURN: 0, 1
+---- Variable Arguments Prepare
+---- New Table
+---- Extra Arguments
+---- Set Table Up
+---- New Table
+---- Extra Arguments
+---- Load I
+---- Load I
+---- Load I
+---- Set List
+---- Set Table Up
+---- New Table
+---- Extra Arguments
+---- Set Table Up
+---- Get Table Up
+---- Closure
+---- Set Field
+---- Return 0, 1
 -- sub prototypes: 
 ---- PROTOTYPE
 ---- source: @tables.lua
@@ -33,7 +33,7 @@
 ---- is var arg: no
 ---- max stack size: 2
 ---- code: 
------- ADD I
------- MM BIN I
------- RETURN 1
------- RETURN 0
+------ Add I
+------ MM Bin I
+------ Return 1
+------ Return 0

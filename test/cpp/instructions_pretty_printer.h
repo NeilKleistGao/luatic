@@ -32,7 +32,7 @@
 
 namespace instructions {
   void PrintInstruction(FILE* p_fp,
-                        const Instruction& p_ins,
+                        Instruction p_ins,
                         const std::string& p_indent);
 } // namespace instructions
 

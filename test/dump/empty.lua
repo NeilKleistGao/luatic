@@ -7,6 +7,6 @@
 -- is var arg: yes
 -- max stack size: 2
 -- code: 
----- VAR ARG PREP: 0
----- RETURN: 0, 1
+---- Variable Arguments Prepare
+---- Return 0, 1
 -- Execution Results: 
