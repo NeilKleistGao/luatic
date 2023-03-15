@@ -7,52 +7,52 @@
 -- is var arg: yes
 -- max stack size: 2
 -- code: 
-----Variable Arguments Prepare
-----Set Table Up
-----Get Table Up
-----Test
-----Jump
-----Load False
-----Set Table Up
-----Get Table Up
-----Set Table Up
-----Get Table Up
-----Not
-----Set Table Up
-----Load I
-----Equal I
-----Jump
-----L False Skip
-----Load True
-----Set Table Up
-----Load I
-----Less Than I
-----Jump
-----L False Skip
-----Load True
-----Set Table Up
-----Load I
-----Less Than I
-----Jump
-----L False Skip
-----Load True
-----Set Table Up
-----Load I
-----Less Equal I
-----Jump
-----L False Skip
-----Load True
-----Set Table Up
-----Load I
-----Less Equal I
-----Jump
-----L False Skip
-----Load True
-----Set Table Up
-----Load I
-----Equal I
-----Jump
-----L False Skip
-----Load True
-----Set Table Up
-----Return 0, 1
+---- Variable Arguments Prepare
+---- Set Table Up
+---- Get Table Up
+---- Test
+---- Jump
+---- Load False
+---- Set Table Up
+---- Get Table Up
+---- Set Table Up
+---- Get Table Up
+---- Not
+---- Set Table Up
+---- Load I
+---- Equal I
+---- Jump
+---- L False Skip
+---- Load True
+---- Set Table Up
+---- Load I
+---- Less Than I
+---- Jump
+---- L False Skip
+---- Load True
+---- Set Table Up
+---- Load I
+---- Less Than I
+---- Jump
+---- L False Skip
+---- Load True
+---- Set Table Up
+---- Load I
+---- Less Equal I
+---- Jump
+---- L False Skip
+---- Load True
+---- Set Table Up
+---- Load I
+---- Less Equal I
+---- Jump
+---- L False Skip
+---- Load True
+---- Set Table Up
+---- Load I
+---- Equal I
+---- Jump
+---- L False Skip
+---- Load True
+---- Set Table Up
+---- Return 0, 1

@@ -7,18 +7,18 @@
 -- is var arg: yes
 -- max stack size: 2
 -- code: 
-----Variable Arguments Prepare
-----Set Table Up
-----Get Table Up
-----Bit And K
-----MM Bin K
-----Set Table Up
-----Get Table Up
-----Bit Or K
-----MM Bin K
-----Set Table Up
-----Get Table Up
-----Pow K
-----MM Bin K
-----Set Table Up
-----Return 0, 1
+---- Variable Arguments Prepare
+---- Set Table Up
+---- Get Table Up
+---- Bit And K
+---- MM Bin K
+---- Set Table Up
+---- Get Table Up
+---- Bit Or K
+---- MM Bin K
+---- Set Table Up
+---- Get Table Up
+---- Pow K
+---- MM Bin K
+---- Set Table Up
+---- Return 0, 1

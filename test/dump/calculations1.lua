@@ -7,31 +7,31 @@
 -- is var arg: yes
 -- max stack size: 2
 -- code: 
-----Variable Arguments Prepare
-----Set Table Up
-----Set Table Up
-----Get Table Up
-----Get Table Up
-----Add
-----MM Bin
-----Set Table Up
-----Get Table Up
-----Sub K
-----MM Bin K
-----Set Table Up
-----Get Table Up
-----Mul K
-----MM Bin K
-----Set Table Up
-----Get Table Up
-----Div K
-----MM Bin K
-----Set Table Up
-----Load K
-----Len
-----Set Table Up
-----Load K
-----Load K
-----Concat
-----Set Table Up
-----Return 0, 1
+---- Variable Arguments Prepare
+---- Set Table Up
+---- Set Table Up
+---- Get Table Up
+---- Get Table Up
+---- Add
+---- MM Bin
+---- Set Table Up
+---- Get Table Up
+---- Sub K
+---- MM Bin K
+---- Set Table Up
+---- Get Table Up
+---- Mul K
+---- MM Bin K
+---- Set Table Up
+---- Get Table Up
+---- Div K
+---- MM Bin K
+---- Set Table Up
+---- Load K
+---- Len
+---- Set Table Up
+---- Load K
+---- Load K
+---- Concat
+---- Set Table Up
+---- Return 0, 1

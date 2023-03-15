@@ -70,7 +70,7 @@ let fprintf params =
   match params with
     | [] -> ""
     | format :: values ->
-      (List.fold_left (fun r s -> r ^ "," ^ s) ("fprintf(p_fp, \"%s" ^ format ^ "\\n\", p_indent.c_str()") values) ^
+      (List.fold_left (fun r s -> r ^ "," ^ s) ("fprintf(p_fp, \"%s " ^ format ^ "\\n\", p_indent.c_str()") values) ^
       ");";;
 
 let rec pretty_print_rec i lst res = 
@@ -89,7 +89,7 @@ let pretty_print lst =
   "const std::string& p_indent) {\n" ^
   "switch" ^ op_ins ^ "{\n" ^
   (pretty_print_rec 0 lst "") ^
-  "default: fprintf(p_fp, \"%sInvalid Op Code %d\\n\", p_indent.c_str(), p_ins);\n" ^
+  "default: fprintf(p_fp, \"%s Invalid Op Code %d\\n\", p_indent.c_str(), p_ins);\n" ^
   "}\n" ^
   "}\n" ^
   "}\n";;

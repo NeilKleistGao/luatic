@@ -7,13 +7,13 @@
 -- is var arg: yes
 -- max stack size: 2
 -- code: 
-----Variable Arguments Prepare
-----Closure
-----Set Table Up
-----Get Table Up
-----Load K
-----Call
-----Return 0, 1
+---- Variable Arguments Prepare
+---- Closure
+---- Set Table Up
+---- Get Table Up
+---- Load K
+---- Call
+---- Return 0, 1
 -- sub prototypes: 
 ---- PROTOTYPE
 ---- source: @functions.lua
@@ -22,8 +22,8 @@
 ---- is var arg: no
 ---- max stack size: 4
 ---- code: 
-------Get Table Up
-------Load K
-------Move
-------Call
-------Return 0
+------ Get Table Up
+------ Load K
+------ Move
+------ Call
+------ Return 0

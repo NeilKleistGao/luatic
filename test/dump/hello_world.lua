@@ -7,8 +7,8 @@
 -- is var arg: yes
 -- max stack size: 2
 -- code: 
-----Variable Arguments Prepare
-----Get Table Up
-----Load K
-----Call
-----Return 0, 1
+---- Variable Arguments Prepare
+---- Get Table Up
+---- Load K
+---- Call
+---- Return 0, 1
