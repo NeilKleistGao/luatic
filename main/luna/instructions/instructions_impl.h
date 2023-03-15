@@ -31,7 +31,7 @@
 #include "shared/instructions/instructions.h"
 
 namespace instructions {
-  int Execute(const Instruction& p_inst,
+  int Execute(Instruction p_inst,
               const std::shared_ptr<LunaStack>& p_stack);
 } // namespace instructions
 

@@ -1,3 +1,27 @@
+(*
+ * MIT License
+ *
+ * Copyright (c) 2023 Cunyuan(Holden) Gao
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *)
+
 (* pretty_printer, execution *)
 type instruction =
   | InstABC of (instruction -> string list) * (instruction -> string list)
@@ -8,38 +32,38 @@ type instruction =
 
 exception WrongField of string;;
 
-let op_code = "(p_code & 0x7F)";;
+let op_ins = "(p_ins & 0x7F)";;
 
 let a ins = match ins with
-  | InstABC (_, _) | InstABx (_, _) -> "((p_code >> 7) & 0xFF)"
+  | InstABC (_, _) | InstABx (_, _) -> "((p_ins >> 7) & 0xFF)"
   | _ -> raise (WrongField "no field a found.");;
 
 let b ins = match ins with
-  | InstABC(_, _) -> "((p_code >> 16) & 0xFF)"
+  | InstABC(_, _) -> "((p_ins >> 16) & 0xFF)"
   | _ -> raise (WrongField "no field b found.");;
 
 let c ins = match ins with
-  | InstABC(_, _) -> "((p_code >> 24) & 0xFF)"
+  | InstABC(_, _) -> "((p_ins >> 24) & 0xFF)"
   | _ -> raise (WrongField "no field c found.");;
 
 let k ins = match ins with
-  | InstABC(_, _) -> "((p_code >> 15) & 1)"
+  | InstABC(_, _) -> "((p_ins >> 15) & 1)"
   | _ -> raise (WrongField "no field k found.");;
 
 let bx ins = match ins with
-  | InstABx(_, _) -> "((p_code >> 15) & 0x1FFFF)"
+  | InstABx(_, _) -> "((p_ins >> 15) & 0x1FFFF)"
   | _ -> raise (WrongField "no field Bx found.");;
 
 let sbx ins = match ins with
-  | InstAsBx(_, _) -> "((p_code >> 15) & 0x1FFFF)"
+  | InstAsBx(_, _) -> "((p_ins >> 15) & 0x1FFFF)"
   | _ -> raise (WrongField "no field sBx found.");;
 
 let ax ins = match ins with
-  | InstAx(_, _) -> "((p_code >> 7) & 0x1FFFFFF)"
+  | InstAx(_, _) -> "((p_ins >> 7) & 0x1FFFFFF)"
   | _ -> raise (WrongField "no field Ax found.");;
 
 let sj ins = match ins with
-  | InstsJ(_, _) -> "((p_code >> 7) & 0x1FFFFFF)"
+  | InstsJ(_, _) -> "((p_ins >> 7) & 0x1FFFFFF)"
   | _ -> raise (WrongField "no field sJ found.");;
 
 let fprintf params =
@@ -62,9 +86,9 @@ let pretty_print lst =
   "void PrintInstruction(FILE* p_fp,\n" ^
   "Instruction p_ins," ^
   "const std::string& p_indent) {\n" ^
-  "switch" ^ op_code ^ "{\n" ^
+  "switch" ^ op_ins ^ "{\n" ^
   (pretty_print_rec 0 lst "") ^
-  "default: fprintf(p_fp, \"%sInvalid Op Code %d\n\", p_indent.c_str(), p_ins);\n" ^
+  "default: fprintf(p_fp, \"%sInvalid Op Code %d\\n\", p_indent.c_str(), p_ins);\n" ^
   "}\n" ^
   "}\n" ^
   "}\n";;
@@ -85,7 +109,7 @@ let execute lst =
   "static const std::array<std::function<int(Instruction, const std::shared_ptr<LunaStack>&)>," ^ (string_of_int (List.length lst)) ^ ">s_execution = {\n" ^
   (execute_rec lst "") ^ "};\n" ^
   "int Execute(Instruction p_ins, const std::shared_ptr<LunaStack>& p_stack) {\n" ^
-  "return s_execution[" ^ op_code ^ "](p_ins, p_stack);\n" ^
+  "return s_execution[" ^ op_ins ^ "](p_ins, p_stack);\n" ^
   "}\n" ^
   "}\n";;
 
@@ -96,7 +120,7 @@ let instructions = [
     (fun ins -> ["Move"]),
     (fun ins -> [
       "const auto value = p_stack->Get(" ^ a(ins) ^ ");";
-      "const auto pos = " ^ b(ins) ^ ");";
+      "const auto pos = " ^ b(ins) ^ ";";
       "if (value.has_value()) { p_stack->Set(pos, value.value()); }"; (* TODO: throw *)
       "return 1;"
     ])
@@ -448,3 +472,13 @@ let impl_cpp = (execute
   | InstAx(_, stmts) as ins -> stmts ins
   | InstsJ(_, stmts) as ins -> stmts ins
 ) instructions));;
+
+let filename = "test/cpp/instructions_pretty_printer.cc" in
+  let oc = open_out filename in
+    Printf.fprintf oc "%s\n" pretty_print_cpp;
+    close_out oc;;
+
+let filename = "main/luna/instructions/instructions_impl.cc" in
+  let oc = open_out filename in
+    Printf.fprintf oc "%s\n" impl_cpp;
+    close_out oc;;

@@ -7,14 +7,14 @@
 -- is var arg: yes
 -- max stack size: 3
 -- code: 
----- VAR ARG PREP: 0
----- CLOSURE
----- SET TAB UP
----- GET TAB UP
----- LOAD I
----- LOAD I
----- CALL
----- RETURN: 1, 1
+----Variable Arguments Prepare
+----Closure
+----Set Table Up
+----Get Table Up
+----Load I
+----Load I
+----Call
+----Return 1, 1
 -- sub prototypes: 
 ---- PROTOTYPE
 ---- source: @tail.lua
@@ -23,15 +23,15 @@
 ---- is var arg: no
 ---- max stack size: 5
 ---- code: 
------- EQ I
------- JMP
------- RETURN 1
------- JMP
------- GET TAB UP
------- ADD I
------- MM BIN I
------- MUL
------- MM BIN
------- TAIL CALL
------- RETURN: 2, 0
------- RETURN 0
+------Equal I
+------Jump
+------Return 1
+------Jump
+------Get Table Up
+------Add I
+------MM Bin I
+------Mul
+------MM Bin
+------Tail Call
+------Return 2, 0
+------Return 0
