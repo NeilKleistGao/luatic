@@ -24,7 +24,7 @@
 ---- Get Table Up
 ---- Closure
 ---- Set Field
----- Return 0, 1
+---- Return: 0, 1
 -- sub prototypes: 
 ---- PROTOTYPE
 ---- source: @tables.lua

@@ -10,28 +10,28 @@
 ---- Variable Arguments Prepare
 ---- Load I
 ---- Less Than I
----- Jump
+---- Jump: 4
 ---- Get Table Up
 ---- Load True
 ---- Call
----- Jump
+---- Jump: 10
 ---- Load I
 ---- Less Than I
----- Jump
+---- Jump: 4
 ---- Get Table Up
 ---- Load False
 ---- Call
----- Jump
+---- Jump: 3
 ---- Get Table Up
 ---- Load Nil
 ---- Call
 ---- Load False
 ---- Test
----- Jump
+---- Jump: 4
 ---- Get Table Up
 ---- Load K
 ---- Call
----- Jump
+---- Jump: -7
 ---- Load I
 ---- Load I
 ---- Load I
@@ -45,9 +45,9 @@
 ---- Call
 ---- Load False
 ---- Test
----- Jump
----- Jump
----- Jump
+---- Jump: -6
+---- Jump: 1
+---- Jump: 0
 ---- Load I
 ---- Load I
 ---- Load I
@@ -56,7 +56,7 @@
 ---- Load I
 ---- Load I
 ---- For Prepare
----- Jump
+---- Jump: 2
 ---- For Loop
 ---- For Loop
----- Return 0, 1
+---- Return: 0, 1

@@ -175,7 +175,10 @@ namespace instructions {
         fprintf(p_fp, "%s TBC\n", p_indent.c_str());
         break;
       case 56:
-        fprintf(p_fp, "%s Jump\n", p_indent.c_str());
+        fprintf(p_fp,
+                "%s Jump: %d\n",
+                p_indent.c_str(),
+                (((p_ins >> 7) & 0x1FFFFFF) - 0xFFFFFF));
         break;
       case 57:
         fprintf(p_fp, "%s Equal\n", p_indent.c_str());
@@ -218,7 +221,7 @@ namespace instructions {
         break;
       case 70:
         fprintf(p_fp,
-                "%s Return %d, %d\n",
+                "%s Return: %d, %d\n",
                 p_indent.c_str(),
                 ((p_ins >> 7) & 0xFF),
                 ((p_ins >> 16) & 0xFF));

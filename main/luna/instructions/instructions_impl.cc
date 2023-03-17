@@ -181,7 +181,7 @@ namespace instructions {
         return 1;
       },
       [](Instruction p_ins, const std::shared_ptr<LunaStack>& p_stack) {
-        return ((p_ins >> 7) & 0x1FFFFFF);
+        return (((p_ins >> 7) & 0x1FFFFFF) - 0xFFFFFF) + 1;
       },
       [](Instruction p_ins, const std::shared_ptr<LunaStack>& p_stack) {
         return 1;

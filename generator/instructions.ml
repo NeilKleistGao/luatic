@@ -55,7 +55,7 @@ let bx ins = match ins with
   | _ -> raise (WrongField "no field Bx found.");;
 
 let sbx ins = match ins with
-  | InstAsBx(_, _) -> "((p_ins >> 15) & 0x1FFFF)"
+  | InstAsBx(_, _) -> "(((p_ins >> 15) & 0x1FFFF) - 0xFFFF)"
   | _ -> raise (WrongField "no field sBx found.");;
 
 let ax ins = match ins with
@@ -63,7 +63,7 @@ let ax ins = match ins with
   | _ -> raise (WrongField "no field Ax found.");;
 
 let sj ins = match ins with
-  | InstsJ(_, _) -> "((p_ins >> 7) & 0x1FFFFFF)"
+  | InstsJ(_, _) -> "(((p_ins >> 7) & 0x1FFFFFF) - 0xFFFFFF)"
   | _ -> raise (WrongField "no field sJ found.");;
 
 let fprintf params =
@@ -348,8 +348,8 @@ let instructions = [
     (fun ins -> ["return 1;"])
   );
   InstsJ (
-    (fun ins -> ["Jump"]),
-    (fun ins -> ["return " ^ sj(ins) ^ ";"])
+    (fun ins -> ["Jump: %d"; sj(ins)]),
+    (fun ins -> ["return " ^ sj(ins) ^ " + 1;"])
   );
   InstABC (
     (fun ins -> ["Equal"]),
@@ -404,7 +404,7 @@ let instructions = [
     (fun ins -> ["return 1;"])
   );
   InstABC ( (* 70 *)
-    (fun ins -> ["Return %d, %d"; (a ins); (b ins)]),
+    (fun ins -> ["Return: %d, %d"; (a ins); (b ins)]),
     (fun ins -> ["return 1;"])
   );
   InstABC (

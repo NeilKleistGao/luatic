@@ -13,7 +13,7 @@
 ---- Get Table Up
 ---- Load K
 ---- Call
----- Return 0, 1
+---- Return: 0, 1
 -- sub prototypes: 
 ---- PROTOTYPE
 ---- source: @functions.lua

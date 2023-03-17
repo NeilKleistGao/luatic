@@ -8,5 +8,5 @@
 -- max stack size: 2
 -- code: 
 ---- Variable Arguments Prepare
----- Return 0, 1
+---- Return: 0, 1
 -- Execution Results: 

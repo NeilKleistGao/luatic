@@ -11,7 +11,7 @@
 ---- Set Table Up
 ---- Get Table Up
 ---- Test
----- Jump
+---- Jump: 1
 ---- Load False
 ---- Set Table Up
 ---- Get Table Up
@@ -21,38 +21,38 @@
 ---- Set Table Up
 ---- Load I
 ---- Equal I
----- Jump
+---- Jump: 1
 ---- L False Skip
 ---- Load True
 ---- Set Table Up
 ---- Load I
 ---- Less Than I
----- Jump
+---- Jump: 1
 ---- L False Skip
 ---- Load True
 ---- Set Table Up
 ---- Load I
 ---- Less Than I
----- Jump
+---- Jump: 1
 ---- L False Skip
 ---- Load True
 ---- Set Table Up
 ---- Load I
 ---- Less Equal I
----- Jump
+---- Jump: 1
 ---- L False Skip
 ---- Load True
 ---- Set Table Up
 ---- Load I
 ---- Less Equal I
----- Jump
+---- Jump: 1
 ---- L False Skip
 ---- Load True
 ---- Set Table Up
 ---- Load I
 ---- Equal I
----- Jump
+---- Jump: 1
 ---- L False Skip
 ---- Load True
 ---- Set Table Up
----- Return 0, 1
+---- Return: 0, 1

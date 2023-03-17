@@ -21,4 +21,4 @@
 ---- Pow K
 ---- MM Bin K
 ---- Set Table Up
----- Return 0, 1
+---- Return: 0, 1

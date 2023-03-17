@@ -12,7 +12,7 @@
 ---- Closure
 ---- Set Table Up
 ---- Closure
----- Return 2, 1
+---- Return: 2, 1
 -- sub prototypes: 
 ---- PROTOTYPE
 ---- source: @local.lua

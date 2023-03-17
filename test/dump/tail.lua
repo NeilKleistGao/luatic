@@ -14,7 +14,7 @@
 ---- Load I
 ---- Load I
 ---- Call
----- Return 1, 1
+---- Return: 1, 1
 -- sub prototypes: 
 ---- PROTOTYPE
 ---- source: @tail.lua
@@ -24,14 +24,14 @@
 ---- max stack size: 5
 ---- code: 
 ------ Equal I
------- Jump
+------ Jump: 2
 ------ Return 1
------- Jump
+------ Jump: 7
 ------ Get Table Up
 ------ Add I
 ------ MM Bin I
 ------ Mul
 ------ MM Bin
 ------ Tail Call
------- Return 2, 0
+------ Return: 2, 0
 ------ Return 0
