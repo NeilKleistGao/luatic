@@ -37,9 +37,9 @@ namespace instructions {
         return 1;
       },
       [](Instruction p_ins, const std::shared_ptr<LunaStack>& p_stack) {
-        p_stack.Push(nullptr);
-        for (int i = 0; i <= ((p_ins >> 16) & 0xFF); ++i) p_stack.Copy(-1, i);
-        p_stack.Pop();
+        p_stack->Push(nullptr);
+        for (int i = 0; i <= ((p_ins >> 16) & 0xFF); ++i) p_stack->Copy(-1, i);
+        p_stack->Pop();
         return 1;
       },
       [](Instruction p_ins, const std::shared_ptr<LunaStack>& p_stack) {

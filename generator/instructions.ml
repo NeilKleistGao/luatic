@@ -158,9 +158,9 @@ let instructions = [
   InstABC (
     (fun ins -> ["Load Nil: [%d, %d]"; a(ins); a(ins) ^ " + " ^ b(ins)]),
     (fun ins -> [
-      "p_stack.Push(nullptr);";
-      "for (int i = 0; i <= " ^ b(ins) ^ "; ++i) p_stack.Copy(-1, i);";
-      "p_stack.Pop();";
+      "p_stack->Push(nullptr);";
+      "for (int i = 0; i <= " ^ b(ins) ^ "; ++i) p_stack->Copy(-1, i);";
+      "p_stack->Pop();";
       "return 1;"
     ])
   );
