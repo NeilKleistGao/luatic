@@ -31,7 +31,11 @@ namespace instructions {
         fprintf(p_fp, "%s Load True\n", p_indent.c_str());
         break;
       case 8:
-        fprintf(p_fp, "%s Load Nil\n", p_indent.c_str());
+        fprintf(p_fp,
+                "%s Load Nil: [%d, %d]\n",
+                p_indent.c_str(),
+                ((p_ins >> 7) & 0xFF),
+                ((p_ins >> 7) & 0xFF) + ((p_ins >> 16) & 0xFF));
         break;
       case 9:
         fprintf(p_fp, "%s Get Up Value\n", p_indent.c_str());

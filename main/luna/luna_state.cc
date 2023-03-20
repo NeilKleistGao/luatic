@@ -30,14 +30,6 @@ void LunaState::PopN(size_t p_n) {
   }
 }
 
-void LunaState::Copy(int p_from, int p_to) {
-  const auto val = m_stack->Get(p_from);
-  if (val.has_value()) {
-    m_stack->Set(p_to, val.value());
-  }
-  // TODO: throw?
-}
-
 void LunaState::PushAt(int p_index) {
   const auto val = m_stack->Get(p_index);
   if (val.has_value()) {

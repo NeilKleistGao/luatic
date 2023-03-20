@@ -34,7 +34,6 @@ public:
   LunaState(): m_stack(new LunaStack{32}), m_pc(0){};
 
   void PopN(size_t p_n);
-  void Copy(int p_from, int p_to);
   void PushAt(int p_index);
   void ReplaceWithTop(int p_index);
   void Rotate(int p_index, int p_n);
@@ -49,6 +48,7 @@ public:
   inline std::optional<LunaValue> Access(int p_index) const {
     return m_stack->Get(p_index);
   }
+  inline void Copy(int p_from, int p_to) { m_stack->Copy(p_from, p_to); }
 
 private:
   unsigned int m_pc;

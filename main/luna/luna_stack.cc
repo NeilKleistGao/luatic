@@ -91,3 +91,11 @@ void LunaStack::Reverse(int p_from, int p_to) {
     --p_to;
   }
 }
+
+void LunaStack::Copy(int p_from, int p_to) {
+  const auto val = this->Get(p_from);
+  if (val.has_value()) {
+    this->Set(p_to, val.value());
+  }
+  // TODO: throw?
+}

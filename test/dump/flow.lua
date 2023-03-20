@@ -23,7 +23,7 @@
 ---- Call
 ---- Jump: 3
 ---- Get Table Up
----- Load Nil
+---- Load Nil: [1, 1]
 ---- Call
 ---- Load False
 ---- Test
