@@ -40,6 +40,7 @@ static const std::unordered_set<std::string> EXECUTION_FILTER = {
   "flow.luac",
   "functions.luac",
   "hello_world.luac",
+  "load.luac",
   "local.luac",
   "tables.luac",
   "tail.luac"};

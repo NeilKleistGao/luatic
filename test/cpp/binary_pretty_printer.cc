@@ -52,6 +52,27 @@ namespace chunk {
       instructions::PrintInstruction(p_fp, code, p_indent + "--");
     }
 
+    fprintf(p_fp, "%s constant: \n", p_indent.c_str());
+    for (const auto& lit : p_pro.constants) {
+      switch (lit.index()) {
+        case 0:
+          fprintf(p_fp, "%s-- Nil\n", p_indent.c_str());
+          break;
+        case 1:
+          fprintf(p_fp, "%s-- Boolean\n", p_indent.c_str());
+          break;
+        case 2:
+          fprintf(p_fp, "%s-- Number\n", p_indent.c_str());
+          break;
+        case 3:
+          fprintf(p_fp, "%s-- Int\n", p_indent.c_str());
+          break;
+        case 4:
+          fprintf(p_fp, "%s-- String\n", p_indent.c_str());
+          break;
+      }
+    }
+
     if (!p_pro.proto.empty()) {
       fprintf(p_fp, "%s sub prototypes: \n", p_indent.c_str());
       for (const auto& pro : p_pro.proto) {

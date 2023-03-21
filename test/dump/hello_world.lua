@@ -9,6 +9,9 @@
 -- code: 
 ---- Variable Arguments Prepare
 ---- Get Table Up
----- Load K
+---- Load K(constant) from 1 to 1
 ---- Call
 ---- Return: 0, 1
+-- constant: 
+---- String
+---- String

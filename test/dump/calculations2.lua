@@ -22,3 +22,12 @@
 ---- MM Bin K
 ---- Set Table Up
 ---- Return: 0, 1
+-- constant: 
+---- String
+---- Number
+---- String
+---- Number
+---- String
+---- Number
+---- String
+---- Number

@@ -1,13 +1,18 @@
 -- BINARY CHUNK
 -- up values size: 1
 -- PROTOTYPE
--- source: @empty.lua
+-- source: @load.lua
 -- define: line 0 to line 0
 -- num params: 0
 -- is var arg: yes
--- max stack size: 2
+-- max stack size: 5
 -- code: 
 ---- Variable Arguments Prepare
----- Return: 0, 1
+---- Load Nil: [0, 0]
+---- Load I
+---- Load I
+---- Load I
+---- Load K(constant) from 0 to 4
+---- Return: 5, 1
 -- constant: 
--- Execution Results: 
+---- String

@@ -56,3 +56,15 @@
 ---- Load True at 0
 ---- Set Table Up
 ---- Return: 0, 1
+-- constant: 
+---- String
+---- Boolean
+---- String
+---- String
+---- String
+---- String
+---- String
+---- String
+---- String
+---- String
+---- String

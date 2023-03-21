@@ -15,6 +15,8 @@
 ---- Load I
 ---- Call
 ---- Return: 1, 1
+-- constant: 
+---- String
 -- sub prototypes: 
 ---- PROTOTYPE
 ---- source: @tail.lua
@@ -35,3 +37,5 @@
 ------ Tail Call
 ------ Return: 2, 0
 ------ Return 0
+---- constant: 
+------ String

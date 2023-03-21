@@ -25,6 +25,11 @@
 ---- Closure
 ---- Set Field
 ---- Return: 0, 1
+-- constant: 
+---- String
+---- String
+---- String
+---- String
 -- sub prototypes: 
 ---- PROTOTYPE
 ---- source: @tables.lua
@@ -37,3 +42,4 @@
 ------ MM Bin I
 ------ Return 1
 ------ Return 0
+---- constant: 

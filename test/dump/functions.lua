@@ -11,9 +11,12 @@
 ---- Closure
 ---- Set Table Up
 ---- Get Table Up
----- Load K
+---- Load K(constant) from 1 to 1
 ---- Call
 ---- Return: 0, 1
+-- constant: 
+---- String
+---- String
 -- sub prototypes: 
 ---- PROTOTYPE
 ---- source: @functions.lua
@@ -23,7 +26,10 @@
 ---- max stack size: 4
 ---- code: 
 ------ Get Table Up
------- Load K
+------ Load K(constant) from 1 to 2
 ------ Move
 ------ Call
 ------ Return 0
+---- constant: 
+------ String
+------ String

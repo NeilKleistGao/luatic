@@ -27,11 +27,26 @@
 ---- Div K
 ---- MM Bin K
 ---- Set Table Up
----- Load K
+---- Load K(constant) from 11 to 0
 ---- Len
 ---- Set Table Up
----- Load K
----- Load K
+---- Load K(constant) from 11 to 0
+---- Load K(constant) from 13 to 1
 ---- Concat
 ---- Set Table Up
 ---- Return: 0, 1
+-- constant: 
+---- String
+---- Number
+---- String
+---- Number
+---- String
+---- String
+---- Number
+---- String
+---- Number
+---- String
+---- String
+---- String
+---- String
+---- String

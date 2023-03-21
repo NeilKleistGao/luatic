@@ -140,7 +140,7 @@ let instructions = [
     (fun ins -> ["return 1;"])
   );
   InstABx (
-    (fun ins -> ["Load K"]),
+    (fun ins -> ["Load K(constant) from %d to %d"; bx(ins); a(ins)]),
     (fun ins -> ["return 1;"])
   );
   InstABx (

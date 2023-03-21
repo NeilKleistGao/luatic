@@ -16,7 +16,11 @@ namespace instructions {
         fprintf(p_fp, "%s Load F\n", p_indent.c_str());
         break;
       case 3:
-        fprintf(p_fp, "%s Load K\n", p_indent.c_str());
+        fprintf(p_fp,
+                "%s Load K(constant) from %d to %d\n",
+                p_indent.c_str(),
+                ((p_ins >> 15) & 0x1FFFF),
+                ((p_ins >> 7) & 0xFF));
         break;
       case 4:
         fprintf(p_fp, "%s Load KX\n", p_indent.c_str());

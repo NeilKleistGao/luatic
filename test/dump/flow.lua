@@ -29,7 +29,7 @@
 ---- Test
 ---- Jump: 4
 ---- Get Table Up
----- Load K
+---- Load K(constant) from 1 to 1
 ---- Call
 ---- Jump: -7
 ---- Load I
@@ -41,7 +41,7 @@
 ---- Call
 ---- For Loop
 ---- Get Table Up
----- Load K
+---- Load K(constant) from 2 to 1
 ---- Call
 ---- Load False at 0
 ---- Test
@@ -60,3 +60,7 @@
 ---- For Loop
 ---- For Loop
 ---- Return: 0, 1
+-- constant: 
+---- String
+---- String
+---- String

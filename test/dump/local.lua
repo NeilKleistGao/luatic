@@ -13,6 +13,8 @@
 ---- Set Table Up
 ---- Closure
 ---- Return: 2, 1
+-- constant: 
+---- String
 -- sub prototypes: 
 ---- PROTOTYPE
 ---- source: @local.lua
@@ -28,6 +30,8 @@
 ------ MM Bin
 ------ Call
 ------ Return 0
+---- constant: 
+------ String
 ---- PROTOTYPE
 ---- source: @local.lua
 ---- define: line 31 to line 33
@@ -36,6 +40,9 @@
 ---- max stack size: 2
 ---- code: 
 ------ Get Table Up
------- Load K
+------ Load K(constant) from 1 to 1
 ------ Call
 ------ Return 0
+---- constant: 
+------ String
+------ String
