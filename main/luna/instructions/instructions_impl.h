@@ -28,10 +28,13 @@
 #include <memory>
 
 #include "luna/luna_stack.h"
+#include "shared/chunk/literal.h"
 #include "shared/instructions/instructions.h"
 
 namespace instructions {
-  int Execute(Instruction p_inst, const std::shared_ptr<LunaStack>& p_stack);
+  int Execute(Instruction p_inst,
+              const std::shared_ptr<LunaStack>& p_stack,
+              const std::vector<chunk::Literal>& p_const);
 } // namespace instructions
 
 #endif //LUATIC_INSTRUCTIONS_IMPL_H

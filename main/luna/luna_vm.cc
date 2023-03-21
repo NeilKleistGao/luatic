@@ -38,8 +38,9 @@ std::optional<instructions::Instruction> LunaVirtualMachine::Fetch() {
 bool LunaVirtualMachine::Update() {
   const auto instruction = Fetch();
   if (instruction.has_value()) {
-    const auto delta_pc =
-      instructions::Execute(instruction.value(), this->m_stack);
+    const auto delta_pc = instructions::Execute(instruction.value(),
+                                                this->m_stack,
+                                                this->m_proto->constants);
     AddPC(delta_pc);
     return false;
   }
