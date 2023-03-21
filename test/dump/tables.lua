@@ -13,9 +13,9 @@
 ---- Set Table Up
 ---- New Table
 ---- Extra Arguments
----- Load I
----- Load I
----- Load I
+---- Load I at 1, value: 1
+---- Load I at 2, value: 2
+---- Load I at 3, value: 3
 ---- Set List
 ---- Set Table Up
 ---- New Table

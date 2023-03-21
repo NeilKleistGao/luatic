@@ -8,14 +8,14 @@
 -- max stack size: 8
 -- code: 
 ---- Variable Arguments Prepare
----- Load I
+---- Load I at 0, value: 2
 ---- Less Than I
 ---- Jump: 4
 ---- Get Table Up
 ---- Load True at 1
 ---- Call
 ---- Jump: 10
----- Load I
+---- Load I at 0, value: 1
 ---- Less Than I
 ---- Jump: 4
 ---- Get Table Up
@@ -32,9 +32,9 @@
 ---- Load K(constant) from 1 to 1
 ---- Call
 ---- Jump: -7
----- Load I
----- Load I
----- Load I
+---- Load I at 0, value: 1
+---- Load I at 1, value: 10
+---- Load I at 2, value: 1
 ---- For Prepare
 ---- Get Table Up
 ---- Move
@@ -48,13 +48,13 @@
 ---- Jump: -6
 ---- Jump: 1
 ---- Jump: 0
----- Load I
----- Load I
----- Load I
+---- Load I at 0, value: 1
+---- Load I at 1, value: 10
+---- Load I at 2, value: 1
 ---- For Prepare
----- Load I
----- Load I
----- Load I
+---- Load I at 4, value: 1
+---- Load I at 5, value: 10
+---- Load I at 6, value: 1
 ---- For Prepare
 ---- Jump: 2
 ---- For Loop

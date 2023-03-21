@@ -10,10 +10,18 @@ namespace instructions {
         fprintf(p_fp, "%s Move\n", p_indent.c_str());
         break;
       case 1:
-        fprintf(p_fp, "%s Load I\n", p_indent.c_str());
+        fprintf(p_fp,
+                "%s Load I at %d, value: %d\n",
+                p_indent.c_str(),
+                ((p_ins >> 7) & 0xFF),
+                (((p_ins >> 15) & 0x1FFFF) - 0xFFFF));
         break;
       case 2:
-        fprintf(p_fp, "%s Load F\n", p_indent.c_str());
+        fprintf(p_fp,
+                "%s Load F at %d, value: %f\n",
+                p_indent.c_str(),
+                ((p_ins >> 7) & 0xFF),
+                static_cast<double>((((p_ins >> 15) & 0x1FFFF) - 0xFFFF)));
         break;
       case 3:
         fprintf(p_fp,

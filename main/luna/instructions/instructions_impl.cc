@@ -21,13 +21,25 @@ namespace instructions {
       },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
-         const std::vector<chunk::Literal>& p_const) { return 1; },
+         const std::vector<chunk::Literal>& p_const) {
+        p_stack->Set(((p_ins >> 7) & 0xFF),
+                     (((p_ins >> 15) & 0x1FFFF) - 0xFFFF));
+        return 1;
+      },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
-         const std::vector<chunk::Literal>& p_const) { return 1; },
+         const std::vector<chunk::Literal>& p_const) {
+        p_stack->Set(((p_ins >> 7) & 0xFF),
+                     static_cast<double>((((p_ins >> 15) & 0x1FFFF) - 0xFFFF)));
+        return 1;
+      },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
-         const std::vector<chunk::Literal>& p_const) { return 1; },
+         const std::vector<chunk::Literal>& p_const) {
+        p_stack->Push(FromLiteral(p_const[((p_ins >> 15) & 0x1FFFF)]));
+        p_stack->ReplaceWithTop(((p_ins >> 7) & 0xFF));
+        return 1;
+      },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
          const std::vector<chunk::Literal>& p_const) { return 1; },

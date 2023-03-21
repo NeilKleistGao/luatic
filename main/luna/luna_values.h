@@ -28,6 +28,8 @@
 #include <string>
 #include <variant>
 
+#include "shared/chunk/literal.h"
+
 /**
  * This enum is designed for implicit conversion.
  */
@@ -73,5 +75,6 @@ using LunaValue = std::variant<LunaNone,
 
 LunaType GetTypeOf(const LunaValue& p_value);
 std::string GetTypeName(LunaType p_type);
+LunaValue FromLiteral(const chunk::Literal& p_lit);
 
 #endif //LUATIC_LUNA_VALUES_H

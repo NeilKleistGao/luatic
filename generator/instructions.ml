@@ -35,7 +35,7 @@ exception WrongField of string;;
 let op_ins = "(p_ins & 0x7F)";;
 
 let a ins = match ins with
-  | InstABC (_, _) | InstABx (_, _) -> "((p_ins >> 7) & 0xFF)"
+  | InstABC (_, _) | InstABx (_, _) | InstAsBx(_, _) -> "((p_ins >> 7) & 0xFF)"
   | _ -> raise (WrongField "no field a found.");;
 
 let b ins = match ins with
@@ -132,16 +132,26 @@ let instructions = [
     ])
   );
   InstAsBx (
-    (fun ins -> ["Load I"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> ["Load I at %d, value: %d"; a(ins); sbx(ins)]),
+    (fun ins -> [
+      "p_stack->Set(" ^ a(ins) ^ ", " ^ sbx(ins) ^ ");";
+      "return 1;"
+    ])
   );
   InstAsBx (
-    (fun ins -> ["Load F"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> ["Load F at %d, value: %f"; a(ins); "static_cast<double>(" ^ sbx(ins) ^ ")"]),
+    (fun ins -> [
+      "p_stack->Set(" ^ a(ins) ^ ", " ^ "static_cast<double>(" ^ sbx(ins) ^ "));";
+      "return 1;"
+    ])
   );
   InstABx (
     (fun ins -> ["Load K(constant) from %d to %d"; bx(ins); a(ins)]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [
+      "p_stack->Push(FromLiteral(p_const[" ^ bx(ins) ^ "]));";
+      "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
+      "return 1;"
+    ])
   );
   InstABx (
     (fun ins -> ["Load KX"]),

@@ -55,3 +55,18 @@ std::string GetTypeName(LunaType p_type) {
       return "userdata";
   }
 }
+
+LunaValue FromLiteral(const chunk::Literal& p_lit) {
+  switch (p_lit.index()) {
+    case 0:
+      return std::get<0>(p_lit);
+    case 1:
+      return std::get<1>(p_lit);
+    case 2:
+      return std::get<2>(p_lit);
+    case 3:
+      return std::get<3>(p_lit);
+    case 4:
+      return std::get<4>(p_lit);
+  }
+}

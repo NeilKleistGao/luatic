@@ -99,3 +99,11 @@ void LunaStack::Copy(int p_from, int p_to) {
   }
   // TODO: throw?
 }
+
+void LunaStack::ReplaceWithTop(int p_index) {
+  const auto top = this->Pop();
+  if (top.has_value()) {
+    this->Set(p_index, top.value());
+  }
+  // TODO: throw?
+}

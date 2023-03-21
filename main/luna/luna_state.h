@@ -35,7 +35,6 @@ public:
 
   void PopN(size_t p_n);
   void PushAt(int p_index);
-  void ReplaceWithTop(int p_index);
   void Rotate(int p_index, int p_n);
   void Remove(int p_index);
   void SetTop(size_t p_new_top);
@@ -48,7 +47,6 @@ public:
   inline std::optional<LunaValue> Access(int p_index) const {
     return m_stack->Get(p_index);
   }
-  inline void Copy(int p_from, int p_to) { m_stack->Copy(p_from, p_to); }
 
 private:
   unsigned int m_pc;

@@ -38,14 +38,6 @@ void LunaState::PushAt(int p_index) {
   // TODO: throw?
 }
 
-void LunaState::ReplaceWithTop(int p_index) {
-  const auto top = m_stack->Pop();
-  if (top.has_value()) {
-    m_stack->Set(p_index, top.value());
-  }
-  // TODO: throw?
-}
-
 void LunaState::Rotate(int p_index, int p_n) {
   const auto top = static_cast<int>(m_stack->Top());
   const auto pos = p_index;

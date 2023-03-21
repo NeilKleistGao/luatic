@@ -8,7 +8,7 @@
 -- max stack size: 2
 -- code: 
 ---- Variable Arguments Prepare
----- Load I
+---- Load I at 0, value: 42
 ---- Closure
 ---- Set Table Up
 ---- Closure
@@ -23,7 +23,7 @@
 ---- is var arg: no
 ---- max stack size: 3
 ---- code: 
------- Load I
+------ Load I at 0, value: 0
 ------ Get Table Up
 ------ Get Up Value
 ------ Add

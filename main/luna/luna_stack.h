@@ -45,6 +45,7 @@ public:
   void Set(int p_index, LunaValue&& p_value);
   void Reverse(int p_from, int p_to);
   void Copy(int p_from, int p_to);
+  void ReplaceWithTop(int p_index);
 
 private:
   std::vector<LunaValue> m_slots;

@@ -11,8 +11,8 @@
 ---- Closure
 ---- Set Table Up
 ---- Get Table Up
----- Load I
----- Load I
+---- Load I at 1, value: 5
+---- Load I at 2, value: 1
 ---- Call
 ---- Return: 1, 1
 -- constant: 
