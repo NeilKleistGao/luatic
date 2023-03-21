@@ -28,12 +28,14 @@ namespace instructions {
         return 1;
       },
       [](Instruction p_ins, const std::shared_ptr<LunaStack>& p_stack) {
+        p_stack->Set(((p_ins >> 7) & 0xFF), false);
         return 1;
       },
       [](Instruction p_ins, const std::shared_ptr<LunaStack>& p_stack) {
         return 1;
       },
       [](Instruction p_ins, const std::shared_ptr<LunaStack>& p_stack) {
+        p_stack->Set(((p_ins >> 7) & 0xFF), true);
         return 1;
       },
       [](Instruction p_ins, const std::shared_ptr<LunaStack>& p_stack) {

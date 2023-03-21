@@ -22,13 +22,19 @@ namespace instructions {
         fprintf(p_fp, "%s Load KX\n", p_indent.c_str());
         break;
       case 5:
-        fprintf(p_fp, "%s Load False\n", p_indent.c_str());
+        fprintf(p_fp,
+                "%s Load False at %d\n",
+                p_indent.c_str(),
+                ((p_ins >> 7) & 0xFF));
         break;
       case 6:
         fprintf(p_fp, "%s L False Skip\n", p_indent.c_str());
         break;
       case 7:
-        fprintf(p_fp, "%s Load True\n", p_indent.c_str());
+        fprintf(p_fp,
+                "%s Load True at %d\n",
+                p_indent.c_str(),
+                ((p_ins >> 7) & 0xFF));
         break;
       case 8:
         fprintf(p_fp,

@@ -144,16 +144,22 @@ let instructions = [
     (fun ins -> ["return 1;"])
   );
   InstABC ( (* 5 *)
-    (fun ins -> ["Load False"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> ["Load False at %d"; a(ins)]),
+    (fun ins -> [
+      "p_stack->Set(" ^ a(ins) ^ ", false);";
+      "return 1;"
+    ])
   );
   InstABC (
     (fun ins -> ["L False Skip"]),
     (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun ins -> ["Load True"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> ["Load True at %d"; a(ins)]),
+    (fun ins -> [
+      "p_stack->Set(" ^ a(ins) ^ ", true);";
+      "return 1;"
+    ])
   );
   InstABC (
     (fun ins -> ["Load Nil: [%d, %d]"; a(ins); a(ins) ^ " + " ^ b(ins)]),

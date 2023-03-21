@@ -12,20 +12,20 @@
 ---- Less Than I
 ---- Jump: 4
 ---- Get Table Up
----- Load True
+---- Load True at 1
 ---- Call
 ---- Jump: 10
 ---- Load I
 ---- Less Than I
 ---- Jump: 4
 ---- Get Table Up
----- Load False
+---- Load False at 1
 ---- Call
 ---- Jump: 3
 ---- Get Table Up
 ---- Load Nil: [1, 1]
 ---- Call
----- Load False
+---- Load False at 0
 ---- Test
 ---- Jump: 4
 ---- Get Table Up
@@ -43,7 +43,7 @@
 ---- Get Table Up
 ---- Load K
 ---- Call
----- Load False
+---- Load False at 0
 ---- Test
 ---- Jump: -6
 ---- Jump: 1
