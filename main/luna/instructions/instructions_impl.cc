@@ -179,7 +179,14 @@ namespace instructions {
       },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
-         const std::vector<chunk::Literal>& p_const) { return 1; },
+         const std::vector<chunk::Literal>& p_const) {
+        const auto p1 = p_stack->Get(((p_ins >> 16) & 0xFF));
+        const auto p2 = p_stack->Get(((p_ins >> 24) & 0xFF));
+        const auto res = Mod(p1.value(), p2.value());
+        p_stack->Push(res);
+        p_stack->ReplaceWithTop(((p_ins >> 7) & 0xFF));
+        return 1;
+      },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
          const std::vector<chunk::Literal>& p_const) {
@@ -239,13 +246,25 @@ namespace instructions {
          const std::vector<chunk::Literal>& p_const) { return 1; },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
-         const std::vector<chunk::Literal>& p_const) { return 1; },
+         const std::vector<chunk::Literal>& p_const) {
+        const auto p = p_stack->Get(((p_ins >> 16) & 0xFF));
+        const auto res = Neg(p.value());
+        p_stack->Push(res);
+        p_stack->ReplaceWithTop(((p_ins >> 7) & 0xFF));
+        return 1;
+      },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
          const std::vector<chunk::Literal>& p_const) { return 1; },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
-         const std::vector<chunk::Literal>& p_const) { return 1; },
+         const std::vector<chunk::Literal>& p_const) {
+        const auto p = p_stack->Get(((p_ins >> 16) & 0xFF));
+        const auto res = Not(p.value());
+        p_stack->Push(res);
+        p_stack->ReplaceWithTop(((p_ins >> 7) & 0xFF));
+        return 1;
+      },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
          const std::vector<chunk::Literal>& p_const) { return 1; },

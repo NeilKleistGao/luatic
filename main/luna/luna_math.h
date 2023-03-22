@@ -64,6 +64,10 @@ namespace math {
   LunaBoolean Equal(const LunaValue& p1, const LunaValue& p2);
   LunaBoolean LessThan(const LunaValue& p1, const LunaValue& p2);
   LunaBoolean LessEqual(const LunaValue& p1, const LunaValue& p2);
+
+  inline LunaInt Mod(LunaInt p1, LunaInt p2) { return p1 % p2; }
+
+  inline LunaBoolean Not(LunaBoolean p) { return !p; }
 } // namespace math
 
 #endif //LUATIC_LUNA_MATH_H

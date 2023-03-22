@@ -156,7 +156,7 @@ namespace instructions {
         break;
       case 37:
         fprintf(p_fp,
-                "%s Mod R[%d] = R[%d] % R[%d]\n",
+                "%s Mod R[%d] = R[%d] %% R[%d]\n",
                 p_indent.c_str(),
                 ((p_ins >> 7) & 0xFF),
                 ((p_ins >> 16) & 0xFF),
@@ -211,13 +211,21 @@ namespace instructions {
         fprintf(p_fp, "%s MM Bin K\n", p_indent.c_str());
         break;
       case 49:
-        fprintf(p_fp, "%s UNM\n", p_indent.c_str());
+        fprintf(p_fp,
+                "%s UNM R[%d] = -R[%d]\n",
+                p_indent.c_str(),
+                ((p_ins >> 7) & 0xFF),
+                ((p_ins >> 16) & 0xFF));
         break;
       case 50:
         fprintf(p_fp, "%s Bit Not\n", p_indent.c_str());
         break;
       case 51:
-        fprintf(p_fp, "%s Not\n", p_indent.c_str());
+        fprintf(p_fp,
+                "%s Not R[%d] = not R[%d]\n",
+                p_indent.c_str(),
+                ((p_ins >> 7) & 0xFF),
+                ((p_ins >> 16) & 0xFF));
         break;
       case 52:
         fprintf(p_fp, "%s Len\n", p_indent.c_str());

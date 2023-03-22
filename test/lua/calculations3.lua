@@ -22,13 +22,14 @@
 - SOFTWARE.
 --]]
 
-a = true
-b = a and false
-c = false or b
-d = not c
-e = 12 == 13
-f = 1 > 2
-g = 2 < 3
-h = 3 >= 4
-i = 4 <= 5
-j = 6 ~= 6
+local a = true
+local b = a and false
+local c = false or b
+local d = not c
+local e = 12 == 13
+local f = 1 > 2
+local g = 2 < 3
+local h = 3 >= 4
+local i = 4 <= 5
+local j = 6 ~= 6
+local k = -j

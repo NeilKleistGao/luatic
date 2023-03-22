@@ -1,70 +1,49 @@
 -- BINARY CHUNK
 -- up values size: 1
 -- PROTOTYPE
--- source: @calculation3.lua
+-- source: @calculations3.lua
 -- define: line 0 to line 0
 -- num params: 0
 -- is var arg: yes
--- max stack size: 2
+-- max stack size: 11
 -- code: 
 ---- Variable Arguments Prepare
----- Set Table Up
----- Get Table Up
----- Test
+---- Load True at 0
+---- Test Set
 ---- Jump: 1
----- Load False at 0
----- Set Table Up
----- Get Table Up
----- Set Table Up
----- Get Table Up
----- Not
----- Set Table Up
----- Load I at 0, value: 13
+---- Load False at 1
+---- Move
+---- Not R[3] = not R[2]
+---- Load I at 4, value: 13
 ---- Equal I
 ---- Jump: 1
 ---- L False Skip
----- Load True at 0
----- Set Table Up
----- Load I at 0, value: 2
+---- Load True at 4
+---- Load I at 5, value: 2
 ---- Less Than I
 ---- Jump: 1
 ---- L False Skip
----- Load True at 0
----- Set Table Up
----- Load I at 0, value: 2
+---- Load True at 5
+---- Load I at 6, value: 2
 ---- Less Than I
 ---- Jump: 1
 ---- L False Skip
----- Load True at 0
----- Set Table Up
----- Load I at 0, value: 4
+---- Load True at 6
+---- Load I at 7, value: 4
 ---- Less Equal I
 ---- Jump: 1
 ---- L False Skip
----- Load True at 0
----- Set Table Up
----- Load I at 0, value: 4
+---- Load True at 7
+---- Load I at 8, value: 4
 ---- Less Equal I
 ---- Jump: 1
 ---- L False Skip
----- Load True at 0
----- Set Table Up
----- Load I at 0, value: 6
+---- Load True at 8
+---- Load I at 9, value: 6
 ---- Equal I
 ---- Jump: 1
 ---- L False Skip
----- Load True at 0
----- Set Table Up
----- Return: 0, 1
+---- Load True at 9
+---- UNM R[10] = -R[9]
+---- Return: 11, 1
 -- constant: 
----- String
----- Boolean
----- String
----- String
----- String
----- String
----- String
----- String
----- String
----- String
----- String

@@ -223,8 +223,15 @@ let instructions = [
     ])
   );
   InstABC (
-    (fun ins -> ["Mod R[%d] = R[%d] % R[%d]"; a(ins); b(ins); c(ins)]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> ["Mod R[%d] = R[%d] %% R[%d]"; a(ins); b(ins); c(ins)]),
+    (fun ins -> [
+      "const auto p1 = p_stack->Get(" ^ b(ins) ^ ");";
+      "const auto p2 = p_stack->Get(" ^ c(ins) ^ ");";
+      "const auto res = Mod(p1.value(), p2.value());";
+      "p_stack->Push(res);";
+      "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
+      "return 1;"
+    ])
   );
   InstABC (
     (fun ins -> ["Pow R[%d] = R[%d] ^ R[%d]"; a(ins); b(ins); c(ins)]),
@@ -292,16 +299,28 @@ let instructions = [
     (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun ins -> ["UNM"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> ["UNM R[%d] = -R[%d]"; a(ins); b(ins)]),
+    (fun ins -> [
+      "const auto p = p_stack->Get(" ^ b(ins) ^ ");";
+      "const auto res = Neg(p.value());";
+      "p_stack->Push(res);";
+      "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
+      "return 1;"
+    ])
   );
   InstABC ( (* 50 *)
     (fun ins -> ["Bit Not"]),
     (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun ins -> ["Not"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> ["Not R[%d] = not R[%d]"; a(ins); b(ins)]),
+    (fun ins -> [
+      "const auto p = p_stack->Get(" ^ b(ins) ^ ");";
+      "const auto res = Not(p.value());";
+      "p_stack->Push(res);";
+      "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
+      "return 1;"
+    ])
   );
   InstABC (
     (fun ins -> ["Len"]),
