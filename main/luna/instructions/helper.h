@@ -35,25 +35,10 @@ namespace instructions {
   void PushRegOrConst(int p_index,
                       const std::shared_ptr<LunaStack>& p_stack,
                       const std::vector<chunk::Literal>& p_const);
-  inline LunaNumber
-    CalcArith(math::ArithOperator p_ao, LunaValue p1, LunaValue p2) {
-    return math::CalcArith(p_ao,
-                           std::get<LunaType::LUNA_NUMBER>(p1),
-                           std::get<LunaType::LUNA_NUMBER>(p2));
-  }
-
-  inline LunaInt Mod(LunaValue p1, LunaValue p2) {
-    return math::Mod(std::get<LunaInt>(std::get<LunaType::LUNA_NUMBER>(p1)),
-                     std::get<LunaInt>(std::get<LunaType::LUNA_NUMBER>(p2)));
-  }
-
-  inline LunaNumber Neg(LunaValue p) {
-    return math::Neg(std::get<LunaType::LUNA_NUMBER>(p));
-  }
-
-  inline LunaBoolean Not(LunaValue p) {
-    return math::Not(std::get<LunaType::LUNA_BOOLEAN>(p));
-  }
+  LunaNumber CalcArith(math::ArithOperator p_ao, LunaValue p1, LunaValue p2);
+  LunaInt Mod(LunaValue p1, LunaValue p2);
+  LunaNumber Neg(LunaValue p);
+  LunaBoolean Not(LunaValue p);
 } // namespace instructions
 
 #endif //LUATIC_HELPER_H

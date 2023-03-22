@@ -364,6 +364,8 @@ namespace instructions {
   int Execute(Instruction p_ins,
               const std::shared_ptr<LunaStack>& p_stack,
               const std::vector<chunk::Literal>& p_const) {
-    return s_execution[(p_ins & 0x7F)](p_ins, p_stack, p_const);
+    return ((p_ins & 0x7F) < s_execution.size())
+      ? s_execution[(p_ins & 0x7F)](p_ins, p_stack, p_const)
+      : 1;
   }
 } // namespace instructions

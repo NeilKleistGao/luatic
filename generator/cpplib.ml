@@ -118,6 +118,6 @@ let execute lst =
   "static const std::array<std::function<int(Instruction, const std::shared_ptr<LunaStack>&, const std::vector<chunk::Literal>&)>," ^ (string_of_int (List.length lst)) ^ ">s_execution = {\n" ^
   (execute_rec lst "") ^ "};\n" ^
   "int Execute(Instruction p_ins, const std::shared_ptr<LunaStack>& p_stack, const std::vector<chunk::Literal>& p_const) {\n" ^
-  "return s_execution[" ^ op_ins ^ "](p_ins, p_stack, p_const);\n" ^
+  "return (" ^ op_ins ^ "< s_execution.size()) ? " ^ "s_execution[" ^ op_ins ^ "](p_ins, p_stack, p_const) : 1;\n" ^ (* TODO: throw? *)
   "}\n" ^
   "}\n";;

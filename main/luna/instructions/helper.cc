@@ -29,9 +29,51 @@ namespace instructions {
                       const std::shared_ptr<LunaStack>& p_stack,
                       const std::vector<chunk::Literal>& p_const) {
     if (p_index > 0xff) {
-      p_stack->Push(FromLiteral(p_const[p_index & 0xff]));
+      if ((p_index & 0xff) < p_const.size()) {
+        p_stack->Push(FromLiteral(p_const[p_index & 0xff]));
+      }
+      // TODO: throw?
     } else {
       p_stack->Push(p_index);
+    }
+  }
+
+  LunaNumber CalcArith(math::ArithOperator p_ao, LunaValue p1, LunaValue p2) {
+    if (p1.index() == LunaType::LUNA_NUMBER &&
+        p2.index() == LunaType::LUNA_NUMBER) {
+      return math::CalcArith(p_ao,
+                             std::get<LunaType::LUNA_NUMBER>(p1),
+                             std::get<LunaType::LUNA_NUMBER>(p2));
+    } else {
+      return 0.0; // TODO: throw?
+    }
+  }
+
+  LunaInt Mod(LunaValue p1, LunaValue p2) {
+    if (p1.index() == LunaType::LUNA_NUMBER &&
+        p2.index() == LunaType::LUNA_NUMBER) {
+      const auto& n1 = std::get<LunaType::LUNA_NUMBER>(p1);
+      const auto& n2 = std::get<LunaType::LUNA_NUMBER>(p2);
+      if (n1.index() == LUNA_INT && n2.index() == LUNA_INT) {
+        return math::Mod(std::get<LUNA_INT>(n1), std::get<LUNA_INT>(n2));
+      }
+    }
+    return 0; // TODO: throw?
+  }
+
+  LunaNumber Neg(LunaValue p) {
+    if (p.index() == LunaType::LUNA_NUMBER) {
+      return math::Neg(std::get<LunaType::LUNA_NUMBER>(p));
+    } else {
+      return 0.0; // TODO: throw?
+    }
+  }
+
+  LunaBoolean Not(LunaValue p) {
+    if (p.index() == LunaType::LUNA_BOOLEAN) {
+      return math::Not(std::get<LunaType::LUNA_BOOLEAN>(p));
+    } else {
+      return false; // TODO: throw
     }
   }
 } // namespace instructions
