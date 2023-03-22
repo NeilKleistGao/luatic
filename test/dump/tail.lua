@@ -32,7 +32,7 @@
 ------ Get Table Up
 ------ Add I
 ------ MM Bin I
------- Mul
+------ Mul R[4] = R[1] * R[0]
 ------ MM Bin
 ------ Tail Call
 ------ Return: 2, 0

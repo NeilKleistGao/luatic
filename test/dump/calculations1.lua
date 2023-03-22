@@ -5,48 +5,30 @@
 -- define: line 0 to line 0
 -- num params: 0
 -- is var arg: yes
--- max stack size: 2
+-- max stack size: 11
 -- code: 
 ---- Variable Arguments Prepare
----- Set Table Up
----- Set Table Up
----- Get Table Up
----- Get Table Up
----- Add
+---- Load I at 0, value: 42
+---- Load I at 1, value: 114
+---- Add R[2] = R[0] + R[1]
 ---- MM Bin
----- Set Table Up
----- Get Table Up
+---- Load I at 3, value: 3
+---- Add I
+---- MM Bin I
 ---- Sub K
 ---- MM Bin K
----- Set Table Up
----- Get Table Up
 ---- Mul K
 ---- MM Bin K
----- Set Table Up
----- Get Table Up
 ---- Div K
 ---- MM Bin K
----- Set Table Up
----- Load K(constant) from 11 to 0
+---- Load K(constant) from 2 to 8
 ---- Len
----- Set Table Up
----- Load K(constant) from 11 to 0
----- Load K(constant) from 13 to 1
+---- Load K(constant) from 2 to 9
+---- Load K(constant) from 3 to 10
 ---- Concat
----- Set Table Up
----- Return: 0, 1
+---- Return: 10, 1
 -- constant: 
----- String
 ---- Number
----- String
 ---- Number
----- String
----- String
----- Number
----- String
----- Number
----- String
----- String
----- String
 ---- String
 ---- String

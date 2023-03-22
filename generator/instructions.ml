@@ -190,32 +190,74 @@ let instructions = [
     (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun ins -> ["Add"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> ["Add R[%d] = R[%d] + R[%d]"; a(ins); b(ins); c(ins)]),
+    (fun ins -> [
+      "const auto p1 = p_stack->Get(" ^ b(ins) ^ ");";
+      "const auto p2 = p_stack->Get(" ^ c(ins) ^ ");";
+      "const auto res = CalcArith(math::ArithOperator::ADD, p1.value(), p2.value());";
+      "p_stack->Push(res);";
+      "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
+      "return 1;"
+    ])
   );
   InstABC ( (* 35 *)
-    (fun ins -> ["Sub"]),
+    (fun ins -> ["Sub R[%d] = R[%d] - R[%d]"; a(ins); b(ins); c(ins)]),
+    (fun ins -> [
+      "const auto p1 = p_stack->Get(" ^ b(ins) ^ ");";
+      "const auto p2 = p_stack->Get(" ^ c(ins) ^ ");";
+      "const auto res = CalcArith(math::ArithOperator::SUB, p1.value(), p2.value());";
+      "p_stack->Push(res);";
+      "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
+      "return 1;"
+    ])
+  );
+  InstABC (
+    (fun ins -> ["Mul R[%d] = R[%d] * R[%d]"; a(ins); b(ins); c(ins)]),
+    (fun ins -> [
+      "const auto p1 = p_stack->Get(" ^ b(ins) ^ ");";
+      "const auto p2 = p_stack->Get(" ^ c(ins) ^ ");";
+      "const auto res = CalcArith(math::ArithOperator::MUL, p1.value(), p2.value());";
+      "p_stack->Push(res);";
+      "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
+      "return 1;"
+    ])
+  );
+  InstABC (
+    (fun ins -> ["Mod R[%d] = R[%d] % R[%d]"; a(ins); b(ins); c(ins)]),
     (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun ins -> ["Mul"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> ["Pow R[%d] = R[%d] ^ R[%d]"; a(ins); b(ins); c(ins)]),
+    (fun ins -> [
+      "const auto p1 = p_stack->Get(" ^ b(ins) ^ ");";
+      "const auto p2 = p_stack->Get(" ^ c(ins) ^ ");";
+      "const auto res = CalcArith(math::ArithOperator::POW, p1.value(), p2.value());";
+      "p_stack->Push(res);";
+      "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
+      "return 1;"
+    ])
   );
   InstABC (
-    (fun ins -> ["Mod"]),
-    (fun ins -> ["return 1;"])
-  );
-  InstABC (
-    (fun ins -> ["Pow"]),
-    (fun ins -> ["return 1;"])
-  );
-  InstABC (
-    (fun ins -> ["Div"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> ["Div R[%d] = R[%d] / R[%d]"; a(ins); b(ins); c(ins)]),
+    (fun ins -> [
+      "const auto p1 = p_stack->Get(" ^ b(ins) ^ ");";
+      "const auto p2 = p_stack->Get(" ^ c(ins) ^ ");";
+      "const auto res = CalcArith(math::ArithOperator::DIV, p1.value(), p2.value());";
+      "p_stack->Push(res);";
+      "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
+      "return 1;"
+    ])
   );
   InstABC ( (* 40 *)
-    (fun ins -> ["I Div"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> ["I Div R[%d] = R[%d] // R[%d]"; a(ins); b(ins); c(ins)]),
+    (fun ins -> [
+      "const auto p1 = p_stack->Get(" ^ b(ins) ^ ");";
+      "const auto p2 = p_stack->Get(" ^ c(ins) ^ ");";
+      "const auto res = CalcArith(math::ArithOperator::I_DIV, p1.value(), p2.value());";
+      "p_stack->Push(res);";
+      "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
+      "return 1;"
+    ])
   );
   InstABC (
     (fun ins -> ["Bit And"]),

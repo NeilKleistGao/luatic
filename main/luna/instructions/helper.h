@@ -27,6 +27,7 @@
 
 #include <memory>
 
+#include "luna/luna_math.h"
 #include "luna/luna_stack.h"
 #include "shared/chunk/literal.h"
 
@@ -34,6 +35,12 @@ namespace instructions {
   void PushRegOrConst(int p_index,
                       const std::shared_ptr<LunaStack>& p_stack,
                       const std::vector<chunk::Literal>& p_const);
+  inline LunaNumber
+    CalcArith(math::ArithOperator p_ao, LunaValue p1, LunaValue p2) {
+    return math::CalcArith(p_ao,
+                           std::get<LunaType::LUNA_NUMBER>(p1),
+                           std::get<LunaType::LUNA_NUMBER>(p2));
+  }
 } // namespace instructions
 
 #endif //LUATIC_HELPER_H

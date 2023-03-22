@@ -131,25 +131,60 @@ namespace instructions {
         fprintf(p_fp, "%s Shift Left I\n", p_indent.c_str());
         break;
       case 34:
-        fprintf(p_fp, "%s Add\n", p_indent.c_str());
+        fprintf(p_fp,
+                "%s Add R[%d] = R[%d] + R[%d]\n",
+                p_indent.c_str(),
+                ((p_ins >> 7) & 0xFF),
+                ((p_ins >> 16) & 0xFF),
+                ((p_ins >> 24) & 0xFF));
         break;
       case 35:
-        fprintf(p_fp, "%s Sub\n", p_indent.c_str());
+        fprintf(p_fp,
+                "%s Sub R[%d] = R[%d] - R[%d]\n",
+                p_indent.c_str(),
+                ((p_ins >> 7) & 0xFF),
+                ((p_ins >> 16) & 0xFF),
+                ((p_ins >> 24) & 0xFF));
         break;
       case 36:
-        fprintf(p_fp, "%s Mul\n", p_indent.c_str());
+        fprintf(p_fp,
+                "%s Mul R[%d] = R[%d] * R[%d]\n",
+                p_indent.c_str(),
+                ((p_ins >> 7) & 0xFF),
+                ((p_ins >> 16) & 0xFF),
+                ((p_ins >> 24) & 0xFF));
         break;
       case 37:
-        fprintf(p_fp, "%s Mod\n", p_indent.c_str());
+        fprintf(p_fp,
+                "%s Mod R[%d] = R[%d] % R[%d]\n",
+                p_indent.c_str(),
+                ((p_ins >> 7) & 0xFF),
+                ((p_ins >> 16) & 0xFF),
+                ((p_ins >> 24) & 0xFF));
         break;
       case 38:
-        fprintf(p_fp, "%s Pow\n", p_indent.c_str());
+        fprintf(p_fp,
+                "%s Pow R[%d] = R[%d] ^ R[%d]\n",
+                p_indent.c_str(),
+                ((p_ins >> 7) & 0xFF),
+                ((p_ins >> 16) & 0xFF),
+                ((p_ins >> 24) & 0xFF));
         break;
       case 39:
-        fprintf(p_fp, "%s Div\n", p_indent.c_str());
+        fprintf(p_fp,
+                "%s Div R[%d] = R[%d] / R[%d]\n",
+                p_indent.c_str(),
+                ((p_ins >> 7) & 0xFF),
+                ((p_ins >> 16) & 0xFF),
+                ((p_ins >> 24) & 0xFF));
         break;
       case 40:
-        fprintf(p_fp, "%s I Div\n", p_indent.c_str());
+        fprintf(p_fp,
+                "%s I Div R[%d] = R[%d] // R[%d]\n",
+                p_indent.c_str(),
+                ((p_ins >> 7) & 0xFF),
+                ((p_ins >> 16) & 0xFF),
+                ((p_ins >> 24) & 0xFF));
         break;
       case 41:
         fprintf(p_fp, "%s Bit And\n", p_indent.c_str());

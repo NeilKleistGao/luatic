@@ -29,11 +29,7 @@ namespace instructions {
                       const std::shared_ptr<LunaStack>& p_stack,
                       const std::vector<chunk::Literal>& p_const) {
     if (p_index > 0xff) {
-      const int id = p_index & 0xff;
-      if (id < p_const.size()) {
-        p_stack->Push(FromLiteral(p_const[p_index & 0xff]));
-      }
-      // TODO: throw?
+      p_stack->Push(FromLiteral(p_const[p_index & 0xff]));
     } else {
       p_stack->Push(p_index);
     }

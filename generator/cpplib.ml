@@ -113,6 +113,7 @@ let execute lst =
   "\n" ^
   (include_user "instructions_impl.h") ^
   (include_user "helper.h") ^
+  "\n" ^
   "namespace instructions {\n" ^
   "static const std::array<std::function<int(Instruction, const std::shared_ptr<LunaStack>&, const std::vector<chunk::Literal>&)>," ^ (string_of_int (List.length lst)) ^ ">s_execution = {\n" ^
   (execute_rec lst "") ^ "};\n" ^

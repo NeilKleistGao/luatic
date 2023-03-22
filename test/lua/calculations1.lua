@@ -22,11 +22,13 @@
 - SOFTWARE.
 --]]
 
-a = 42
-b = 114
-c = a + b
-d = b - 514
-e = 2 * a
-f = a / 2
-g = #"abc"
-h = "abc".."def"
+local a = 42
+local b = 114
+local c = a + b
+local c2 = 1 + 2
+local c3 = c2 + 3
+local d = b - 514
+local e = 2 * a
+local f = a / 2
+local g = #"abc"
+local h = "abc".."def"

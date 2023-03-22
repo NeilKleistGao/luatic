@@ -26,7 +26,7 @@
 ------ Load I at 0, value: 0
 ------ Get Table Up
 ------ Get Up Value
------- Add
+------ Add R[2] = R[2] + R[0]
 ------ MM Bin
 ------ Call
 ------ Return 0
