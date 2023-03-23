@@ -22,7 +22,7 @@
 ---- Div K
 ---- MM Bin K
 ---- Load K(constant) from 2 to 8
----- Len
+---- Len R[8] = len(R[8])
 ---- Load K(constant) from 2 to 9
 ---- Load K(constant) from 3 to 10
 ---- Concat

@@ -323,8 +323,14 @@ let instructions = [
     ])
   );
   InstABC (
-    (fun ins -> ["Len"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> ["Len R[%d] = len(R[%d])"; a(ins); b(ins)]),
+    (fun ins -> [
+      "const auto p = p_stack->Get(" ^ b(ins) ^ ");";
+      "const auto res = Len(p.value());";
+      "p_stack->Push(res);";
+      "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
+      "return 1;"
+    ])
   );
   InstABC (
     (fun ins -> ["Concat"]),

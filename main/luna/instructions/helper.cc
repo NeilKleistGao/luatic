@@ -73,7 +73,16 @@ namespace instructions {
     if (p.index() == LunaType::LUNA_BOOLEAN) {
       return math::Not(std::get<LunaType::LUNA_BOOLEAN>(p));
     } else {
-      return false; // TODO: throw
+      return false; // TODO: throw?
+    }
+  }
+
+  LunaInt Len(LunaValue p) {
+    if (p.index() == LunaType::LUNA_STRING) {
+      return static_cast<LunaInt>(std::get<LunaType::LUNA_STRING>(p).size());
+      // TODO: tables
+    } else {
+      return 0; // TODO: throw?
     }
   }
 } // namespace instructions

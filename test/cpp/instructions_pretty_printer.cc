@@ -228,7 +228,11 @@ namespace instructions {
                 ((p_ins >> 16) & 0xFF));
         break;
       case 52:
-        fprintf(p_fp, "%s Len\n", p_indent.c_str());
+        fprintf(p_fp,
+                "%s Len R[%d] = len(R[%d])\n",
+                p_indent.c_str(),
+                ((p_ins >> 7) & 0xFF),
+                ((p_ins >> 16) & 0xFF));
         break;
       case 53:
         fprintf(p_fp, "%s Concat\n", p_indent.c_str());

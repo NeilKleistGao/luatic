@@ -267,7 +267,13 @@ namespace instructions {
       },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
-         const std::vector<chunk::Literal>& p_const) { return 1; },
+         const std::vector<chunk::Literal>& p_const) {
+        const auto p = p_stack->Get(((p_ins >> 16) & 0xFF));
+        const auto res = Len(p.value());
+        p_stack->Push(res);
+        p_stack->ReplaceWithTop(((p_ins >> 7) & 0xFF));
+        return 1;
+      },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
          const std::vector<chunk::Literal>& p_const) { return 1; },

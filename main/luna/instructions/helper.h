@@ -39,6 +39,7 @@ namespace instructions {
   LunaInt Mod(LunaValue p1, LunaValue p2);
   LunaNumber Neg(LunaValue p);
   LunaBoolean Not(LunaValue p);
+  LunaInt Len(LunaValue p);
 } // namespace instructions
 
 #endif //LUATIC_HELPER_H
