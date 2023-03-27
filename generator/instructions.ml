@@ -333,8 +333,17 @@ let instructions = [
     ])
   );
   InstABC (
-    (fun ins -> ["Concat"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> ["Concat R[%d] = R[%d] .. ... .. R[%d]"; a(ins); a(ins); a(ins) ^ " + " ^ b(ins) ^ " - 1"]),
+    (fun ins -> [
+      "auto res = p_stack->Get(" ^ a(ins) ^ ").value();";
+      "for (int i = " ^ a(ins) ^ " + 1; i < " ^ a(ins) ^ " + " ^ b(ins) ^ "; ++i) {";
+      "const auto p = p_stack->Get(i).value();";
+      "res = Concat(res, p);";
+      "}";
+      "p_stack->Push(res);";
+      "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
+      "return 1;"
+    ])
   );
   InstABC (
     (fun ins -> ["Close"]),

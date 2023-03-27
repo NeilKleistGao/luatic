@@ -85,4 +85,15 @@ namespace instructions {
       return 0; // TODO: throw?
     }
   }
+
+  LunaValue Concat(LunaValue p1, LunaValue p2) {
+    if (p1.index() == LunaType::LUNA_STRING &&
+        p2.index() == LunaType::LUNA_STRING) {
+      const auto& s1 = std::get<LunaType::LUNA_STRING>(p1);
+      const auto& s2 = std::get<LunaType::LUNA_STRING>(p2);
+      return s1 + s2;
+    } else {
+      return 0; // TODO: throw?
+    }
+  }
 } // namespace instructions

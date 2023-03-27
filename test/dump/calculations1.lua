@@ -25,7 +25,7 @@
 ---- Len R[8] = len(R[8])
 ---- Load K(constant) from 2 to 9
 ---- Load K(constant) from 3 to 10
----- Concat
+---- Concat R[9] = R[9] .. ... .. R[10]
 ---- Return: 10, 1
 -- constant: 
 ---- Number

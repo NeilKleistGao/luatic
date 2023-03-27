@@ -235,7 +235,12 @@ namespace instructions {
                 ((p_ins >> 16) & 0xFF));
         break;
       case 53:
-        fprintf(p_fp, "%s Concat\n", p_indent.c_str());
+        fprintf(p_fp,
+                "%s Concat R[%d] = R[%d] .. ... .. R[%d]\n",
+                p_indent.c_str(),
+                ((p_ins >> 7) & 0xFF),
+                ((p_ins >> 7) & 0xFF),
+                ((p_ins >> 7) & 0xFF) + ((p_ins >> 16) & 0xFF) - 1);
         break;
       case 54:
         fprintf(p_fp, "%s Close\n", p_indent.c_str());
