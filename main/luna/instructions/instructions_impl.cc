@@ -301,13 +301,28 @@ namespace instructions {
       },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
-         const std::vector<chunk::Literal>& p_const) { return 1; },
+         const std::vector<chunk::Literal>& p_const) {
+        const auto a = ((p_ins >> 7) & 0xFF);
+        const auto b = p_stack->Get(((p_ins >> 16) & 0xFF)).value();
+        const auto c = p_stack->Get(((p_ins >> 24) & 0xFF)).value();
+        return (math::Compare(math::ComOperator::EQ, b, c) == a) ? 1 : 2;
+      },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
-         const std::vector<chunk::Literal>& p_const) { return 1; },
+         const std::vector<chunk::Literal>& p_const) {
+        const auto a = ((p_ins >> 7) & 0xFF);
+        const auto b = p_stack->Get(((p_ins >> 16) & 0xFF)).value();
+        const auto c = p_stack->Get(((p_ins >> 24) & 0xFF)).value();
+        return (math::Compare(math::ComOperator::LT, b, c) == a) ? 1 : 2;
+      },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
-         const std::vector<chunk::Literal>& p_const) { return 1; },
+         const std::vector<chunk::Literal>& p_const) {
+        const auto a = ((p_ins >> 7) & 0xFF);
+        const auto b = p_stack->Get(((p_ins >> 16) & 0xFF)).value();
+        const auto c = p_stack->Get(((p_ins >> 24) & 0xFF)).value();
+        return (math::Compare(math::ComOperator::LE, b, c) == a) ? 1 : 2;
+      },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
          const std::vector<chunk::Literal>& p_const) { return 1; },

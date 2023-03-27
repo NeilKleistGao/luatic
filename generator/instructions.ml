@@ -358,16 +358,31 @@ let instructions = [
     (fun ins -> ["return " ^ sj(ins) ^ " + 1;"])
   );
   InstABC (
-    (fun ins -> ["Equal"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> ["Equal R[%d] == R[%d] =? R[%d]"; b(ins); c(ins); a(ins)]),
+    (fun ins -> [
+      "const auto a = " ^ a(ins) ^ ";";
+      "const auto b = p_stack->Get(" ^ b(ins) ^ ").value();";
+      "const auto c = p_stack->Get(" ^ c(ins) ^ ").value();";
+      "return (math::Compare(math::ComOperator::EQ, b, c) == a) ? 1 : 2;"
+    ])
   );
   InstABC (
-    (fun ins -> ["Less Than"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> ["Less Than R[%d] == R[%d] =? R[%d]"; b(ins); c(ins); a(ins)]),
+    (fun ins -> [
+      "const auto a = " ^ a(ins) ^ ";";
+      "const auto b = p_stack->Get(" ^ b(ins) ^ ").value();";
+      "const auto c = p_stack->Get(" ^ c(ins) ^ ").value();";
+      "return (math::Compare(math::ComOperator::LT, b, c) == a) ? 1 : 2;"
+    ])
   );
   InstABC (
-    (fun ins -> ["Less Equal"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> ["Less Equal R[%d] == R[%d] =? R[%d]"; b(ins); c(ins); a(ins)]),
+    (fun ins -> [
+      "const auto a = " ^ a(ins) ^ ";";
+      "const auto b = p_stack->Get(" ^ b(ins) ^ ").value();";
+      "const auto c = p_stack->Get(" ^ c(ins) ^ ").value();";
+      "return (math::Compare(math::ComOperator::LE, b, c) == a) ? 1 : 2;"
+    ])
   );
   InstABC ( (* 60 *)
     (fun ins -> ["Equal K"]),

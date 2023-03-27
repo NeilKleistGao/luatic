@@ -255,13 +255,28 @@ namespace instructions {
                 (((p_ins >> 7) & 0x1FFFFFF) - 0xFFFFFF));
         break;
       case 57:
-        fprintf(p_fp, "%s Equal\n", p_indent.c_str());
+        fprintf(p_fp,
+                "%s Equal R[%d] == R[%d] =? R[%d]\n",
+                p_indent.c_str(),
+                ((p_ins >> 16) & 0xFF),
+                ((p_ins >> 24) & 0xFF),
+                ((p_ins >> 7) & 0xFF));
         break;
       case 58:
-        fprintf(p_fp, "%s Less Than\n", p_indent.c_str());
+        fprintf(p_fp,
+                "%s Less Than R[%d] == R[%d] =? R[%d]\n",
+                p_indent.c_str(),
+                ((p_ins >> 16) & 0xFF),
+                ((p_ins >> 24) & 0xFF),
+                ((p_ins >> 7) & 0xFF));
         break;
       case 59:
-        fprintf(p_fp, "%s Less Equal\n", p_indent.c_str());
+        fprintf(p_fp,
+                "%s Less Equal R[%d] == R[%d] =? R[%d]\n",
+                p_indent.c_str(),
+                ((p_ins >> 16) & 0xFF),
+                ((p_ins >> 24) & 0xFF),
+                ((p_ins >> 7) & 0xFF));
         break;
       case 60:
         fprintf(p_fp, "%s Equal K\n", p_indent.c_str());

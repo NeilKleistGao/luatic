@@ -149,10 +149,6 @@ namespace math {
     return (p2 >= 0) ? p1 >> p2 : ShiftLeft(p1, -p2);
   }
 
-  LunaInt GetLength(LunaString p) { return p.size(); }
-
-  LunaString Concat(LunaString p1, LunaString p2) { return p1 + p2; }
-
   LunaNumber CalcArith(ArithOperator p_ao, LunaNumber p1, LunaNumber p2) {
     static const auto lams =
       std::array<std::function<LunaNumber(LunaNumber, LunaNumber)>, 6>{
@@ -181,6 +177,20 @@ namespace math {
         }};
 
     return lams[static_cast<int>(p_io)](p1, p2);
+  }
+
+  LunaBoolean
+    Compare(ComOperator p_co, const LunaValue& p1, const LunaValue& p2) {
+    static const auto lams =
+      std::array<std::function<LunaBoolean(const LunaValue&, const LunaValue&)>,
+                 3>{
+        [](const LunaValue& x, const LunaValue& y) { return Equal(x, y); },
+        [](const LunaValue& x, const LunaValue& y) { return LessThan(x, y); },
+        [](const LunaValue& x, const LunaValue& y) {
+          return LessEqual(x, y);
+        }};
+
+    return lams[static_cast<int>(p_co)](p1, p2);
   }
 
   LunaBoolean Equal(const LunaValue& p1, const LunaValue& p2) {

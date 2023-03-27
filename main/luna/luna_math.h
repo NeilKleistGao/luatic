@@ -59,8 +59,6 @@ namespace math {
   LunaInt DivideFloor(LunaNumber p1, LunaNumber p2);
   LunaInt ShiftLeft(LunaInt p1, LunaInt p2);
   LunaInt ShiftRight(LunaInt p1, LunaInt p2);
-  LunaInt GetLength(LunaString p); // TODO: overload for tables
-  LunaString Concat(LunaString p1, LunaString p2);
   LunaBoolean Equal(const LunaValue& p1, const LunaValue& p2);
   LunaBoolean LessThan(const LunaValue& p1, const LunaValue& p2);
   LunaBoolean LessEqual(const LunaValue& p1, const LunaValue& p2);
