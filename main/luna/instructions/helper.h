@@ -41,6 +41,8 @@ namespace instructions {
   LunaBoolean Not(LunaValue p);
   LunaInt Len(LunaValue p);
   LunaValue Concat(LunaValue p1, LunaValue p2);
+  void UpdateForCount(const std::shared_ptr<LunaStack>& p_stack, int p_base);
+  bool ShouldSkipForLoop(const std::shared_ptr<LunaStack>& p_stack, int p_base);
 } // namespace instructions
 
 #endif //LUATIC_HELPER_H

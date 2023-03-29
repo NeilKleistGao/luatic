@@ -96,4 +96,19 @@ namespace instructions {
       return 0; // TODO: throw?
     }
   }
+
+  void UpdateForCount(const std::shared_ptr<LunaStack>& p_stack, int p_base) {
+    const auto next = CalcArith(math::ArithOperator::ADD,
+                                p_stack->Get(p_base),
+                                p_stack->Get(p_base + 2));
+
+    p_stack->Set(p_base, next);
+  }
+
+  bool ShouldSkipForLoop(const std::shared_ptr<LunaStack>& p_stack,
+                         int p_base) {
+    return math::Compare(math::ComOperator::LE,
+                         p_stack->Get(p_base),
+                         p_stack->Get(p_base + 1));
+  }
 } // namespace instructions

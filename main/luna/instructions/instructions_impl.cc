@@ -369,10 +369,19 @@ namespace instructions {
          const std::vector<chunk::Literal>& p_const) { return 1; },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
-         const std::vector<chunk::Literal>& p_const) { return 1; },
+         const std::vector<chunk::Literal>& p_const) {
+        UpdateForCount(p_stack, ((p_ins >> 7) & 0xFF));
+        return (ShouldSkipForLoop(p_stack, ((p_ins >> 7) & 0xFF)))
+          ? 1
+          : 1 - ((p_ins >> 15) & 0x1FFFF);
+      },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
-         const std::vector<chunk::Literal>& p_const) { return 1; },
+         const std::vector<chunk::Literal>& p_const) {
+        return (ShouldSkipForLoop(p_stack, ((p_ins >> 7) & 0xFF)))
+          ? 1
+          : 1 + ((p_ins >> 15) & 0x1FFFF);
+      },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
          const std::vector<chunk::Literal>& p_const) { return 1; },

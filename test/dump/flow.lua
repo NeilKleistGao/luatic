@@ -35,11 +35,11 @@
 ---- Load I at 0, value: 1
 ---- Load I at 1, value: 10
 ---- Load I at 2, value: 1
----- For Prepare
+---- For Prepare: if R[0] > R[1] pc += 3
 ---- Get Table Up
 ---- Move
 ---- Call
----- For Loop
+---- For Loop: R[0] += R[2]; if R[0] <= R[1] then pc -= 4
 ---- Get Table Up
 ---- Load K(constant) from 2 to 1
 ---- Call
@@ -51,14 +51,14 @@
 ---- Load I at 0, value: 1
 ---- Load I at 1, value: 10
 ---- Load I at 2, value: 1
----- For Prepare
+---- For Prepare: if R[0] > R[1] pc += 6
 ---- Load I at 4, value: 1
 ---- Load I at 5, value: 10
 ---- Load I at 6, value: 1
----- For Prepare
+---- For Prepare: if R[4] > R[5] pc += 1
 ---- Jump: 2
----- For Loop
----- For Loop
+---- For Loop: R[4] += R[6]; if R[4] <= R[5] then pc -= 2
+---- For Loop: R[0] += R[2]; if R[0] <= R[1] then pc -= 7
 ---- Return: 0, 1
 -- constant: 
 ---- String

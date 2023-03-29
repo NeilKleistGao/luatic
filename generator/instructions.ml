@@ -451,12 +451,16 @@ let instructions = [
     (fun ins -> ["return 1;"])
   );
   InstABx (
-    (fun ins -> ["For Loop"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> ["For Loop: R[%d] += R[%d]; if R[%d] <= R[%d] then pc -= %d";
+      a(ins); a(ins) ^ " + 2"; a(ins); a(ins) ^ " + 1"; bx(ins)]),
+    (fun ins -> [
+      "UpdateForCount(p_stack, " ^ a(ins) ^ ");";
+      "return (ShouldSkipForLoop(p_stack, " ^ a(ins) ^ ")) ? 1 : 1 - " ^ bx(ins) ^ ";"
+    ])
   );
   InstABx (
-    (fun ins -> ["For Prepare"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> ["For Prepare: if R[%d] > R[%d] pc += %d"; a(ins); a(ins) ^ " + 1"; bx(ins)]),
+    (fun ins -> ["return (ShouldSkipForLoop(p_stack, " ^ a(ins) ^ ")) ? 1 : 1 + " ^ bx(ins) ^ ";"])
   );
   InstABx ( (* 75 *)
     (fun ins -> ["T For Prepare"]),

@@ -332,10 +332,23 @@ namespace instructions {
         fprintf(p_fp, "%s Return 1\n", p_indent.c_str());
         break;
       case 73:
-        fprintf(p_fp, "%s For Loop\n", p_indent.c_str());
+        fprintf(
+          p_fp,
+          "%s For Loop: R[%d] += R[%d]; if R[%d] <= R[%d] then pc -= %d\n",
+          p_indent.c_str(),
+          ((p_ins >> 7) & 0xFF),
+          ((p_ins >> 7) & 0xFF) + 2,
+          ((p_ins >> 7) & 0xFF),
+          ((p_ins >> 7) & 0xFF) + 1,
+          ((p_ins >> 15) & 0x1FFFF));
         break;
       case 74:
-        fprintf(p_fp, "%s For Prepare\n", p_indent.c_str());
+        fprintf(p_fp,
+                "%s For Prepare: if R[%d] > R[%d] pc += %d\n",
+                p_indent.c_str(),
+                ((p_ins >> 7) & 0xFF),
+                ((p_ins >> 7) & 0xFF) + 1,
+                ((p_ins >> 15) & 0x1FFFF));
         break;
       case 75:
         fprintf(p_fp, "%s T For Prepare\n", p_indent.c_str());
