@@ -17,9 +17,7 @@ namespace instructions {
          const std::vector<chunk::Literal>& p_const) {
         const auto value = p_stack->Get(((p_ins >> 7) & 0xFF));
         const auto pos = ((p_ins >> 16) & 0xFF);
-        if (value.has_value()) {
-          p_stack->Set(pos, value.value());
-        }
+        p_stack->Set(pos, value);
         return 1;
       },
       [](Instruction p_ins,
@@ -149,8 +147,7 @@ namespace instructions {
          const std::vector<chunk::Literal>& p_const) {
         const auto p1 = p_stack->Get(((p_ins >> 16) & 0xFF));
         const auto p2 = p_stack->Get(((p_ins >> 24) & 0xFF));
-        const auto res =
-          CalcArith(math::ArithOperator::ADD, p1.value(), p2.value());
+        const auto res = CalcArith(math::ArithOperator::ADD, p1, p2);
         p_stack->Push(res);
         p_stack->ReplaceWithTop(((p_ins >> 7) & 0xFF));
         return 1;
@@ -160,8 +157,7 @@ namespace instructions {
          const std::vector<chunk::Literal>& p_const) {
         const auto p1 = p_stack->Get(((p_ins >> 16) & 0xFF));
         const auto p2 = p_stack->Get(((p_ins >> 24) & 0xFF));
-        const auto res =
-          CalcArith(math::ArithOperator::SUB, p1.value(), p2.value());
+        const auto res = CalcArith(math::ArithOperator::SUB, p1, p2);
         p_stack->Push(res);
         p_stack->ReplaceWithTop(((p_ins >> 7) & 0xFF));
         return 1;
@@ -171,8 +167,7 @@ namespace instructions {
          const std::vector<chunk::Literal>& p_const) {
         const auto p1 = p_stack->Get(((p_ins >> 16) & 0xFF));
         const auto p2 = p_stack->Get(((p_ins >> 24) & 0xFF));
-        const auto res =
-          CalcArith(math::ArithOperator::MUL, p1.value(), p2.value());
+        const auto res = CalcArith(math::ArithOperator::MUL, p1, p2);
         p_stack->Push(res);
         p_stack->ReplaceWithTop(((p_ins >> 7) & 0xFF));
         return 1;
@@ -182,7 +177,7 @@ namespace instructions {
          const std::vector<chunk::Literal>& p_const) {
         const auto p1 = p_stack->Get(((p_ins >> 16) & 0xFF));
         const auto p2 = p_stack->Get(((p_ins >> 24) & 0xFF));
-        const auto res = Mod(p1.value(), p2.value());
+        const auto res = Mod(p1, p2);
         p_stack->Push(res);
         p_stack->ReplaceWithTop(((p_ins >> 7) & 0xFF));
         return 1;
@@ -192,8 +187,7 @@ namespace instructions {
          const std::vector<chunk::Literal>& p_const) {
         const auto p1 = p_stack->Get(((p_ins >> 16) & 0xFF));
         const auto p2 = p_stack->Get(((p_ins >> 24) & 0xFF));
-        const auto res =
-          CalcArith(math::ArithOperator::POW, p1.value(), p2.value());
+        const auto res = CalcArith(math::ArithOperator::POW, p1, p2);
         p_stack->Push(res);
         p_stack->ReplaceWithTop(((p_ins >> 7) & 0xFF));
         return 1;
@@ -203,8 +197,7 @@ namespace instructions {
          const std::vector<chunk::Literal>& p_const) {
         const auto p1 = p_stack->Get(((p_ins >> 16) & 0xFF));
         const auto p2 = p_stack->Get(((p_ins >> 24) & 0xFF));
-        const auto res =
-          CalcArith(math::ArithOperator::DIV, p1.value(), p2.value());
+        const auto res = CalcArith(math::ArithOperator::DIV, p1, p2);
         p_stack->Push(res);
         p_stack->ReplaceWithTop(((p_ins >> 7) & 0xFF));
         return 1;
@@ -214,8 +207,7 @@ namespace instructions {
          const std::vector<chunk::Literal>& p_const) {
         const auto p1 = p_stack->Get(((p_ins >> 16) & 0xFF));
         const auto p2 = p_stack->Get(((p_ins >> 24) & 0xFF));
-        const auto res =
-          CalcArith(math::ArithOperator::I_DIV, p1.value(), p2.value());
+        const auto res = CalcArith(math::ArithOperator::I_DIV, p1, p2);
         p_stack->Push(res);
         p_stack->ReplaceWithTop(((p_ins >> 7) & 0xFF));
         return 1;
@@ -248,7 +240,7 @@ namespace instructions {
          const std::shared_ptr<LunaStack>& p_stack,
          const std::vector<chunk::Literal>& p_const) {
         const auto p = p_stack->Get(((p_ins >> 16) & 0xFF));
-        const auto res = Neg(p.value());
+        const auto res = Neg(p);
         p_stack->Push(res);
         p_stack->ReplaceWithTop(((p_ins >> 7) & 0xFF));
         return 1;
@@ -260,7 +252,7 @@ namespace instructions {
          const std::shared_ptr<LunaStack>& p_stack,
          const std::vector<chunk::Literal>& p_const) {
         const auto p = p_stack->Get(((p_ins >> 16) & 0xFF));
-        const auto res = Not(p.value());
+        const auto res = Not(p);
         p_stack->Push(res);
         p_stack->ReplaceWithTop(((p_ins >> 7) & 0xFF));
         return 1;
@@ -269,7 +261,7 @@ namespace instructions {
          const std::shared_ptr<LunaStack>& p_stack,
          const std::vector<chunk::Literal>& p_const) {
         const auto p = p_stack->Get(((p_ins >> 16) & 0xFF));
-        const auto res = Len(p.value());
+        const auto res = Len(p);
         p_stack->Push(res);
         p_stack->ReplaceWithTop(((p_ins >> 7) & 0xFF));
         return 1;
@@ -277,11 +269,11 @@ namespace instructions {
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
          const std::vector<chunk::Literal>& p_const) {
-        auto res = p_stack->Get(((p_ins >> 7) & 0xFF)).value();
+        auto res = p_stack->Get(((p_ins >> 7) & 0xFF));
         for (int i = ((p_ins >> 7) & 0xFF) + 1;
              i < ((p_ins >> 7) & 0xFF) + ((p_ins >> 16) & 0xFF);
              ++i) {
-          const auto p = p_stack->Get(i).value();
+          const auto p = p_stack->Get(i);
           res = Concat(res, p);
         }
         p_stack->Push(res);
@@ -303,24 +295,24 @@ namespace instructions {
          const std::shared_ptr<LunaStack>& p_stack,
          const std::vector<chunk::Literal>& p_const) {
         const auto a = ((p_ins >> 7) & 0xFF);
-        const auto b = p_stack->Get(((p_ins >> 16) & 0xFF)).value();
-        const auto c = p_stack->Get(((p_ins >> 24) & 0xFF)).value();
+        const auto b = p_stack->Get(((p_ins >> 16) & 0xFF));
+        const auto c = p_stack->Get(((p_ins >> 24) & 0xFF));
         return (math::Compare(math::ComOperator::EQ, b, c) == a) ? 1 : 2;
       },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
          const std::vector<chunk::Literal>& p_const) {
         const auto a = ((p_ins >> 7) & 0xFF);
-        const auto b = p_stack->Get(((p_ins >> 16) & 0xFF)).value();
-        const auto c = p_stack->Get(((p_ins >> 24) & 0xFF)).value();
+        const auto b = p_stack->Get(((p_ins >> 16) & 0xFF));
+        const auto c = p_stack->Get(((p_ins >> 24) & 0xFF));
         return (math::Compare(math::ComOperator::LT, b, c) == a) ? 1 : 2;
       },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
          const std::vector<chunk::Literal>& p_const) {
         const auto a = ((p_ins >> 7) & 0xFF);
-        const auto b = p_stack->Get(((p_ins >> 16) & 0xFF)).value();
-        const auto c = p_stack->Get(((p_ins >> 24) & 0xFF)).value();
+        const auto b = p_stack->Get(((p_ins >> 16) & 0xFF));
+        const auto c = p_stack->Get(((p_ins >> 24) & 0xFF));
         return (math::Compare(math::ComOperator::LE, b, c) == a) ? 1 : 2;
       },
       [](Instruction p_ins,
@@ -344,14 +336,14 @@ namespace instructions {
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
          const std::vector<chunk::Literal>& p_const) {
-        const auto a = p_stack->Get(((p_ins >> 7) & 0xFF)).value();
+        const auto a = p_stack->Get(((p_ins >> 7) & 0xFF));
         const auto c = ((p_ins >> 24) & 0xFF);
         return (ToBoolean(a) != ToBoolean(c)) ? 2 : 1;
       },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
          const std::vector<chunk::Literal>& p_const) {
-        const auto b = p_stack->Get(((p_ins >> 16) & 0xFF)).value();
+        const auto b = p_stack->Get(((p_ins >> 16) & 0xFF));
         const auto c = ((p_ins >> 24) & 0xFF);
         if (ToBoolean(b) != ToBoolean(c)) {
           p_stack->Set(((p_ins >> 7) & 0xFF), b);

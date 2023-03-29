@@ -36,9 +36,9 @@ void LunaStack::Push(LunaValue&& p_value) {
   m_slots.push_back(std::move(p_value));
 }
 
-std::optional<LunaValue> LunaStack::Pop() {
+LunaValue LunaStack::Pop() {
   if (m_slots.empty()) {
-    return {};
+    return LunaNone{};
   }
 
   const auto res = m_slots.back();
@@ -46,12 +46,12 @@ std::optional<LunaValue> LunaStack::Pop() {
   return res;
 }
 
-std::optional<LunaValue> LunaStack::Get(int p_index) {
+LunaValue LunaStack::Get(int p_index) {
   const auto abs_index = GetAbsIndex(p_index);
   if (IsValidIndex(abs_index)) {
     return m_slots[abs_index];
   } else {
-    return {};
+    return LunaNone{};
   }
 }
 
@@ -94,16 +94,10 @@ void LunaStack::Reverse(int p_from, int p_to) {
 
 void LunaStack::Copy(int p_from, int p_to) {
   const auto val = this->Get(p_from);
-  if (val.has_value()) {
-    this->Set(p_to, val.value());
-  }
-  // TODO: throw?
+  this->Set(p_to, val);
 }
 
 void LunaStack::ReplaceWithTop(int p_index) {
   const auto top = this->Pop();
-  if (top.has_value()) {
-    this->Set(p_index, top.value());
-  }
-  // TODO: throw?
+  this->Set(p_index, top);
 }

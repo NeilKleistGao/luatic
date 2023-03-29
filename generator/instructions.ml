@@ -32,7 +32,7 @@ let instructions = [
     (fun ins -> [
       "const auto value = p_stack->Get(" ^ a(ins) ^ ");";
       "const auto pos = " ^ b(ins) ^ ";";
-      "if (value.has_value()) { p_stack->Set(pos, value.value()); }"; (* TODO: throw *)
+      "p_stack->Set(pos, value);";
       "return 1;"
     ])
   );
@@ -194,7 +194,7 @@ let instructions = [
     (fun ins -> [
       "const auto p1 = p_stack->Get(" ^ b(ins) ^ ");";
       "const auto p2 = p_stack->Get(" ^ c(ins) ^ ");";
-      "const auto res = CalcArith(math::ArithOperator::ADD, p1.value(), p2.value());";
+      "const auto res = CalcArith(math::ArithOperator::ADD, p1, p2);";
       "p_stack->Push(res);";
       "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
       "return 1;"
@@ -205,7 +205,7 @@ let instructions = [
     (fun ins -> [
       "const auto p1 = p_stack->Get(" ^ b(ins) ^ ");";
       "const auto p2 = p_stack->Get(" ^ c(ins) ^ ");";
-      "const auto res = CalcArith(math::ArithOperator::SUB, p1.value(), p2.value());";
+      "const auto res = CalcArith(math::ArithOperator::SUB, p1, p2);";
       "p_stack->Push(res);";
       "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
       "return 1;"
@@ -216,7 +216,7 @@ let instructions = [
     (fun ins -> [
       "const auto p1 = p_stack->Get(" ^ b(ins) ^ ");";
       "const auto p2 = p_stack->Get(" ^ c(ins) ^ ");";
-      "const auto res = CalcArith(math::ArithOperator::MUL, p1.value(), p2.value());";
+      "const auto res = CalcArith(math::ArithOperator::MUL, p1, p2);";
       "p_stack->Push(res);";
       "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
       "return 1;"
@@ -227,7 +227,7 @@ let instructions = [
     (fun ins -> [
       "const auto p1 = p_stack->Get(" ^ b(ins) ^ ");";
       "const auto p2 = p_stack->Get(" ^ c(ins) ^ ");";
-      "const auto res = Mod(p1.value(), p2.value());";
+      "const auto res = Mod(p1, p2);";
       "p_stack->Push(res);";
       "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
       "return 1;"
@@ -238,7 +238,7 @@ let instructions = [
     (fun ins -> [
       "const auto p1 = p_stack->Get(" ^ b(ins) ^ ");";
       "const auto p2 = p_stack->Get(" ^ c(ins) ^ ");";
-      "const auto res = CalcArith(math::ArithOperator::POW, p1.value(), p2.value());";
+      "const auto res = CalcArith(math::ArithOperator::POW, p1, p2);";
       "p_stack->Push(res);";
       "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
       "return 1;"
@@ -249,7 +249,7 @@ let instructions = [
     (fun ins -> [
       "const auto p1 = p_stack->Get(" ^ b(ins) ^ ");";
       "const auto p2 = p_stack->Get(" ^ c(ins) ^ ");";
-      "const auto res = CalcArith(math::ArithOperator::DIV, p1.value(), p2.value());";
+      "const auto res = CalcArith(math::ArithOperator::DIV, p1, p2);";
       "p_stack->Push(res);";
       "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
       "return 1;"
@@ -260,7 +260,7 @@ let instructions = [
     (fun ins -> [
       "const auto p1 = p_stack->Get(" ^ b(ins) ^ ");";
       "const auto p2 = p_stack->Get(" ^ c(ins) ^ ");";
-      "const auto res = CalcArith(math::ArithOperator::I_DIV, p1.value(), p2.value());";
+      "const auto res = CalcArith(math::ArithOperator::I_DIV, p1, p2);";
       "p_stack->Push(res);";
       "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
       "return 1;"
@@ -302,7 +302,7 @@ let instructions = [
     (fun ins -> ["UNM R[%d] = -R[%d]"; a(ins); b(ins)]),
     (fun ins -> [
       "const auto p = p_stack->Get(" ^ b(ins) ^ ");";
-      "const auto res = Neg(p.value());";
+      "const auto res = Neg(p);";
       "p_stack->Push(res);";
       "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
       "return 1;"
@@ -316,7 +316,7 @@ let instructions = [
     (fun ins -> ["Not R[%d] = not R[%d]"; a(ins); b(ins)]),
     (fun ins -> [
       "const auto p = p_stack->Get(" ^ b(ins) ^ ");";
-      "const auto res = Not(p.value());";
+      "const auto res = Not(p);";
       "p_stack->Push(res);";
       "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
       "return 1;"
@@ -326,7 +326,7 @@ let instructions = [
     (fun ins -> ["Len R[%d] = len(R[%d])"; a(ins); b(ins)]),
     (fun ins -> [
       "const auto p = p_stack->Get(" ^ b(ins) ^ ");";
-      "const auto res = Len(p.value());";
+      "const auto res = Len(p);";
       "p_stack->Push(res);";
       "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
       "return 1;"
@@ -335,9 +335,9 @@ let instructions = [
   InstABC (
     (fun ins -> ["Concat R[%d] = R[%d] .. ... .. R[%d]"; a(ins); a(ins); a(ins) ^ " + " ^ b(ins) ^ " - 1"]),
     (fun ins -> [
-      "auto res = p_stack->Get(" ^ a(ins) ^ ").value();";
+      "auto res = p_stack->Get(" ^ a(ins) ^ ");";
       "for (int i = " ^ a(ins) ^ " + 1; i < " ^ a(ins) ^ " + " ^ b(ins) ^ "; ++i) {";
-      "const auto p = p_stack->Get(i).value();";
+      "const auto p = p_stack->Get(i);";
       "res = Concat(res, p);";
       "}";
       "p_stack->Push(res);";
@@ -361,8 +361,8 @@ let instructions = [
     (fun ins -> ["Equal R[%d] == R[%d] =? R[%d]"; b(ins); c(ins); a(ins)]),
     (fun ins -> [
       "const auto a = " ^ a(ins) ^ ";";
-      "const auto b = p_stack->Get(" ^ b(ins) ^ ").value();";
-      "const auto c = p_stack->Get(" ^ c(ins) ^ ").value();";
+      "const auto b = p_stack->Get(" ^ b(ins) ^ ");";
+      "const auto c = p_stack->Get(" ^ c(ins) ^ ");";
       "return (math::Compare(math::ComOperator::EQ, b, c) == a) ? 1 : 2;"
     ])
   );
@@ -370,8 +370,8 @@ let instructions = [
     (fun ins -> ["Less Than R[%d] == R[%d] =? R[%d]"; b(ins); c(ins); a(ins)]),
     (fun ins -> [
       "const auto a = " ^ a(ins) ^ ";";
-      "const auto b = p_stack->Get(" ^ b(ins) ^ ").value();";
-      "const auto c = p_stack->Get(" ^ c(ins) ^ ").value();";
+      "const auto b = p_stack->Get(" ^ b(ins) ^ ");";
+      "const auto c = p_stack->Get(" ^ c(ins) ^ ");";
       "return (math::Compare(math::ComOperator::LT, b, c) == a) ? 1 : 2;"
     ])
   );
@@ -379,8 +379,8 @@ let instructions = [
     (fun ins -> ["Less Equal R[%d] == R[%d] =? R[%d]"; b(ins); c(ins); a(ins)]),
     (fun ins -> [
       "const auto a = " ^ a(ins) ^ ";";
-      "const auto b = p_stack->Get(" ^ b(ins) ^ ").value();";
-      "const auto c = p_stack->Get(" ^ c(ins) ^ ").value();";
+      "const auto b = p_stack->Get(" ^ b(ins) ^ ");";
+      "const auto c = p_stack->Get(" ^ c(ins) ^ ");";
       "return (math::Compare(math::ComOperator::LE, b, c) == a) ? 1 : 2;"
     ])
   );
@@ -411,7 +411,7 @@ let instructions = [
   InstABC (
     (fun ins -> ["Test: if (R[%d] != %d) then pc++"; a(ins); c(ins)]),
     (fun ins -> [
-      "const auto a = p_stack->Get(" ^ a(ins) ^ ").value();";
+      "const auto a = p_stack->Get(" ^ a(ins) ^ ");";
       "const auto c = " ^ c(ins) ^ ";";
       "return (ToBoolean(a) != ToBoolean(c)) ? 2 : 1;";
     ])
@@ -419,7 +419,7 @@ let instructions = [
   InstABC (
     (fun ins -> ["Test Set: if (R[%d] != %d) then R[%d] = R[%d] else pc++"; b(ins); c(ins); a(ins); b(ins)]),
     (fun ins -> [
-      "const auto b = p_stack->Get(" ^ b(ins) ^ ").value();";
+      "const auto b = p_stack->Get(" ^ b(ins) ^ ");";
       "const auto c = " ^ c(ins) ^ ";";
       "if (ToBoolean(b) != ToBoolean(c)) {";
       "p_stack->Set(" ^ a(ins) ^ ", b);";

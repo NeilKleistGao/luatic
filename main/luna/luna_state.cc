@@ -32,10 +32,7 @@ void LunaState::PopN(size_t p_n) {
 
 void LunaState::PushAt(int p_index) {
   const auto val = m_stack->Get(p_index);
-  if (val.has_value()) {
-    m_stack->Push(val.value());
-  }
-  // TODO: throw?
+  m_stack->Push(val);
 }
 
 void LunaState::Rotate(int p_index, int p_n) {
@@ -67,9 +64,5 @@ void LunaState::SetTop(size_t p_new_top) {
 
 LunaType LunaState::GetTypeAt(int p_index) {
   const auto& res = m_stack->Get(p_index);
-  if (res.has_value()) {
-    return GetTypeOf(res.value());
-  }
-
-  return LunaType::LUNA_NONE;
+  return GetTypeOf(res);
 }

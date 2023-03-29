@@ -25,7 +25,6 @@
 #ifndef LUATIC_LUNA_STACK_H
 #define LUATIC_LUNA_STACK_H
 
-#include <optional>
 #include <vector>
 
 #include "luna_values.h"
@@ -36,11 +35,11 @@ public:
 
   void Push(const LunaValue& p_value);
   void Push(LunaValue&& p_value);
-  std::optional<LunaValue> Pop();
+  LunaValue Pop();
 
   inline size_t Top() const { return m_slots.size(); }
 
-  std::optional<LunaValue> Get(int p_index);
+  LunaValue Get(int p_index);
   void Set(int p_index, const LunaValue& p_value);
   void Set(int p_index, LunaValue&& p_value);
   void Reverse(int p_from, int p_to);

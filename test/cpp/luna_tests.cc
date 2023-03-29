@@ -36,51 +36,43 @@ TEST(LuaticTests, StackTest) {
   EXPECT_EQ(stack->Top(), 2);
 
   const auto temp1 = stack->Pop();
-  EXPECT_TRUE(temp1.has_value());
-  EXPECT_EQ(temp1.value().index(), 5); // string
-  EXPECT_EQ(std::get<5>(temp1.value()), std::string{"abc"});
+  EXPECT_EQ(temp1.index(), 5); // string
+  EXPECT_EQ(std::get<5>(temp1), std::string{"abc"});
 
   stack->Pop();
   const auto temp2 = stack->Pop();
-  EXPECT_FALSE(temp2.has_value());
+  EXPECT_EQ(temp2.index(), 0);
 
   stack->Push(false);
   const auto temp3 = stack->Get(1);
-  EXPECT_TRUE(temp3.has_value());
-  EXPECT_EQ(temp3.value().index(), 2); // boolean
-  EXPECT_EQ(std::get<2>(temp3.value()), false);
+  EXPECT_EQ(temp3.index(), 2); // boolean
+  EXPECT_EQ(std::get<2>(temp3), false);
 
   const auto temp4 = stack->Get(114514);
-  EXPECT_FALSE(temp4.has_value());
+  EXPECT_EQ(temp4.index(), 0);
 
   const auto temp5 = stack->Get(-1);
-  EXPECT_TRUE(temp5.has_value());
-  EXPECT_EQ(temp5.value().index(), 2); // boolean
-  EXPECT_EQ(std::get<2>(temp5.value()), false);
+  EXPECT_EQ(temp5.index(), 2); // boolean
+  EXPECT_EQ(std::get<2>(temp5), false);
 
   stack->Set(-1, LunaNil{});
   const auto temp6 = stack->Get(-1);
-  EXPECT_TRUE(temp6.has_value());
-  EXPECT_EQ(temp6.value().index(), 1); // nil
+  EXPECT_EQ(temp6.index(), 1); // nil
 
   stack->Set(1, LunaNumber{3.14});
   const auto temp7 = stack->Get(-1);
-  EXPECT_TRUE(temp7.has_value());
-  EXPECT_EQ(temp7.value().index(), 4); // number
+  EXPECT_EQ(temp7.index(), 4); // number
 
   stack->Push(std::string{"abc"});
   stack->Reverse(1, 2);
   const auto temp8 = stack->Get(-2);
-  EXPECT_TRUE(temp8.has_value());
-  EXPECT_EQ(temp8.value().index(), 5); // string
+  EXPECT_EQ(temp8.index(), 5); // string
 
   stack->Reverse(-2, -1);
   const auto temp9 = stack->Get(-2);
-  EXPECT_TRUE(temp9.has_value());
-  EXPECT_EQ(temp9.value().index(), 4); // number
+  EXPECT_EQ(temp9.index(), 4); // number
 
   stack->Reverse(1, -1);
   const auto temp10 = stack->Get(-2);
-  EXPECT_TRUE(temp10.has_value());
-  EXPECT_EQ(temp10.value().index(), 4); // number
+  EXPECT_EQ(temp10.index(), 4); // number
 }
