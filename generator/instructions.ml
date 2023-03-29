@@ -409,12 +409,26 @@ let instructions = [
     (fun ins -> ["return 1;"])
   );
   InstABC (
-    (fun ins -> ["Test"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> ["Test: if (R[%d] != %d) then pc++"; a(ins); c(ins)]),
+    (fun ins -> [
+      "const auto a = p_stack->Get(" ^ a(ins) ^ ").value();";
+      "const auto c = " ^ c(ins) ^ ";";
+      "return (ToBoolean(a) != ToBoolean(c)) ? 2 : 1;";
+    ])
   );
   InstABC (
-    (fun ins -> ["Test Set"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> ["Test Set: if (R[%d] != %d) then R[%d] = R[%d] else pc++"; b(ins); c(ins); a(ins); b(ins)]),
+    (fun ins -> [
+      "const auto b = p_stack->Get(" ^ b(ins) ^ ").value();";
+      "const auto c = " ^ c(ins) ^ ";";
+      "if (ToBoolean(b) != ToBoolean(c)) {";
+      "p_stack->Set(" ^ a(ins) ^ ", b);";
+      "return 1;";
+      "}";
+      "else {";
+      "return 2;";
+      "}"
+    ])
   );
   InstABC (
     (fun ins -> ["Call"]),

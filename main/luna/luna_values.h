@@ -77,4 +77,7 @@ LunaType GetTypeOf(const LunaValue& p_value);
 std::string GetTypeName(LunaType p_type);
 LunaValue FromLiteral(const chunk::Literal& p_lit);
 
+// This function is only for compatibility
+LunaBoolean ToBoolean(const LunaValue& p_value);
+
 #endif //LUATIC_LUNA_VALUES_H

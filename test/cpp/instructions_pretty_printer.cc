@@ -297,10 +297,20 @@ namespace instructions {
         fprintf(p_fp, "%s Greater Equal I\n", p_indent.c_str());
         break;
       case 66:
-        fprintf(p_fp, "%s Test\n", p_indent.c_str());
+        fprintf(p_fp,
+                "%s Test: if (R[%d] != %d) then pc++\n",
+                p_indent.c_str(),
+                ((p_ins >> 7) & 0xFF),
+                ((p_ins >> 24) & 0xFF));
         break;
       case 67:
-        fprintf(p_fp, "%s Test Set\n", p_indent.c_str());
+        fprintf(p_fp,
+                "%s Test Set: if (R[%d] != %d) then R[%d] = R[%d] else pc++\n",
+                p_indent.c_str(),
+                ((p_ins >> 16) & 0xFF),
+                ((p_ins >> 24) & 0xFF),
+                ((p_ins >> 7) & 0xFF),
+                ((p_ins >> 16) & 0xFF));
         break;
       case 68:
         fprintf(p_fp, "%s Call\n", p_indent.c_str());

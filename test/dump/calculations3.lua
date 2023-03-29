@@ -9,7 +9,7 @@
 -- code: 
 ---- Variable Arguments Prepare
 ---- Load True at 0
----- Test Set
+---- Test Set: if (R[0] != 0) then R[1] = R[0] else pc++
 ---- Jump: 1
 ---- Load False at 1
 ---- Move

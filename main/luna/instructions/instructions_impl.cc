@@ -343,10 +343,23 @@ namespace instructions {
          const std::vector<chunk::Literal>& p_const) { return 1; },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
-         const std::vector<chunk::Literal>& p_const) { return 1; },
+         const std::vector<chunk::Literal>& p_const) {
+        const auto a = p_stack->Get(((p_ins >> 7) & 0xFF)).value();
+        const auto c = ((p_ins >> 24) & 0xFF);
+        return (ToBoolean(a) != ToBoolean(c)) ? 2 : 1;
+      },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
-         const std::vector<chunk::Literal>& p_const) { return 1; },
+         const std::vector<chunk::Literal>& p_const) {
+        const auto b = p_stack->Get(((p_ins >> 16) & 0xFF)).value();
+        const auto c = ((p_ins >> 24) & 0xFF);
+        if (ToBoolean(b) != ToBoolean(c)) {
+          p_stack->Set(((p_ins >> 7) & 0xFF), b);
+          return 1;
+        } else {
+          return 2;
+        }
+      },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
          const std::vector<chunk::Literal>& p_const) { return 1; },

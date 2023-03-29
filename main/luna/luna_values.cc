@@ -70,3 +70,15 @@ LunaValue FromLiteral(const chunk::Literal& p_lit) {
       return std::get<4>(p_lit);
   }
 }
+
+LunaBoolean ToBoolean(const LunaValue& p_value) {
+  const auto type = static_cast<LunaType>(p_value.index());
+  switch (type) {
+    case LunaType::LUNA_BOOLEAN:
+      return std::get<LunaType::LUNA_BOOLEAN>(p_value);
+    case LunaType::LUNA_NIL:
+      return false;
+    default:
+      return true;
+  }
+}

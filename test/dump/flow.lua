@@ -26,7 +26,7 @@
 ---- Load Nil: [1, 1]
 ---- Call
 ---- Load False at 0
----- Test
+---- Test: if (R[0] != 0) then pc++
 ---- Jump: 4
 ---- Get Table Up
 ---- Load K(constant) from 1 to 1
@@ -44,7 +44,7 @@
 ---- Load K(constant) from 2 to 1
 ---- Call
 ---- Load False at 0
----- Test
+---- Test: if (R[0] != 0) then pc++
 ---- Jump: -6
 ---- Jump: 1
 ---- Jump: 0
