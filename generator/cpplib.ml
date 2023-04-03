@@ -68,8 +68,21 @@ let sj ins = match ins with
 
 let include_sys filename = "#include <" ^ filename ^ ">\n"
 let include_user filename = "#include \"" ^ filename ^ "\"\n"
-let return dpc = "return " ^ dpc ^ ";"
+let stmt s = s ^ ";"
+let return dpc = stmt("return " ^ dpc)
 let block inner = (List.fold_left (fun r s -> r ^ "\n" ^ s) "{" inner) ^ "\n}"
+let get_stack id = "p_stack->Get(" ^ id ^ ")"
+let set_stack id value = "p_stack->Set(" ^ id ^ ", " ^ value ^ ")"
+let const name value = stmt("const auto " ^ name ^ " = " ^ value)
+let static_cast tp exp = "static_cast<" ^ tp ^ ">(" ^ exp ^ ")"
+let push value = "p_stack->Push(" ^ value ^ ")"
+let pop = "p_stack->Pop()"
+let get_const id = "p_const[" ^ id ^ "]"
+let from_lit lit = "FromLiteral(" ^ lit ^ ")"
+let replace_top id = "p_stack->ReplaceWithTop(" ^ id ^ ")"
+let null = "nullptr"
+let for_0_le_inc bd loop = "for (int i = 0; i <= " ^ bd ^ "; ++i)" ^ (block loop)
+let copy_stack f t = "p_stack->Copy(" ^ f ^ ", " ^ t ^ ")"
 
 let fprintf params =
   match params with

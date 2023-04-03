@@ -30,31 +30,31 @@ let instructions = [
   InstABC ( (* 0 *)
     (fun ins -> ["Move"]),
     (fun ins -> [
-      "const auto value = p_stack->Get(" ^ a(ins) ^ ");";
-      "const auto pos = " ^ b(ins) ^ ";";
-      "p_stack->Set(pos, value);";
+      const "value" (get_stack (a ins));
+      const "pos" (b ins);
+      stmt (set_stack "pos" "value");
       return("1")
     ])
   );
   InstAsBx (
     (fun ins -> ["Load I at %d, value: %d"; a(ins); sbx(ins)]),
     (fun ins -> [
-      "p_stack->Set(" ^ a(ins) ^ ", " ^ sbx(ins) ^ ");";
+      stmt (set_stack (a ins) (sbx ins));
       return("1")
     ])
   );
   InstAsBx (
     (fun ins -> ["Load F at %d, value: %f"; a(ins); "static_cast<double>(" ^ sbx(ins) ^ ")"]),
     (fun ins -> [
-      "p_stack->Set(" ^ a(ins) ^ ", " ^ "static_cast<double>(" ^ sbx(ins) ^ "));";
+      stmt (set_stack (a ins) (static_cast "double" (sbx ins)));
       return("1")
     ])
   );
   InstABx (
     (fun ins -> ["Load K(constant) from %d to %d"; bx(ins); a(ins)]),
     (fun ins -> [
-      "p_stack->Push(FromLiteral(p_const[" ^ bx(ins) ^ "]));";
-      "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
+      stmt (push (from_lit (get_const (bx ins))));
+      stmt (replace_top (a ins));
       return("1")
     ])
   );
@@ -65,7 +65,7 @@ let instructions = [
   InstABC ( (* 5 *)
     (fun ins -> ["Load False at %d"; a(ins)]),
     (fun ins -> [
-      "p_stack->Set(" ^ a(ins) ^ ", false);";
+      stmt (set_stack (a ins) "false");
       return("1")
     ])
   );
@@ -76,16 +76,16 @@ let instructions = [
   InstABC (
     (fun ins -> ["Load True at %d"; a(ins)]),
     (fun ins -> [
-      "p_stack->Set(" ^ a(ins) ^ ", true);";
+      stmt (set_stack (a ins) "true");
       return("1")
     ])
   );
   InstABC (
     (fun ins -> ["Load Nil: [%d, %d]"; a(ins); a(ins) ^ " + " ^ b(ins)]),
     (fun ins -> [
-      "p_stack->Push(nullptr);";
-      "for (int i = 0; i <= " ^ b(ins) ^ "; ++i) p_stack->Copy(-1, i);";
-      "p_stack->Pop();";
+      stmt (push null);
+      for_0_le_inc (b ins) [stmt(copy_stack "-1" "i")];
+      stmt (pop);
       return("1")
     ])
   );
