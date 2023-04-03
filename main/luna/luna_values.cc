@@ -84,3 +84,20 @@ LunaBoolean ToBoolean(const LunaValue& p_value) {
       return true;
   }
 }
+
+size_t LunaHash::operator()(const LunaValue& p_value) const {
+  const auto type = static_cast<LunaType>(p_value.index());
+  switch (type) {
+    case LunaType::LUNA_NONE:
+    case LunaType::LUNA_NIL:
+      return 0; // TODO: throw?
+    case LunaType::LUNA_BOOLEAN:
+    case LunaType::LUNA_NUMBER:
+    case LunaType::LUNA_STRING:
+    case LunaType::LUNA_TABLE:
+    case LunaType::LUNA_FUNCTION:
+    case LunaType::LUNA_THREAD:
+    default:
+      return 0; // TODO: check the hash algorithm
+  }
+}

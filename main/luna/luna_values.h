@@ -34,6 +34,9 @@
 
 #include "shared/chunk/literal.h"
 
+/**
+ * This enum is designed for implicit conversion.
+ */
 enum LunaType {
   LUNA_NONE,
   LUNA_NIL,
@@ -47,10 +50,6 @@ enum LunaType {
   LUNA_THREAD
 };
 
-// This type is designed to break the cycle dependency
-struct LunaValue2;
-using LunaPointer = std::shared_ptr<LunaValue2>;
-
 struct LunaNone {};
 using LunaNil = std::nullptr_t;
 using LunaBoolean = bool;
@@ -59,8 +58,8 @@ using LunaFloat = double;
 using LunaInt = long long;
 using LunaNumber = std::variant<LunaFloat, LunaInt>;
 using LunaString = std::string;
-using LunaTable = std::variant<std::vector<LunaPointer>,
-                               std::unordered_map<LunaPointer, LunaPointer>>;
+struct LunaTable;
+using LunaTablePtr = std::shared_ptr<LunaTable>;
 struct LunaFunction {};
 struct LunaUserdata {};
 struct LunaThread {};
@@ -71,15 +70,18 @@ using LunaValue = std::variant<LunaNone,
                                LunaLightUserdata,
                                LunaNumber,
                                LunaString,
-                               LunaTable,
+                               LunaTablePtr,
                                LunaFunction,
                                LunaUserdata,
                                LunaThread>;
 
-struct LunaValue2 {
-  LunaValue value;
+struct LunaHash {
+  size_t operator()(const LunaValue& p_value) const;
+};
 
-  explicit LunaValue2(LunaValue p_value): value(std::move(p_value)) {}
+struct LunaTable {
+  std::vector<LunaValue> arr;
+  std::unordered_map<LunaValue, LunaValue, LunaHash> map;
 };
 
 constexpr size_t LUNA_FLOAT = 0;
