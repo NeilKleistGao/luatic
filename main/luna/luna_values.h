@@ -66,15 +66,15 @@ struct LunaUserdata {};
 struct LunaThread {};
 
 using LunaValue = std::variant<LunaNone,
-                                 LunaNil,
-                                 LunaBoolean,
-                                 LunaLightUserdata,
-                                 LunaNumber,
-                                 LunaString,
-                                 LunaTable,
-                                 LunaFunction,
-                                 LunaUserdata,
-                                 LunaThread>;
+                               LunaNil,
+                               LunaBoolean,
+                               LunaLightUserdata,
+                               LunaNumber,
+                               LunaString,
+                               LunaTable,
+                               LunaFunction,
+                               LunaUserdata,
+                               LunaThread>;
 
 struct LunaValue2 {
   LunaValue value;

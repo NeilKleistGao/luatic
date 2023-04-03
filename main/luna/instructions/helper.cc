@@ -66,8 +66,7 @@ namespace instructions {
 
   LunaInt Len(LunaValue p) {
     if (p.index() == LunaType::LUNA_STRING) {
-      return static_cast<LunaInt>(
-        std::get<LunaType::LUNA_STRING>(p).size());
+      return static_cast<LunaInt>(std::get<LunaType::LUNA_STRING>(p).size());
       // TODO: tables
     } else {
       return 0; // TODO: throw?
