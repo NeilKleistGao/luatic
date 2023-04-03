@@ -34,14 +34,12 @@ public:
   explicit LunaStack(size_t p_capacity);
 
   void Push(const LunaValue& p_value);
-  void Push(LunaValue&& p_value);
   LunaValue Pop();
 
   inline size_t Top() const { return m_slots.size(); }
 
   LunaValue Get(int p_index);
   void Set(int p_index, const LunaValue& p_value);
-  void Set(int p_index, LunaValue&& p_value);
   void Reverse(int p_from, int p_to);
   void Copy(int p_from, int p_to);
   void ReplaceWithTop(int p_index);

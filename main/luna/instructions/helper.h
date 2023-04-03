@@ -32,9 +32,6 @@
 #include "shared/chunk/literal.h"
 
 namespace instructions {
-  void PushRegOrConst(int p_index,
-                      const std::shared_ptr<LunaStack>& p_stack,
-                      const std::vector<chunk::Literal>& p_const);
   LunaNumber CalcArith(math::ArithOperator p_ao, LunaValue p1, LunaValue p2);
   LunaInt Mod(LunaValue p1, LunaValue p2);
   LunaNumber Neg(LunaValue p);

@@ -25,19 +25,6 @@
 #include "helper.h"
 
 namespace instructions {
-  void PushRegOrConst(int p_index,
-                      const std::shared_ptr<LunaStack>& p_stack,
-                      const std::vector<chunk::Literal>& p_const) {
-    if (p_index > 0xff) {
-      if ((p_index & 0xff) < p_const.size()) {
-        p_stack->Push(FromLiteral(p_const[p_index & 0xff]));
-      }
-      // TODO: throw?
-    } else {
-      p_stack->Push(p_index);
-    }
-  }
-
   LunaNumber CalcArith(math::ArithOperator p_ao, LunaValue p1, LunaValue p2) {
     if (p1.index() == LunaType::LUNA_NUMBER &&
         p2.index() == LunaType::LUNA_NUMBER) {
@@ -79,7 +66,8 @@ namespace instructions {
 
   LunaInt Len(LunaValue p) {
     if (p.index() == LunaType::LUNA_STRING) {
-      return static_cast<LunaInt>(std::get<LunaType::LUNA_STRING>(p).size());
+      return static_cast<LunaInt>(
+        std::get<LunaType::LUNA_STRING>(p).size());
       // TODO: tables
     } else {
       return 0; // TODO: throw?
@@ -91,9 +79,9 @@ namespace instructions {
         p2.index() == LunaType::LUNA_STRING) {
       const auto& s1 = std::get<LunaType::LUNA_STRING>(p1);
       const auto& s2 = std::get<LunaType::LUNA_STRING>(p2);
-      return s1 + s2;
+      return LunaValue{s1 + s2};
     } else {
-      return 0; // TODO: throw?
+      return LunaValue{0}; // TODO: throw?
     }
   }
 

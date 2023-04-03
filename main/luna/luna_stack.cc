@@ -29,11 +29,7 @@ LunaStack::LunaStack(size_t p_capacity) {
 }
 
 void LunaStack::Push(const LunaValue& p_value) {
-  m_slots.push_back(p_value);
-}
-
-void LunaStack::Push(LunaValue&& p_value) {
-  m_slots.push_back(std::move(p_value));
+  m_slots.emplace_back(p_value);
 }
 
 LunaValue LunaStack::Pop() {
@@ -58,16 +54,7 @@ LunaValue LunaStack::Get(int p_index) {
 void LunaStack::Set(int p_index, const LunaValue& p_value) {
   const auto abs_index = GetAbsIndex(p_index);
   if (IsValidIndex(abs_index)) {
-    m_slots[abs_index] = p_value;
-  }
-
-  // TODO: throw error
-}
-
-void LunaStack::Set(int p_index, LunaValue&& p_value) {
-  const auto abs_index = GetAbsIndex(p_index);
-  if (IsValidIndex(abs_index)) {
-    m_slots[abs_index] = std::move(p_value);
+    m_slots[abs_index] = LunaValue{p_value};
   }
 
   // TODO: throw error

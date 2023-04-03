@@ -25,14 +25,15 @@
 #ifndef LUATIC_LUNA_VALUES_H
 #define LUATIC_LUNA_VALUES_H
 
+#include <memory>
 #include <string>
+#include <unordered_map>
+#include <utility>
 #include <variant>
+#include <vector>
 
 #include "shared/chunk/literal.h"
 
-/**
- * This enum is designed for implicit conversion.
- */
 enum LunaType {
   LUNA_NONE,
   LUNA_NIL,
@@ -46,6 +47,10 @@ enum LunaType {
   LUNA_THREAD
 };
 
+// This type is designed to break the cycle dependency
+struct LunaValue2;
+using LunaPointer = std::shared_ptr<LunaValue2>;
+
 struct LunaNone {};
 using LunaNil = std::nullptr_t;
 using LunaBoolean = bool;
@@ -54,24 +59,31 @@ using LunaFloat = double;
 using LunaInt = long long;
 using LunaNumber = std::variant<LunaFloat, LunaInt>;
 using LunaString = std::string;
-struct LunaTable {};
+using LunaTable = std::variant<std::vector<LunaPointer>,
+                               std::unordered_map<LunaPointer, LunaPointer>>;
 struct LunaFunction {};
 struct LunaUserdata {};
 struct LunaThread {};
 
+using LunaValue = std::variant<LunaNone,
+                                 LunaNil,
+                                 LunaBoolean,
+                                 LunaLightUserdata,
+                                 LunaNumber,
+                                 LunaString,
+                                 LunaTable,
+                                 LunaFunction,
+                                 LunaUserdata,
+                                 LunaThread>;
+
+struct LunaValue2 {
+  LunaValue value;
+
+  explicit LunaValue2(LunaValue p_value): value(std::move(p_value)) {}
+};
+
 constexpr size_t LUNA_FLOAT = 0;
 constexpr size_t LUNA_INT = 1;
-
-using LunaValue = std::variant<LunaNone,
-                               LunaNil,
-                               LunaBoolean,
-                               LunaLightUserdata,
-                               LunaNumber,
-                               LunaString,
-                               LunaTable,
-                               LunaFunction,
-                               LunaUserdata,
-                               LunaThread>;
 
 LunaType GetTypeOf(const LunaValue& p_value);
 std::string GetTypeName(LunaType p_type);

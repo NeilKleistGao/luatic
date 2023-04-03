@@ -69,6 +69,8 @@ LunaValue FromLiteral(const chunk::Literal& p_lit) {
     case 4:
       return std::get<4>(p_lit);
   }
+
+  // TODO: throw?
 }
 
 LunaBoolean ToBoolean(const LunaValue& p_value) {

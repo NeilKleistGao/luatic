@@ -43,7 +43,6 @@ public:
   inline size_t Top() const { return m_stack->Top(); }
   inline void InsertTop(int p_index) { this->Rotate(p_index, 1); }
   inline void Push(const LunaValue& p_v) { m_stack->Push(p_v); }
-  inline void Push(LunaValue&& p_v) { m_stack->Push(p_v); }
   inline LunaValue Access(int p_index) const { return m_stack->Get(p_index); }
 
 private:
