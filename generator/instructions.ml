@@ -33,21 +33,21 @@ let instructions = [
       "const auto value = p_stack->Get(" ^ a(ins) ^ ");";
       "const auto pos = " ^ b(ins) ^ ";";
       "p_stack->Set(pos, value);";
-      "return 1;"
+      return("1")
     ])
   );
   InstAsBx (
     (fun ins -> ["Load I at %d, value: %d"; a(ins); sbx(ins)]),
     (fun ins -> [
       "p_stack->Set(" ^ a(ins) ^ ", " ^ sbx(ins) ^ ");";
-      "return 1;"
+      return("1")
     ])
   );
   InstAsBx (
     (fun ins -> ["Load F at %d, value: %f"; a(ins); "static_cast<double>(" ^ sbx(ins) ^ ")"]),
     (fun ins -> [
       "p_stack->Set(" ^ a(ins) ^ ", " ^ "static_cast<double>(" ^ sbx(ins) ^ "));";
-      "return 1;"
+      return("1")
     ])
   );
   InstABx (
@@ -55,29 +55,29 @@ let instructions = [
     (fun ins -> [
       "p_stack->Push(FromLiteral(p_const[" ^ bx(ins) ^ "]));";
       "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
-      "return 1;"
+      return("1")
     ])
   );
   InstABx (
     (fun ins -> ["Load KX"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC ( (* 5 *)
     (fun ins -> ["Load False at %d"; a(ins)]),
     (fun ins -> [
       "p_stack->Set(" ^ a(ins) ^ ", false);";
-      "return 1;"
+      return("1")
     ])
   );
   InstABC (
     (fun ins -> ["L False Skip"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Load True at %d"; a(ins)]),
     (fun ins -> [
       "p_stack->Set(" ^ a(ins) ^ ", true);";
-      "return 1;"
+      return("1")
     ])
   );
   InstABC (
@@ -86,108 +86,108 @@ let instructions = [
       "p_stack->Push(nullptr);";
       "for (int i = 0; i <= " ^ b(ins) ^ "; ++i) p_stack->Copy(-1, i);";
       "p_stack->Pop();";
-      "return 1;"
+      return("1")
     ])
   );
   InstABC (
     (fun ins -> ["Get Up Value"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC ( (* 10 *)
     (fun ins -> ["Set Up Value"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Get Table Up"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Get Table"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Get I"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Get Field"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC ( (* 15 *)
     (fun ins -> ["Set Table Up"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Set Table"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Set I"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Set Field"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["New Table"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC ( (* 20 *)
     (fun ins -> ["Self"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Add I"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Add K"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Sub K"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Mul K"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC ( (* 25 *)
     (fun ins -> ["Mod K"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Pow K"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Div K"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["I Div K"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Bit And K"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC ( (* 30 *)
     (fun ins -> ["Bit Or K"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Bit Xor K"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Shift Right I"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Shift Left I"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Add R[%d] = R[%d] + R[%d]"; a(ins); b(ins); c(ins)]),
@@ -197,7 +197,7 @@ let instructions = [
       "const auto res = CalcArith(math::ArithOperator::ADD, p1, p2);";
       "p_stack->Push(res);";
       "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
-      "return 1;"
+      return("1")
     ])
   );
   InstABC ( (* 35 *)
@@ -208,7 +208,7 @@ let instructions = [
       "const auto res = CalcArith(math::ArithOperator::SUB, p1, p2);";
       "p_stack->Push(res);";
       "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
-      "return 1;"
+      return("1")
     ])
   );
   InstABC (
@@ -219,7 +219,7 @@ let instructions = [
       "const auto res = CalcArith(math::ArithOperator::MUL, p1, p2);";
       "p_stack->Push(res);";
       "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
-      "return 1;"
+      return("1")
     ])
   );
   InstABC (
@@ -230,7 +230,7 @@ let instructions = [
       "const auto res = Mod(p1, p2);";
       "p_stack->Push(res);";
       "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
-      "return 1;"
+      return("1")
     ])
   );
   InstABC (
@@ -241,7 +241,7 @@ let instructions = [
       "const auto res = CalcArith(math::ArithOperator::POW, p1, p2);";
       "p_stack->Push(res);";
       "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
-      "return 1;"
+      return("1")
     ])
   );
   InstABC (
@@ -252,7 +252,7 @@ let instructions = [
       "const auto res = CalcArith(math::ArithOperator::DIV, p1, p2);";
       "p_stack->Push(res);";
       "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
-      "return 1;"
+      return("1")
     ])
   );
   InstABC ( (* 40 *)
@@ -263,40 +263,40 @@ let instructions = [
       "const auto res = CalcArith(math::ArithOperator::I_DIV, p1, p2);";
       "p_stack->Push(res);";
       "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
-      "return 1;"
+      return("1")
     ])
   );
   InstABC (
     (fun ins -> ["Bit And"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Bit Or"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Bit Xor"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Shift Left"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC ( (* 45 *)
     (fun ins -> ["Shift Right"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["MM Bin"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["MM Bin I"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["MM Bin K"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["UNM R[%d] = -R[%d]"; a(ins); b(ins)]),
@@ -305,12 +305,12 @@ let instructions = [
       "const auto res = Neg(p);";
       "p_stack->Push(res);";
       "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
-      "return 1;"
+      return("1")
     ])
   );
   InstABC ( (* 50 *)
     (fun ins -> ["Bit Not"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Not R[%d] = not R[%d]"; a(ins); b(ins)]),
@@ -319,7 +319,7 @@ let instructions = [
       "const auto res = Not(p);";
       "p_stack->Push(res);";
       "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
-      "return 1;"
+      return("1")
     ])
   );
   InstABC (
@@ -329,33 +329,34 @@ let instructions = [
       "const auto res = Len(p);";
       "p_stack->Push(res);";
       "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
-      "return 1;"
+      return("1")
     ])
   );
   InstABC (
     (fun ins -> ["Concat R[%d] = R[%d] .. ... .. R[%d]"; a(ins); a(ins); a(ins) ^ " + " ^ b(ins) ^ " - 1"]),
     (fun ins -> [
       "auto res = p_stack->Get(" ^ a(ins) ^ ");";
-      "for (int i = " ^ a(ins) ^ " + 1; i < " ^ a(ins) ^ " + " ^ b(ins) ^ "; ++i) {";
-      "const auto p = p_stack->Get(i);";
-      "res = Concat(res, p);";
-      "}";
+      "for (int i = " ^ a(ins) ^ " + 1; i < " ^ a(ins) ^ " + " ^ b(ins) ^ "; ++i)";
+      block([
+        "const auto p = p_stack->Get(i);";
+        "res = Concat(res, p);";
+      ]);
       "p_stack->Push(res);";
       "p_stack->ReplaceWithTop(" ^ a(ins) ^ ");";
-      "return 1;"
+      return("1")
     ])
   );
   InstABC (
     (fun ins -> ["Close"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC ( (* 55 *)
     (fun ins -> ["TBC"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstsJ (
     (fun ins -> ["Jump: %d"; sj(ins)]),
-    (fun ins -> ["return " ^ sj(ins) ^ " + 1;"])
+    (fun ins -> [return(sj(ins) ^ " + 1")])
   );
   InstABC (
     (fun ins -> ["Equal R[%d] == R[%d] =? R[%d]"; b(ins); c(ins); a(ins)]),
@@ -363,7 +364,7 @@ let instructions = [
       "const auto a = " ^ a(ins) ^ ";";
       "const auto b = p_stack->Get(" ^ b(ins) ^ ");";
       "const auto c = p_stack->Get(" ^ c(ins) ^ ");";
-      "return (math::Compare(math::ComOperator::EQ, b, c) == a) ? 1 : 2;"
+      return("(math::Compare(math::ComOperator::EQ, b, c) == a) ? 1 : 2")
     ])
   );
   InstABC (
@@ -372,7 +373,7 @@ let instructions = [
       "const auto a = " ^ a(ins) ^ ";";
       "const auto b = p_stack->Get(" ^ b(ins) ^ ");";
       "const auto c = p_stack->Get(" ^ c(ins) ^ ");";
-      "return (math::Compare(math::ComOperator::LT, b, c) == a) ? 1 : 2;"
+      return("(math::Compare(math::ComOperator::LT, b, c) == a) ? 1 : 2")
     ])
   );
   InstABC (
@@ -381,39 +382,39 @@ let instructions = [
       "const auto a = " ^ a(ins) ^ ";";
       "const auto b = p_stack->Get(" ^ b(ins) ^ ");";
       "const auto c = p_stack->Get(" ^ c(ins) ^ ");";
-      "return (math::Compare(math::ComOperator::LE, b, c) == a) ? 1 : 2;"
+      return("(math::Compare(math::ComOperator::LE, b, c) == a) ? 1 : 2")
     ])
   );
   InstABC ( (* 60 *)
     (fun ins -> ["Equal K"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Equal I"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Less Than I"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Less Equal I"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Greater Than I"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC ( (* 65 *)
     (fun ins -> ["Greater Equal I"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Test: if (R[%d] != %d) then pc++"; a(ins); c(ins)]),
     (fun ins -> [
       "const auto a = p_stack->Get(" ^ a(ins) ^ ");";
       "const auto c = " ^ c(ins) ^ ";";
-      "return (ToBoolean(a) != ToBoolean(c)) ? 2 : 1;";
+      return("(ToBoolean(a) != ToBoolean(c)) ? 2 : 1")
     ])
   );
   InstABC (
@@ -421,78 +422,78 @@ let instructions = [
     (fun ins -> [
       "const auto b = p_stack->Get(" ^ b(ins) ^ ");";
       "const auto c = " ^ c(ins) ^ ";";
-      "if (ToBoolean(b) != ToBoolean(c)) {";
-      "p_stack->Set(" ^ a(ins) ^ ", b);";
-      "return 1;";
-      "}";
-      "else {";
-      "return 2;";
-      "}"
+      "if (ToBoolean(b) != ToBoolean(c))";
+      block([
+        "p_stack->Set(" ^ a(ins) ^ ", b);";
+        return("1");
+      ]);
+      "else";
+      block([return("2")])
     ])
   );
   InstABC (
     (fun ins -> ["Call"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Tail Call"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC ( (* 70 *)
     (fun ins -> ["Return: %d, %d"; (a ins); (b ins)]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Return 0"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Return 1"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABx (
     (fun ins -> ["For Loop: R[%d] += R[%d]; if R[%d] <= R[%d] then pc -= %d";
       a(ins); a(ins) ^ " + 2"; a(ins); a(ins) ^ " + 1"; bx(ins)]),
     (fun ins -> [
       "UpdateForCount(p_stack, " ^ a(ins) ^ ");";
-      "return (ShouldSkipForLoop(p_stack, " ^ a(ins) ^ ")) ? 1 : 1 - " ^ bx(ins) ^ ";"
+      return("(ShouldSkipForLoop(p_stack, " ^ a(ins) ^ ")) ? 1 : 1 - " ^ bx(ins))
     ])
   );
   InstABx (
     (fun ins -> ["For Prepare: if R[%d] > R[%d] pc += %d"; a(ins); a(ins) ^ " + 1"; bx(ins)]),
-    (fun ins -> ["return (ShouldSkipForLoop(p_stack, " ^ a(ins) ^ ")) ? 1 : 1 + " ^ bx(ins) ^ ";"])
+    (fun ins -> [return("(ShouldSkipForLoop(p_stack, " ^ a(ins) ^ ")) ? 1 : 1 + " ^ bx(ins))])
   );
   InstABx ( (* 75 *)
     (fun ins -> ["T For Prepare"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["T For Call"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABx (
     (fun ins -> ["T For Loop"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Set List"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABx (
     (fun ins -> ["Closure"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC ( (* 80 *)
     (fun ins -> ["Variable Arguments"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstABC (
     (fun ins -> ["Variable Arguments Prepare"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
   InstAx (
     (fun ins -> ["Extra Arguments"]),
-    (fun ins -> ["return 1;"])
+    (fun ins -> [return("1")])
   );
 ];;
 

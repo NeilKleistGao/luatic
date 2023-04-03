@@ -68,6 +68,8 @@ let sj ins = match ins with
 
 let include_sys filename = "#include <" ^ filename ^ ">\n"
 let include_user filename = "#include \"" ^ filename ^ "\"\n"
+let return dpc = "return " ^ dpc ^ ";"
+let block inner = (List.fold_left (fun r s -> r ^ "\n" ^ s) "{" inner) ^ "\n}"
 
 let fprintf params =
   match params with

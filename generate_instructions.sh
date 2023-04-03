@@ -8,4 +8,8 @@ ocamlopt -o ../bin/instruction_generator cpplib.cmx instructions.cmx
 
 cd ..
 ./bin/instruction_generator
-./clang_format.sh
+
+git ls-files -- '*.cc' '*.h' ':!:*/libraries/*' |
+while read -r f; do
+  clang-format-13 -style=file --Wno-error=unknown -i "$f"
+done
