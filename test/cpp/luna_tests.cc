@@ -25,7 +25,9 @@
 #include <gtest/gtest.h>
 #include <memory>
 
+#include "luna/luna_math.h"
 #include "luna/luna_stack.h"
+#include "luna/luna_values.h"
 
 TEST(LuaticTests, StackTest) {
   auto stack = std::make_shared<LunaStack>(32);
@@ -75,4 +77,22 @@ TEST(LuaticTests, StackTest) {
   stack->Reverse(1, -1);
   const auto temp10 = stack->Get(-2);
   EXPECT_EQ(temp10.index(), 4); // number
+}
+
+TEST(LuaticTests, TableTest) {
+  using math::Equal;
+  const auto t = CreateTable();
+  LunaValue v1 = LunaNumber{LunaInt{1}};
+  LunaValue v2 = LunaString{"abc"};
+  LunaValue v3 = CreateTable();
+  LunaValue v4 = LunaBoolean{false};
+
+  t->Set(LunaNumber{LunaInt{1}}, v1);
+  EXPECT_EQ(Equal(t->Get(LunaNumber{LunaInt{1}}), v1), true);
+  t->Set(LunaNumber{LunaInt{2}}, v2);
+  EXPECT_EQ(Equal(t->Get(LunaNumber{LunaInt{2}}), v2), true);
+  t->Set(LunaNumber{LunaInt{3}}, v3);
+  EXPECT_EQ(Equal(t->Get(LunaNumber{LunaInt{3}}), v3), true);
+  t->Set(LunaString{"def"}, v4);
+  EXPECT_EQ(Equal(t->Get(LunaString{"def"}), v4), true);
 }

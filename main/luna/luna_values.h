@@ -26,6 +26,7 @@
 #define LUATIC_LUNA_VALUES_H
 
 #include <memory>
+#include <optional>
 #include <string>
 #include <unordered_map>
 #include <utility>
@@ -79,9 +80,21 @@ struct LunaHash {
   size_t operator()(const LunaValue& p_value) const;
 };
 
-struct LunaTable {
+struct LunaEquality {
+  bool operator()(const LunaValue& p1, const LunaValue& p2) const;
+};
+
+class LunaTable {
+public:
+  LunaValue Get(const LunaValue& p_key);
+  void Set(const LunaValue& p_key, const LunaValue& p_value);
+
+private:
   std::vector<LunaValue> arr;
-  std::unordered_map<LunaValue, LunaValue, LunaHash> map;
+  std::unordered_map<LunaValue, LunaValue, LunaHash, LunaEquality> map;
+
+  static std::optional<LunaInt> TryGetFromArray(const LunaValue& p_key,
+                                                const size_t& p_top);
 };
 
 constexpr size_t LUNA_FLOAT = 0;
@@ -93,5 +106,9 @@ LunaValue FromLiteral(const chunk::Literal& p_lit);
 
 // This function is only for compatibility
 LunaBoolean ToBoolean(const LunaValue& p_value);
+
+inline LunaTablePtr CreateTable() {
+  return std::make_shared<LunaTable>();
+}
 
 #endif //LUATIC_LUNA_VALUES_H

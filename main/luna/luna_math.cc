@@ -221,7 +221,11 @@ namespace math {
           return v1 == v2;
         }
       }
-      case LunaType::LUNA_TABLE:
+      case LunaType::LUNA_TABLE: {
+        EXTRACT_VALUES(p1, p2, v1, v2, LunaType::LUNA_TABLE) {
+          return v1.get() == v2.get();
+        }
+      }
       case LunaType::LUNA_FUNCTION:
       case LunaType::LUNA_USERDATA:
       case LunaType::LUNA_THREAD:

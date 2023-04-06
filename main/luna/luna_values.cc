@@ -23,6 +23,7 @@
  */
 
 #include "luna_values.h"
+#include "luna_math.h"
 
 LunaType GetTypeOf(const LunaValue& p_value) {
   const auto index = p_value.index();
@@ -113,4 +114,69 @@ size_t LunaHash::operator()(const LunaValue& p_value) const {
     default:
       return 0; // TODO: implement hash algorithm
   }
+}
+
+bool LunaEquality::operator()(const LunaValue& p1, const LunaValue& p2) const {
+  return math::Equal(p1, p2);
+}
+
+LunaValue LunaTable::Get(const LunaValue& p_key) {
+  const auto index = TryGetFromArray(p_key, this->arr.size());
+  if (index.has_value()) {
+    return this->arr[index.value()];
+  } else if (this->map.find(p_key) != this->map.end()) {
+    return this->map[p_key];
+  } else {
+    return LunaNone{};
+  }
+}
+
+void LunaTable::Set(const LunaValue& p_key, const LunaValue& p_value) {
+  const auto index = TryGetFromArray(p_key, this->arr.size() + 1);
+  if (index.has_value()) {
+    const auto ii = index.value();
+    if (ii < this->arr.size()) {
+      this->arr[ii] = p_value;
+    } else {
+      this->arr.push_back(p_value);
+    }
+
+    if (p_value.index() == LunaType::LUNA_NIL) {
+      for (int i = static_cast<int>(this->arr.size()) - 1; i > ii; --i) {
+        const auto t = this->arr.back();
+        this->arr.pop_back();
+        this->map[LunaInt{i + 1}] = t;
+      }
+
+      this->arr.pop_back();
+    }
+  } else {
+    if (p_value.index() == LunaType::LUNA_NIL) {
+      this->map.erase(p_key);
+    } else {
+      this->map[p_key] = p_value;
+    }
+  }
+}
+
+std::optional<LunaInt> LunaTable::TryGetFromArray(const LunaValue& p_key,
+                                                  const size_t& p_top) {
+  if (p_key.index() == LunaType::LUNA_NUMBER) {
+    const auto num = std::get<LunaType::LUNA_NUMBER>(p_key);
+    if (num.index() == LUNA_INT) {
+      const auto index = std::get<LUNA_INT>(num) - 1;
+      if (index > -1 && index < p_top) {
+        return index;
+      }
+    } else {
+      const LunaFloat f = std::get<LUNA_FLOAT>(num);
+      const auto floor = static_cast<LunaInt>(f);
+      if (f - static_cast<LunaFloat>(floor) == 0.0 && floor > 0 &&
+          floor <= p_top) {
+        return floor - 1;
+      }
+    }
+  }
+
+  return {};
 }
