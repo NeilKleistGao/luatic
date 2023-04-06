@@ -92,12 +92,25 @@ size_t LunaHash::operator()(const LunaValue& p_value) const {
     case LunaType::LUNA_NIL:
       return 0; // TODO: throw?
     case LunaType::LUNA_BOOLEAN:
-    case LunaType::LUNA_NUMBER:
+      return std::hash<LunaBoolean>()(
+        std::get<LunaType::LUNA_BOOLEAN>(p_value));
+    case LunaType::LUNA_NUMBER: {
+      const auto temp = std::get<LunaType::LUNA_NUMBER>(p_value);
+      if (p_value.index() == LUNA_INT) {
+        return std::hash<LunaInt>()(std::get<LUNA_INT>(temp));
+      } else {
+        return std::hash<LunaFloat>()(std::get<LUNA_FLOAT>(temp));
+      }
+    }
     case LunaType::LUNA_STRING:
-    case LunaType::LUNA_TABLE:
+      return std::hash<LunaString>()(std::get<LunaType::LUNA_STRING>(p_value));
+    case LunaType::LUNA_TABLE: {
+      const auto temp = std::get<LunaType::LUNA_TABLE>(p_value);
+      return reinterpret_cast<size_t>(temp.get());
+    }
     case LunaType::LUNA_FUNCTION:
     case LunaType::LUNA_THREAD:
     default:
-      return 0; // TODO: check the hash algorithm
+      return 0; // TODO: implement hash algorithm
   }
 }
