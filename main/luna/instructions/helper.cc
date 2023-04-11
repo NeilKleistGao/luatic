@@ -98,4 +98,18 @@ namespace instructions {
                          p_stack->Get(p_base),
                          p_stack->Get(p_base + 1));
   }
+
+  LunaValue GetFromStackOrConst(const std::shared_ptr<LunaStack>& p_stack,
+                                const std::vector<chunk::Literal>& p_const,
+                                int p_index) {
+    if (p_index > 0xff) {
+      if ((p_index & 0xff) < p_const.size()) {
+        return FromLiteral(p_const[p_index & 0xff]);
+      } else {
+        return LunaNone{};
+      }
+    } else {
+      return p_index;
+    }
+  }
 } // namespace instructions

@@ -8,22 +8,27 @@
 -- max stack size: 4
 -- code: 
 ---- Variable Arguments Prepare
----- New Table
+---- New Table: R[0] = {}
 ---- Extra Arguments
 ---- Set Table Up
----- New Table
+---- New Table: R[0] = {}
 ---- Extra Arguments
 ---- Load I at 1, value: 1
 ---- Load I at 2, value: 2
 ---- Load I at 3, value: 3
 ---- Set List
 ---- Set Table Up
----- New Table
+---- New Table: R[0] = {}
 ---- Extra Arguments
 ---- Set Table Up
 ---- Get Table Up
 ---- Closure
 ---- Set Field
+---- Get Table Up
+---- Get Field
+---- Get Table Up
+---- Get I
+---- Call
 ---- Return: 0, 1
 -- constant: 
 ---- String

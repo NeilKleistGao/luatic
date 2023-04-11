@@ -102,8 +102,16 @@ let instructions = [
     (fun ins -> [return("1")])
   );
   InstABC (
-    (fun ins -> ["Get Table"]),
-    (fun ins -> [return("1")])
+    (fun ins -> ["Get Table: R[%d] = R[%d][R[%d]]"; a(ins); b(ins); c(ins)]),
+    (fun ins -> [
+      const "temp" (get_stack (b ins));
+      stmt "if (temp.index() != LunaType::LUNA_TABLE)"; (* TODO: throw? *)
+      const "table" "std::get<LunaType::LUNA_TABLE>(temp)";
+      const "key" (get_stack (c ins));
+      const "value" "table->Get(key)";
+      stmt (set_stack (a ins) "value");
+      return("1")
+    ])
   );
   InstABC (
     (fun ins -> ["Get I"]),
@@ -118,8 +126,16 @@ let instructions = [
     (fun ins -> [return("1")])
   );
   InstABC (
-    (fun ins -> ["Set Table"]),
-    (fun ins -> [return("1")])
+    (fun ins -> ["Set Table: R[%d][R[%d]] = RK[%d]"; a(ins); b(ins); c(ins)]),
+    (fun ins -> [
+      const "temp" (get_stack (a ins));
+      stmt "if (temp.index() != LunaType::LUNA_TABLE)"; (* TODO: throw? *)
+      const "table" "std::get<LunaType::LUNA_TABLE>(temp)";
+      const "key" (get_stack (b ins));
+      const "value" (get_rk (c ins));
+      stmt "table->Set(key, value)";
+      return("1")
+    ])
   );
   InstABC (
     (fun ins -> ["Set I"]),
@@ -130,8 +146,11 @@ let instructions = [
     (fun ins -> [return("1")])
   );
   InstABC (
-    (fun ins -> ["New Table"]),
-    (fun ins -> [return("1")])
+    (fun ins -> ["New Table: R[%d] = {}"; a(ins)]),
+    (fun ins -> [
+      stmt (set_stack (a ins) "CreateTable()");
+      return("1")
+    ])
   );
   InstABC ( (* 20 *)
     (fun ins -> ["Self"]),

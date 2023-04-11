@@ -65,7 +65,12 @@ namespace instructions {
         fprintf(p_fp, "%s Get Table Up\n", p_indent.c_str());
         break;
       case 12:
-        fprintf(p_fp, "%s Get Table\n", p_indent.c_str());
+        fprintf(p_fp,
+                "%s Get Table: R[%d] = R[%d][R[%d]]\n",
+                p_indent.c_str(),
+                ((p_ins >> 7) & 0xFF),
+                ((p_ins >> 16) & 0xFF),
+                ((p_ins >> 24) & 0xFF));
         break;
       case 13:
         fprintf(p_fp, "%s Get I\n", p_indent.c_str());
@@ -77,7 +82,12 @@ namespace instructions {
         fprintf(p_fp, "%s Set Table Up\n", p_indent.c_str());
         break;
       case 16:
-        fprintf(p_fp, "%s Set Table\n", p_indent.c_str());
+        fprintf(p_fp,
+                "%s Set Table: R[%d][R[%d]] = RK[%d]\n",
+                p_indent.c_str(),
+                ((p_ins >> 7) & 0xFF),
+                ((p_ins >> 16) & 0xFF),
+                ((p_ins >> 24) & 0xFF));
         break;
       case 17:
         fprintf(p_fp, "%s Set I\n", p_indent.c_str());
@@ -86,7 +96,10 @@ namespace instructions {
         fprintf(p_fp, "%s Set Field\n", p_indent.c_str());
         break;
       case 19:
-        fprintf(p_fp, "%s New Table\n", p_indent.c_str());
+        fprintf(p_fp,
+                "%s New Table: R[%d] = {}\n",
+                p_indent.c_str(),
+                ((p_ins >> 7) & 0xFF));
         break;
       case 20:
         fprintf(p_fp, "%s Self\n", p_indent.c_str());

@@ -80,7 +80,16 @@ namespace instructions {
          const std::vector<chunk::Literal>& p_const) { return 1; },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
-         const std::vector<chunk::Literal>& p_const) { return 1; },
+         const std::vector<chunk::Literal>& p_const) {
+        const auto temp = p_stack->Get(((p_ins >> 16) & 0xFF));
+        if (temp.index() != LunaType::LUNA_TABLE)
+          ;
+        const auto table = std::get<LunaType::LUNA_TABLE>(temp);
+        const auto key = p_stack->Get(((p_ins >> 24) & 0xFF));
+        const auto value = table->Get(key);
+        p_stack->Set(((p_ins >> 7) & 0xFF), value);
+        return 1;
+      },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
          const std::vector<chunk::Literal>& p_const) { return 1; },
@@ -92,7 +101,17 @@ namespace instructions {
          const std::vector<chunk::Literal>& p_const) { return 1; },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
-         const std::vector<chunk::Literal>& p_const) { return 1; },
+         const std::vector<chunk::Literal>& p_const) {
+        const auto temp = p_stack->Get(((p_ins >> 7) & 0xFF));
+        if (temp.index() != LunaType::LUNA_TABLE)
+          ;
+        const auto table = std::get<LunaType::LUNA_TABLE>(temp);
+        const auto key = p_stack->Get(((p_ins >> 16) & 0xFF));
+        const auto value =
+          GetFromStackOrConst(p_stack, p_const, ((p_ins >> 24) & 0xFF));
+        table->Set(key, value);
+        return 1;
+      },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
          const std::vector<chunk::Literal>& p_const) { return 1; },
@@ -101,7 +120,10 @@ namespace instructions {
          const std::vector<chunk::Literal>& p_const) { return 1; },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
-         const std::vector<chunk::Literal>& p_const) { return 1; },
+         const std::vector<chunk::Literal>& p_const) {
+        p_stack->Set(((p_ins >> 7) & 0xFF), CreateTable());
+        return 1;
+      },
       [](Instruction p_ins,
          const std::shared_ptr<LunaStack>& p_stack,
          const std::vector<chunk::Literal>& p_const) { return 1; },

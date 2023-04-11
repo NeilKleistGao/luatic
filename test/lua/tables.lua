@@ -28,3 +28,5 @@ c = {}
 c.foo = function(x)
   return x + 1
 end
+
+c.foo(b[2])

@@ -40,6 +40,9 @@ namespace instructions {
   LunaValue Concat(LunaValue p1, LunaValue p2);
   void UpdateForCount(const std::shared_ptr<LunaStack>& p_stack, int p_base);
   bool ShouldSkipForLoop(const std::shared_ptr<LunaStack>& p_stack, int p_base);
+  LunaValue GetFromStackOrConst(const std::shared_ptr<LunaStack>& p_stack,
+                                const std::vector<chunk::Literal>& p_const,
+                                int p_index);
 } // namespace instructions
 
 #endif //LUATIC_HELPER_H

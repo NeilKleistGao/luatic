@@ -83,6 +83,7 @@ let replace_top id = "p_stack->ReplaceWithTop(" ^ id ^ ")"
 let null = "nullptr"
 let for_0_le_inc bd loop = "for (int i = 0; i <= " ^ bd ^ "; ++i)" ^ (block loop)
 let copy_stack f t = "p_stack->Copy(" ^ f ^ ", " ^ t ^ ")"
+let get_rk id = "GetFromStackOrConst(p_stack, p_const, " ^ id ^ ")"
 
 let fprintf params =
   match params with
