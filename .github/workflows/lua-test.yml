@@ -1,4 +1,4 @@
-name: Luatic Linux Tests
+name: Lua Backend Tests
 
 on:
   push:
@@ -19,6 +19,9 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
+      - name: setup lua
+        shell: bash
+        run: ./get_backend.sh lua5.4
       - name: build project
         shell: bash
         run: mkdir bin && cmake -DBUILD_TEST=OFF . && cmake --build . --target luatic -j 12
@@ -31,6 +34,9 @@ jobs:
       - name: install google test
         shell: bash
         run: sudo apt-get install libgtest-dev && cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make
+      - name: setup lua
+        shell: bash
+        run: ./get_backend.sh lua5.4
       - name: build diff tests
         shell: bash
         run: mkdir bin && cmake . && cmake --build . --target tests -j 12

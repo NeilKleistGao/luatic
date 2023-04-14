@@ -15,11 +15,14 @@ endif()
 
 include_directories(main)
 include_directories(libraries)
+include(backends/CMakeLists.txt)
 
 add_executable(luatic main/luatic/main.cc)
+target_link_libraries(luatic ${CMAKE_SOURCE_DIR}/bin/lib/libbackend.a)
 
 if (BUILD_TEST)
   add_executable(tests test/cpp/diff_tests.cc)
   target_link_libraries(tests ${GTEST_BOTH_LIBRARIES})
   target_link_libraries(tests ${CMAKE_THREAD_LIBS_INIT})
+  target_link_libraries(tests ${CMAKE_SOURCE_DIR}/bin/lib/libbackend.a)
 endif()

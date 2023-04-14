@@ -36,7 +36,5 @@ bin/
 cmake-build-debug/
 .idea/
 
-# OCaml
-*.cmi
-*.cmo
-*.cmx
+# Backend CMake
+backends/CMakeLists.txt
