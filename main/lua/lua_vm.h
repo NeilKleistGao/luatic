@@ -22,9 +22,33 @@
  * SOFTWARE.
  */
 
-#include <iostream>
+#ifndef LUATIC_LUA_VM_H
+#define LUATIC_LUA_VM_H
 
-int main() {
-  std::cout << "Hello, World!" << std::endl;
-  return 0;
-}
+#include <memory>
+#include <vector>
+
+/* clang-format off */
+extern "C" {
+#include "../backends/bin/lua-5.4.4/src/lstate.h"
+#include "../backends/bin/lua-5.4.4/src/lauxlib.h"
+
+  typedef struct lua_State lua_State;
+};
+/* clang-format on */
+
+class LuaVM {
+public:
+  explicit LuaVM(const std::vector<std::string>& p_args);
+  ~LuaVM();
+
+  static std::shared_ptr<LuaVM>
+    StartVM(const std::vector<std::string>& p_args = {});
+  static void Halt();
+
+private:
+  static std::shared_ptr<LuaVM> s_ins;
+  lua_State* m_state;
+};
+
+#endif //LUATIC_LUA_VM_H

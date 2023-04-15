@@ -5,15 +5,6 @@ quit(){
   exit -1
 }
 
-set_cmake(){
-  if (($# < 1))
-  then
-    quit "can't find the corresponding configuration!"
-  fi
-  echo "set" $1 "as the backend."
-  cp -f backends/config/$1/CMakeLists.txt backends/CMakeLists.txt
-}
-
 download_if_not_exist(){
   if (($# < 3))
   then
@@ -36,22 +27,10 @@ unzip_if_not_exist(){
   fi
 }
 
-if (($# < 1))
-then
-  quit "please indicate the backend!"
-fi
-
 if [ ! -d "backends/bin" ];then
   mkdir backends/bin
 fi
 
-backend_name=$1
-if [ $backend_name = "lua5.4" ]
-then
-  download_if_not_exist $backend_name backends/bin/lua5.4.tar.gz http://www.lua.org/ftp/lua-5.4.4.tar.gz
-  unzip_if_not_exist "backends/bin/lua5.4.4" "zxf backends/bin/lua5.4.tar.gz -C backends/bin"
-else
-  quit "backend" $backend_name "is not available!"
-fi
-
-set_cmake $backend_name
+# lua 5.4 vm
+download_if_not_exist "lua5.4" backends/bin/lua5.4.tar.gz http://www.lua.org/ftp/lua-5.4.4.tar.gz
+unzip_if_not_exist "backends/bin/lua5.4.4" "zxf backends/bin/lua5.4.tar.gz -C backends/bin"

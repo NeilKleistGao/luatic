@@ -35,6 +35,3 @@
 bin/
 cmake-build-debug/
 .idea/
-
-# Backend CMake
-backends/CMakeLists.txt

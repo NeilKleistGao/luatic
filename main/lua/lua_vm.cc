@@ -22,9 +22,33 @@
  * SOFTWARE.
  */
 
-#ifndef LUATIC_LUA_VM_H
-#define LUATIC_LUA_VM_H
+#include "lua_vm.h"
 
-void StartVM();
+#include <exception>
 
-#endif //LUATIC_LUA_VM_H
+std::shared_ptr<LuaVM> LuaVM::s_ins = nullptr;
+
+LuaVM::LuaVM(const std::vector<std::string>& p_args) {
+  m_state = luaL_newstate();
+}
+
+LuaVM::~LuaVM() {
+  lua_close(m_state);
+}
+
+std::shared_ptr<LuaVM> LuaVM::StartVM(const std::vector<std::string>& p_args) {
+  if (s_ins == nullptr) {
+    s_ins = std::make_shared<LuaVM>(p_args);
+    if (s_ins == nullptr) {
+      throw std::bad_alloc();
+    }
+  }
+
+  return s_ins;
+}
+
+void LuaVM::Halt() {
+  if (s_ins != nullptr) {
+    s_ins.reset();
+  }
+}

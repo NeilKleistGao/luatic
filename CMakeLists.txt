@@ -15,9 +15,10 @@ endif()
 
 include_directories(main)
 include_directories(libraries)
+include_directories(backends/config)
 include(backends/CMakeLists.txt)
 
-add_executable(luatic main/luatic/main.cc)
+add_executable(luatic main/main.cc main/lua/lua_vm.cc main/lua/lua_vm.h)
 target_link_libraries(luatic ${CMAKE_SOURCE_DIR}/bin/lib/libbackend.a)
 
 if (BUILD_TEST)
