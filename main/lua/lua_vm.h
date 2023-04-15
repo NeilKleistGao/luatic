@@ -26,6 +26,7 @@
 #define LUATIC_LUA_VM_H
 
 #include <memory>
+#include <string>
 #include <vector>
 
 /* clang-format off */
