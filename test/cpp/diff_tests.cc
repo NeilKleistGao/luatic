@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#include <gtest/gtest.h>
 #include <filesystem>
+#include <gtest/gtest.h>
 #include <regex>
 
 #include "lua/lua_vm.h"
@@ -31,10 +31,10 @@
 TEST(LuaticDiffTests, LuaVM) {
   namespace fs = std::filesystem;
   const auto path = fs::path{"./test/lua"};
-  const auto reg = std::regex {"(.*)\\.luac"};
+  const auto reg = std::regex{"(.*)\\.luac"};
   const auto vm = LuaVM::StartVM();
 
-  for (const auto& fp: fs::directory_iterator(path)) {
+  for (const auto& fp : fs::directory_iterator(path)) {
     const auto filename = fp.path().string();
     if (std::regex_match(filename, reg)) {
       assert(vm->DoFile(filename) == 0);
