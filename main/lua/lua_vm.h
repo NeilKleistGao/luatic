@@ -32,7 +32,7 @@
 extern "C" {
 #include "../backends/bin/lua-5.4.4/src/lstate.h"
 #include "../backends/bin/lua-5.4.4/src/lauxlib.h"
-
+#include "../backends/bin/lua-5.4.4/src/lualib.h"
   typedef struct lua_State lua_State;
 };
 /* clang-format on */
@@ -45,6 +45,8 @@ public:
   static std::shared_ptr<LuaVM>
     StartVM(const std::vector<std::string>& p_args = {});
   static void Halt();
+
+  int DoFile(const std::string& p_filename);
 
 private:
   static std::shared_ptr<LuaVM> s_ins;

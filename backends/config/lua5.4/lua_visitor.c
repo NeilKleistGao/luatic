@@ -1,5 +1,9 @@
 // This part is adapted from onelua.c
 /* clang-format off */
+
+// TODO: more platforms
+#define LUA_USE_LINUX
+
 #include "lprefix.h"
 
 #include <assert.h>

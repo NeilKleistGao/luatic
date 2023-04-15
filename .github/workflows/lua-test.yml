@@ -42,7 +42,7 @@ jobs:
         run: mkdir bin && cmake . && cmake --build . --target backend -j 12 && cmake --build . --target tests -j 12
       - name: execute diff tests
         shell: bash
-        run: cd bin && ./tests
+        run: ./bin/tests
       - name: check no change
         shell: bash
         run: git diff-files -p --exit-code --diff-filter=ADMR -w

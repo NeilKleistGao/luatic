@@ -30,6 +30,11 @@ std::shared_ptr<LuaVM> LuaVM::s_ins = nullptr;
 
 LuaVM::LuaVM(const std::vector<std::string>& p_args) {
   m_state = luaL_newstate();
+  lua_gc(m_state, LUA_GCSTOP);
+  luaL_openlibs(m_state);
+  // TODO: create tables for args
+  lua_gc(m_state, LUA_GCRESTART);
+  lua_gc(m_state, LUA_GCGEN, 0, 0);
 }
 
 LuaVM::~LuaVM() {
@@ -51,4 +56,14 @@ void LuaVM::Halt() {
   if (s_ins != nullptr) {
     s_ins.reset();
   }
+}
+
+int LuaVM::DoFile(const std::string& p_filename) {
+  int res = luaL_loadfilex(m_state, p_filename.c_str(), "bt");
+  if (res == 0) {
+    // TODO: load parameters
+    return lua_pcall(m_state, 0, 0, 0);
+  }
+
+  return res;
 }

@@ -27,6 +27,7 @@
 #include "cxxopts/cxxopts.hpp"
 #include "lua/lua_vm.h"
 
+// TODO: return int
 void StartRepl() {
   std::cout << "Press Ctrl-D to exit." << std::endl;
 
@@ -38,21 +39,23 @@ void StartRepl() {
   }
 }
 
-void ExecuteBinary(const std::string& p_filename) {
+int ExecuteBinary(const std::string& p_filename) {
   const auto vm = LuaVM::StartVM(); // TODO: arguments?
+  int res = vm->DoFile(p_filename);
+  LuaVM::Halt();
+  return res;
 }
 
 int main(int argc, char* argv[]) {
   cxxopts::Options options("Luatic", "luna [options] [script [args]]");
 
-  options.add_options()("r,repl", "start REPL")("b,binary",
-                                                "execute binary file")(
-    "filename",
-    "script filename",
-    cxxopts::value<std::string>())(
-    "arguments",
-    "arguments",
-    cxxopts::value<std::vector<std::string>>())("h, help", "help");
+  /* clang-format off */
+  options.add_options()
+    ("r,repl", "start REPL")
+    ("b,binary","execute binary file")
+    ("filename","script filename", cxxopts::value<std::string>())
+    ("arguments", "arguments", cxxopts::value<std::vector<std::string>>())
+    ("h, help", "help");
   // TODO: add more options.
 
   /* clang-format on */
@@ -63,9 +66,9 @@ int main(int argc, char* argv[]) {
     std::cout << options.help() << std::endl;
   } else if (results.count("repl") > 0) {
     StartRepl();
-  } else if (results.count("binary") > 0) {
+  } else if (results.count("binary") > 0 && results.count("filename") > 0) {
     const auto filename = results["filename"].as<std::string>();
-    ExecuteBinary(filename);
+    return ExecuteBinary(filename);
   } else {
     std::cout << options.help() << std::endl;
   }
