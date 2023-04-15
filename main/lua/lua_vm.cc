@@ -22,24 +22,48 @@
  * SOFTWARE.
  */
 
-#include <filesystem>
-#include <gtest/gtest.h>
-#include <regex>
+#include "lua_vm.h"
 
-#include "lua/lua_vm.h"
+#include <exception>
 
-TEST(LuaticDiffTests, LuaVM) {
-  namespace fs = std::filesystem;
-  const auto path = fs::path{"./test/lua"};
-  const auto reg = std::regex{"(.*)\\.luac"};
-  const auto vm = LuaVM::StartVM();
+std::shared_ptr<LuaVM> LuaVM::s_ins = nullptr;
 
-  for (const auto& fp : fs::directory_iterator(path)) {
-    const auto filename = fp.path().string();
-    if (std::regex_match(filename, reg)) {
-      assert(vm->DoFile(filename) == 0);
+LuaVM::LuaVM(const std::vector<std::string>& p_args) {
+  m_state = luaL_newstate();
+  lua_gc(m_state, LUA_GCSTOP);
+  luaL_openlibs(m_state);
+  // TODO: create tables for args
+  lua_gc(m_state, LUA_GCRESTART);
+  lua_gc(m_state, LUA_GCGEN, 0, 0);
+}
+
+LuaVM::~LuaVM() {
+  lua_close(m_state);
+}
+
+std::shared_ptr<LuaVM> LuaVM::StartVM(const std::vector<std::string>& p_args) {
+  if (s_ins == nullptr) {
+    s_ins = std::make_shared<LuaVM>(p_args);
+    if (s_ins == nullptr) {
+      throw std::bad_alloc();
     }
   }
 
-  LuaVM::Halt();
+  return s_ins;
+}
+
+void LuaVM::Halt() {
+  if (s_ins != nullptr) {
+    s_ins.reset();
+  }
+}
+
+int LuaVM::DoFile(const std::string& p_filename) {
+  int res = luaL_loadfilex(m_state, p_filename.c_str(), "bt");
+  if (res == 0) {
+    // TODO: load parameters
+    return lua_pcall(m_state, 0, 0, 0);
+  }
+
+  return res;
 }

@@ -22,24 +22,36 @@
  * SOFTWARE.
  */
 
-#include <filesystem>
-#include <gtest/gtest.h>
-#include <regex>
+#ifndef LUATIC_LUA_VM_H
+#define LUATIC_LUA_VM_H
 
-#include "lua/lua_vm.h"
+#include <memory>
+#include <string>
+#include <vector>
 
-TEST(LuaticDiffTests, LuaVM) {
-  namespace fs = std::filesystem;
-  const auto path = fs::path{"./test/lua"};
-  const auto reg = std::regex{"(.*)\\.luac"};
-  const auto vm = LuaVM::StartVM();
+/* clang-format off */
+extern "C" {
+#include "../backends/bin/lua-5.4.4/src/lstate.h"
+#include "../backends/bin/lua-5.4.4/src/lauxlib.h"
+#include "../backends/bin/lua-5.4.4/src/lualib.h"
+  typedef struct lua_State lua_State;
+};
+/* clang-format on */
 
-  for (const auto& fp : fs::directory_iterator(path)) {
-    const auto filename = fp.path().string();
-    if (std::regex_match(filename, reg)) {
-      assert(vm->DoFile(filename) == 0);
-    }
-  }
+class LuaVM {
+public:
+  explicit LuaVM(const std::vector<std::string>& p_args);
+  ~LuaVM();
 
-  LuaVM::Halt();
-}
+  static std::shared_ptr<LuaVM>
+    StartVM(const std::vector<std::string>& p_args = {});
+  static void Halt();
+
+  int DoFile(const std::string& p_filename);
+
+private:
+  static std::shared_ptr<LuaVM> s_ins;
+  lua_State* m_state;
+};
+
+#endif //LUATIC_LUA_VM_H

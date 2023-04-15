@@ -2,5 +2,4 @@
 *.h linguist-language=c++
 *.luna linguist-language=lua
 *.luac binary
-test/cpp/instructions_pretty_printer.cc linguist-vendored
-main/luna/instructions/instructions_impl.cc linguist-vendored
+*.check linguist-vendored
