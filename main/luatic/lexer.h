@@ -22,48 +22,28 @@
  * SOFTWARE.
  */
 
-#include "lua_vm.h"
+#ifndef LUATIC_LEXER_H
+#define LUATIC_LEXER_H
 
-#include <exception>
+#include <unordered_map>
+#include <vector>
 
-std::shared_ptr<LuaVM> LuaVM::s_ins = nullptr;
+#include "diagnostic.hpp"
+#include "tokens.hpp"
 
-LuaVM::LuaVM(const std::vector<std::string>& p_args) {
-  m_state = luaL_newstate();
-  lua_gc(m_state, LUA_GCSTOP);
-  luaL_openlibs(m_state);
-  // TODO: create tables for args
-  lua_gc(m_state, LUA_GCRESTART);
-  lua_gc(m_state, LUA_GCGEN, 0, 0);
-}
+class Lexer {
+public:
+  using TokenStream = std::vector<Token>;
+  using DiagnosticList = std::vector<Diagnostic>;
 
-LuaVM::~LuaVM() {
-  lua_close(m_state);
-}
+  explicit Lexer(std::optional<std::string> p_filename);
+  std::variant<TokenStream, DiagnosticList>
+    Parse(const std::string& p_code) const noexcept;
 
-std::shared_ptr<LuaVM> LuaVM::StartVM(const std::vector<std::string>& p_args) {
-  if (s_ins == nullptr) {
-    s_ins = std::make_shared<LuaVM>(p_args);
-    if (s_ins == nullptr) {
-      throw std::bad_alloc();
-    }
-  }
+private:
+  static const std::unordered_map<std::string, Keyword> m_keywords;
+  static const std::unordered_map<std::string, Operator> m_operators;
+  const std::optional<std::string> m_filename;
+};
 
-  return s_ins;
-}
-
-void LuaVM::Halt() {
-  if (s_ins != nullptr) {
-    s_ins.reset();
-  }
-}
-
-int LuaVM::DoFile(const std::string& p_filename) {
-  int res = luaL_loadfilex(m_state, p_filename.c_str(), "b");
-  if (res == 0) {
-    // TODO: load parameters
-    return lua_pcall(m_state, 0, 0, 0);
-  }
-
-  return res;
-}
+#endif //LUATIC_LEXER_H

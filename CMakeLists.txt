@@ -18,11 +18,15 @@ include_directories(libraries)
 include_directories(backends/config)
 include(backends/CMakeLists.txt)
 
-add_executable(luatic main/main.cc main/lua/lua_vm.cc main/lua/lua_vm.h)
+list(APPEND luatic_source
+        main/lua/lua_vm.cc
+        main/luatic/lexer.cc)
+
+add_executable(luatic main/main.cc ${luatic_source})
 target_link_libraries(luatic ${CMAKE_SOURCE_DIR}/bin/lib/libbackend.a ${CMAKE_DL_LIBS})
 
 if (BUILD_TEST)
-  add_executable(tests test/cpp/diff_tests.cc main/lua/lua_vm.cc main/lua/lua_vm.h)
+  add_executable(tests test/cpp/diff_tests.cc ${luatic_source})
   target_link_libraries(tests ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
   target_link_libraries(tests ${CMAKE_SOURCE_DIR}/bin/lib/libbackend.a ${CMAKE_DL_LIBS})
 endif()

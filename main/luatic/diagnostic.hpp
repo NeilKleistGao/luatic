@@ -22,48 +22,35 @@
  * SOFTWARE.
  */
 
-#include "lua_vm.h"
+#ifndef LUATIC_DIAGNOSTIC_HPP
+#define LUATIC_DIAGNOSTIC_HPP
 
-#include <exception>
+#include <optional>
+#include <string>
 
-std::shared_ptr<LuaVM> LuaVM::s_ins = nullptr;
+struct Location {
+  int line{};
+  int column{};
+  std::optional<std::string> filename;
+};
 
-LuaVM::LuaVM(const std::vector<std::string>& p_args) {
-  m_state = luaL_newstate();
-  lua_gc(m_state, LUA_GCSTOP);
-  luaL_openlibs(m_state);
-  // TODO: create tables for args
-  lua_gc(m_state, LUA_GCRESTART);
-  lua_gc(m_state, LUA_GCGEN, 0, 0);
-}
+enum class DiagnosticType {
+  DIAG_LEX,
+  DIAG_PARSE,
+  DIAG_TYPING,
+  DIAG_CODEGEN
+};
 
-LuaVM::~LuaVM() {
-  lua_close(m_state);
-}
+enum class DiagnosticLevel {
+  LEVEL_INFO,
+  LEVEL_WARNING,
+  LEVEL_ERROR
+};
 
-std::shared_ptr<LuaVM> LuaVM::StartVM(const std::vector<std::string>& p_args) {
-  if (s_ins == nullptr) {
-    s_ins = std::make_shared<LuaVM>(p_args);
-    if (s_ins == nullptr) {
-      throw std::bad_alloc();
-    }
-  }
+struct Diagnostic {
+  DiagnosticType type;
+  DiagnosticLevel level;
+  Location location;
+};
 
-  return s_ins;
-}
-
-void LuaVM::Halt() {
-  if (s_ins != nullptr) {
-    s_ins.reset();
-  }
-}
-
-int LuaVM::DoFile(const std::string& p_filename) {
-  int res = luaL_loadfilex(m_state, p_filename.c_str(), "b");
-  if (res == 0) {
-    // TODO: load parameters
-    return lua_pcall(m_state, 0, 0, 0);
-  }
-
-  return res;
-}
+#endif //LUATIC_DIAGNOSTIC_HPP
