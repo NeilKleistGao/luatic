@@ -37,13 +37,26 @@ public:
   using DiagnosticList = std::vector<Diagnostic>;
 
   explicit Lexer(std::optional<std::string> p_filename);
-  std::variant<TokenStream, DiagnosticList>
+  [[nodiscard]] std::variant<TokenStream, DiagnosticList>
     Parse(const std::string& p_code) const noexcept;
 
 private:
   static const std::unordered_map<std::string, Keyword> m_keywords;
   static const std::unordered_map<std::string, Operator> m_operators;
   const std::optional<std::string> m_filename;
+
+  std::variant<Token, Diagnostic>
+    Parse(const std::string& p_code, int& p_pos, int& p_line) const noexcept;
+  std::variant<Literal, Diagnostic> ParseNumber(const std::string& p_code,
+                                                int& p_pos,
+                                                int p_line) const noexcept;
+
+  [[nodiscard]] inline Diagnostic
+    RaiseError(int p_line, int p_col, std::string p_info) const noexcept {
+    return RaiseErrorByType(DiagnosticType::DIAG_LEX,
+                            Location(p_line, p_col, m_filename),
+                            std::move(p_info));
+  }
 };
 
 #endif //LUATIC_LEXER_H

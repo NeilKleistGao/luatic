@@ -27,11 +27,14 @@
 
 #include <optional>
 #include <string>
+#include <utility>
 
 struct Location {
   int line{};
   int column{};
   std::optional<std::string> filename;
+
+  Location(int p_line, int p_col, std::optional<std::string> p_file): line(p_line), column(p_col), filename(std::move(p_file)) {}
 };
 
 enum class DiagnosticType {
@@ -51,6 +54,14 @@ struct Diagnostic {
   DiagnosticType type;
   DiagnosticLevel level;
   Location location;
+  std::string info;
+
+  Diagnostic(DiagnosticType p_t, DiagnosticLevel p_l, Location p_loc, std::string p_info):
+    type(p_t), level(p_l), location(std::move(p_loc)), info(std::move(p_info)) {}
 };
+
+inline Diagnostic RaiseErrorByType(DiagnosticType p_type, Location p_loc, std::string p_info) {
+  return {p_type, DiagnosticLevel::LEVEL_ERROR, std::move(p_loc), std::move(p_info)};
+}
 
 #endif //LUATIC_DIAGNOSTIC_HPP

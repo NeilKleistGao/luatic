@@ -25,6 +25,7 @@
 #ifndef LUATIC_TOKENS_HPP
 #define LUATIC_TOKENS_HPP
 
+#include <utility>
 #include <variant>
 #include <string>
 #include <functional>
@@ -45,6 +46,8 @@ struct Identifier {
 
 struct Literal {
   std::string value;
+
+  explicit Literal(std::string p_v): value(std::move(p_v)) {}
 };
 
 enum class Operator {
@@ -59,6 +62,8 @@ enum class Operator {
 struct Token {
   std::variant<Keyword, Identifier, Literal, Operator> token;
   Location location;
+
+  Token(std::variant<Keyword, Identifier, Literal, Operator> p_tok, Location p_loc): token(std::move(p_tok)), location(std::move(p_loc)) {}
 };
 
 template <typename T>
