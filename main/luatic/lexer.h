@@ -57,6 +57,15 @@ private:
                             Location(p_line, p_col, m_filename),
                             std::move(p_info));
   }
+
+  std::variant<std::string, Diagnostic>
+    ParseMultipleLineBlock(const std::string& p_code,
+                           int& p_pos,
+                           int& p_line) const noexcept;
+
+  std::variant<Token, Diagnostic> ParseComment(const std::string& p_code,
+                                               int& p_pos,
+                                               int& p_line) const noexcept;
 };
 
 #endif //LUATIC_LEXER_H

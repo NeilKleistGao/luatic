@@ -148,12 +148,59 @@ std::variant<Token, Diagnostic> Lexer::Parse(const std::string& p_code,
     } else {
       return Token(Identifier(res), Location(p_line, start, m_filename));
     }
-  } else if (head == '"') {
-    // TODO: Parse string
-    return RaiseError(p_line, p_pos, "not supported yet.");
+  } else if (head == '"' || head == '\'') {
+    int start = p_pos++;
+    char prev[2] = {-1, head};
+    while (p_pos < length && p_code[p_pos] != head) {
+      if (p_code[p_pos] == '\n' && !(prev[0] == '\\' && prev[1] == 'z')) {
+        return RaiseError(p_line,
+                          p_pos,
+                          "use [[...]] for multiple-line string.");
+      }
+      prev[0] = prev[1];
+      prev[1] = p_code[p_pos];
+      ++p_pos;
+    }
+
+    if (p_pos == length) {
+      return RaiseError(p_line, p_pos, "unexpected end of string.");
+    }
+
+    ++p_pos;
+    return Token(Literal(p_code.substr(start, p_pos - start)),
+                 Location(p_line, start, m_filename));
+  } else if (head == '[' && p_pos + 1 < length &&
+             (p_code[p_pos + 1] == '[' || p_code[p_pos + 1] == '=')) {
+    int start = p_pos;
+    const auto res = ParseMultipleLineBlock(p_code, p_pos, p_line);
+    if (res.index() == 0) {
+      return Token(
+        Literal(std::string{"\""} + std::get<0>(res) + std::string{"\""}),
+        Location(p_line, start, m_filename));
+    } else {
+      return std::get<1>(res);
+    }
+  } else if (head == '-' && p_pos + 1 < length && p_code[p_pos + 1] == '-') {
+    return ParseComment(p_code, p_pos, p_line);
   } else {
-    // TODO: Parse operator/comment
-    return RaiseError(p_line, p_pos, "not supported yet.");
+    int start = p_pos;
+    auto op = std::string{head};
+    if (m_operators.find(op) != m_operators.end()) {
+      ++p_pos;
+      while (p_pos < length) {
+        const auto next_op = op + p_code[p_pos];
+        if (m_operators.find(op) != m_operators.end()) {
+          op = next_op;
+          ++p_pos;
+        } else {
+          return Token(m_operators.at(op), Location(p_line, start, m_filename));
+        }
+      }
+    } else {
+      return RaiseError(p_line,
+                        p_pos,
+                        std::string{"unexpected character "} + head + ".");
+    }
   }
 }
 
@@ -202,4 +249,93 @@ std::variant<Literal, Diagnostic>
   }
 
   return Literal(p_code.substr(start, p_pos - start));
+}
+
+std::variant<std::string, Diagnostic>
+  Lexer::ParseMultipleLineBlock(const std::string& p_code,
+                                int& p_pos,
+                                int& p_line) const noexcept {
+  std::string res;
+  const auto length = p_code.length();
+  int eq_num = 0, process = 0;
+  bool start_flag = false, end_flag = false;
+  ++p_pos;
+
+  while (p_pos < length) {
+    const char c = p_code[p_pos++];
+    if (c == '[' && !start_flag) {
+      start_flag = true;
+    } else if (c == '=' && !start_flag) {
+      ++eq_num;
+    } else if (c == '=' && end_flag) {
+      ++process;
+    } else if (c == ']') {
+      res += c;
+      if (!end_flag) {
+        end_flag = true;
+      } else if (end_flag && process == eq_num) {
+        break;
+      } else {
+        process = 0;
+        end_flag = false;
+      }
+    } else {
+      if (c == '\n') {
+        ++p_line;
+      }
+      process = 0;
+      end_flag = false;
+      res += c;
+    }
+  }
+
+  if (eq_num == process) {
+    return res.substr(0, res.length() - eq_num - 2);
+  } else {
+    return RaiseError(p_line, p_pos, "unfinished multiple-line block.");
+  }
+}
+
+std::variant<Token, Diagnostic>
+  Lexer::ParseComment(const std::string& p_code,
+                      int& p_pos,
+                      int& p_line) const noexcept {
+  int start = p_pos;
+  const auto length = p_code.length();
+  p_pos += 2;
+  if (p_pos < length) {
+    bool multiple_line = false;
+    if (p_code[p_pos] == '[') {
+      for (int i = p_pos + 1; i < length; ++i) {
+        if (p_code[i] == '=') {
+          continue;
+        } else if (p_code[i] == '[') {
+          multiple_line = true;
+          break;
+        } else {
+          break;
+        }
+      }
+    }
+
+    if (multiple_line) {
+      const auto res = ParseMultipleLineBlock(p_code, p_pos, p_line);
+      if (res.index() == 0) {
+        return Token(Operator::OP_SPACE, Location(p_line, start, m_filename));
+      } else {
+        return std::get<1>(res);
+      }
+    } else {
+      while (p_pos < length) {
+        if (p_code[p_pos] == '\n') {
+          break;
+        }
+      }
+
+      ++p_pos;
+      return Token(Operator::OP_SPACE, Location(p_line, start, m_filename));
+    }
+  } else {
+    return Token(Operator::OP_SPACE, Location(p_line, start, m_filename));
+  }
 }
