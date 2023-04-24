@@ -117,38 +117,43 @@ std::variant<Lexer::TokenStream, Lexer::DiagnosticList>
 std::variant<Token, Diagnostic> Lexer::Parse(const std::string& p_code,
                                              int& p_pos,
                                              int& p_line) const noexcept {
-  bool end = false;
   const auto length = p_code.length();
-  while (!end) {
-    end = true;
-
-    const char head = p_code[p_pos];
-    if (std::isblank(head)) {
-      ++p_pos;
-      end = false;
-      if (head == '\n') {
-        ++p_line;
-      }
-    } else if (std::isdigit(head) ||
-               (head == '.' && p_pos + 1 < length &&
-                std::isdigit(p_code[p_pos + 1]))) {
-      int start = p_pos;
-      auto res = ParseNumber(p_code, p_pos, p_line);
-      if (res.index() == 0) {
-        return Token(std::get<0>(res), Location(p_line, start, m_filename));
-      } else {
-        return std::get<1>(res);
-      }
-    } else if (std::isalpha(head)) {
-      // TODO: Parse keywords/ident
-      return RaiseError(p_line, p_pos, "not supported yet.");
-    } else if (head == '"') {
-      // TODO: Parse string
-      return RaiseError(p_line, p_pos, "not supported yet.");
-    } else {
-      // TODO: Parse operator/comment
-      return RaiseError(p_line, p_pos, "not supported yet.");
+  const char head = p_code[p_pos];
+  if (std::isblank(head)) {
+    int line = p_line;
+    if (head == '\n') {
+      ++p_line;
     }
+    return Token(Operator::OP_SPACE, Location(line, p_pos++, m_filename));
+  } else if (std::isdigit(head) ||
+             (head == '.' && p_pos + 1 < length &&
+              std::isdigit(p_code[p_pos + 1]))) {
+    int start = p_pos;
+    auto res = ParseNumber(p_code, p_pos, p_line);
+    if (res.index() == 0) {
+      return Token(std::get<0>(res), Location(p_line, start, m_filename));
+    } else {
+      return std::get<1>(res);
+    }
+  } else if (std::isalpha(head) || head == '_') {
+    int start = p_pos++;
+    while (p_pos < length &&
+           (std::isalnum(p_code[p_pos]) || p_code[p_pos] == '_')) {
+      ++p_pos;
+    }
+
+    std::string res = p_code.substr(start, p_pos - start);
+    if (m_keywords.find(res) != m_keywords.end()) {
+      return Token(m_keywords.at(res), Location(p_line, start, m_filename));
+    } else {
+      return Token(Identifier(res), Location(p_line, start, m_filename));
+    }
+  } else if (head == '"') {
+    // TODO: Parse string
+    return RaiseError(p_line, p_pos, "not supported yet.");
+  } else {
+    // TODO: Parse operator/comment
+    return RaiseError(p_line, p_pos, "not supported yet.");
   }
 }
 

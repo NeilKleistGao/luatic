@@ -1,5 +1,5 @@
 * eol=lf
 *.h linguist-language=c++
-*.luna linguist-language=lua
+*.ltc linguist-language=lua
 *.luac binary
 *.check linguist-vendored

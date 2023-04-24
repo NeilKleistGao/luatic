@@ -42,6 +42,8 @@ enum class Keyword{
 
 struct Identifier {
   std::string name;
+
+  explicit Identifier(std::string p_n): name(std::move(p_n)) {}
 };
 
 struct Literal {
@@ -56,7 +58,7 @@ enum class Operator {
   OP_FD, OP_EQ, OP_NE, OP_LE, OP_GE, OP_LESS, OP_GREAT, OP_ASSIGN,
   OP_LEFT_PAR, OP_RIGHT_PAR, OP_LEFT_BRA, OP_RIGHT_BRA,
   OP_LEFT_SQR, OP_RIGHT_SQR, OP_SEMI, OP_COLON, OP_COMMA, OP_DOT,
-  OP_DOT2, OP_DOT3
+  OP_DOT2, OP_DOT3, OP_SPACE
 };
 
 struct Token {
