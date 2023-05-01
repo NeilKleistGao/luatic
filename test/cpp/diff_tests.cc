@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
+#include <cstdio>
 #include <filesystem>
 #include <gtest/gtest.h>
 #include <regex>
-#include <cstdio>
 
 #include "lua/lua_vm.h"
 #include "luatic/lexer.h"
