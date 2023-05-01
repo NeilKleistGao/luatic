@@ -119,7 +119,7 @@ std::variant<Token, Diagnostic> Lexer::Parse(const std::string& p_code,
                                              int& p_line) const noexcept {
   const auto length = p_code.length();
   const char head = p_code[p_pos];
-  if (std::isblank(head)) {
+  if (std::isspace(head)) {
     int line = p_line;
     if (head == '\n') {
       ++p_line;
@@ -189,7 +189,7 @@ std::variant<Token, Diagnostic> Lexer::Parse(const std::string& p_code,
       ++p_pos;
       while (p_pos < length) {
         const auto next_op = op + p_code[p_pos];
-        if (m_operators.find(op) != m_operators.end()) {
+        if (m_operators.find(next_op) != m_operators.end()) {
           op = next_op;
           ++p_pos;
         } else {
@@ -197,6 +197,7 @@ std::variant<Token, Diagnostic> Lexer::Parse(const std::string& p_code,
         }
       }
     } else {
+      ++p_pos;
       return RaiseError(p_line,
                         p_pos,
                         std::string{"unexpected character "} + head + ".");
