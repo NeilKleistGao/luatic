@@ -29,6 +29,7 @@
 
 #include "lua/lua_vm.h"
 #include "luatic/lexer.h"
+#include "pretty_printer.h"
 
 static std::string ReadFile(const std::string& p_filename) {
   FILE* fp = fopen(p_filename.c_str(), "r");
@@ -58,7 +59,7 @@ TEST(LuaticDiffTests, LuaVM) {
   for (const auto& fp : fs::directory_iterator(path)) {
     const auto filename = fp.path().string();
     if (std::regex_match(filename, reg)) {
-      assert(vm->DoFile(filename) == 0);
+      ASSERT_EQ(vm->DoFile(filename), 0);
     }
   }
 
@@ -71,16 +72,24 @@ TEST(LuaticDiffTests, LuaticCompiler) {
   const auto reg = std::regex{"(.*)\\.ltc"};
   const auto vm = LuaVM::StartVM();
 
+  bool success = true;
   for (const auto& fp : fs::directory_iterator(path)) {
     const auto filename = fp.path().string();
     if (std::regex_match(filename, reg)) {
       const auto lex = Lexer(filename);
       const auto lex_res = lex.Parse(ReadFile(filename));
-      assert(lex_res.index() == 0);
+      if (lex_res.index() != 0) {
+        success = false;
+        const auto diags = std::get<1>(lex_res);
+        for (const auto& diag : diags) {
+          PrintDiagnostic(diag);
+        }
+      }
     }
   }
 
   LuaVM::Halt();
+  ASSERT_TRUE(success);
 }
 
 // TODO: error test

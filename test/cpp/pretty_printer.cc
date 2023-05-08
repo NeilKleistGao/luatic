@@ -22,39 +22,34 @@
  * SOFTWARE.
  */
 
-#ifndef LUATIC_DIAGNOSTIC_HPP
-#define LUATIC_DIAGNOSTIC_HPP
+#include "pretty_printer.h"
 
-#include <optional>
-#include <string>
-#include <utility>
+#include <iostream>
 
-struct Location {
-  int line{};
-  int column{};
-  std::optional<std::string> filename;
+namespace std {
+  string to_string(DiagnosticType p_type) {
+    switch (p_type) {
+      case DiagnosticType::DIAG_LEX:
+        return string{"lexer"};
+      case DiagnosticType::DIAG_PARSE:
+        return string{"parser"};
+      case DiagnosticType::DIAG_TYPING:
+        return string{"typing"};
+      case DiagnosticType::DIAG_CODEGEN:
+        return string{"codegen"};
+    }
+  }
+} // namespace std
 
-  Location(int p_line, int p_col, std::optional<std::string> p_file): line(p_line), column(p_col), filename(std::move(p_file)) {}
-};
+void PrintDiagnostic(const Diagnostic& p_diag) {
+  std::cerr << "[" << std::to_string(p_diag.type) << " error]:" << std::endl;
+  std::cerr << "  " << p_diag.info << std::endl;
 
-enum class DiagnosticType {
-  DIAG_LEX,
-  DIAG_PARSE,
-  DIAG_TYPING,
-  DIAG_CODEGEN
-};
-
-struct Diagnostic {
-  DiagnosticType type;
-  Location location;
-  std::string info;
-
-  Diagnostic(DiagnosticType p_t, Location p_loc, std::string p_info):
-    type(p_t), location(std::move(p_loc)), info(std::move(p_info)) {}
-};
-
-inline Diagnostic RaiseErrorByType(DiagnosticType p_type, Location p_loc, std::string p_info) {
-  return {p_type, std::move(p_loc), std::move(p_info)};
+  const auto& loc = p_diag.location;
+  if (loc.filename.has_value()) {
+    std::cerr << "  at " << loc.filename.value() << ", line " << loc.line
+              << ", " << loc.column << std::endl;
+  } else {
+    std::cerr << "  at line " << loc.line << ", " << loc.column << std::endl;
+  }
 }
-
-#endif //LUATIC_DIAGNOSTIC_HPP

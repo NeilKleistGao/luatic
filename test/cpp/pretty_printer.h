@@ -22,39 +22,11 @@
  * SOFTWARE.
  */
 
-#ifndef LUATIC_DIAGNOSTIC_HPP
-#define LUATIC_DIAGNOSTIC_HPP
+#ifndef LUATIC_PRETTY_PRINTER_H
+#define LUATIC_PRETTY_PRINTER_H
 
-#include <optional>
-#include <string>
-#include <utility>
+#include "luatic/diagnostic.hpp"
 
-struct Location {
-  int line{};
-  int column{};
-  std::optional<std::string> filename;
+void PrintDiagnostic(const Diagnostic& p_diag);
 
-  Location(int p_line, int p_col, std::optional<std::string> p_file): line(p_line), column(p_col), filename(std::move(p_file)) {}
-};
-
-enum class DiagnosticType {
-  DIAG_LEX,
-  DIAG_PARSE,
-  DIAG_TYPING,
-  DIAG_CODEGEN
-};
-
-struct Diagnostic {
-  DiagnosticType type;
-  Location location;
-  std::string info;
-
-  Diagnostic(DiagnosticType p_t, Location p_loc, std::string p_info):
-    type(p_t), location(std::move(p_loc)), info(std::move(p_info)) {}
-};
-
-inline Diagnostic RaiseErrorByType(DiagnosticType p_type, Location p_loc, std::string p_info) {
-  return {p_type, std::move(p_loc), std::move(p_info)};
-}
-
-#endif //LUATIC_DIAGNOSTIC_HPP
+#endif //LUATIC_PRETTY_PRINTER_H
