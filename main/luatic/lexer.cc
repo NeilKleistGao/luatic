@@ -236,7 +236,7 @@ std::variant<Literal, Diagnostic>
     } else if ((c == '-' || c == '+') &&
                (prev == 'e' || prev == 'E' || prev == 'p' || prev == 'P')) {
       ++p_pos;
-    } else if (std::isblank(c)) {
+    } else if (std::isspace(c)) {
       break;
     } else {
       ++p_pos;
