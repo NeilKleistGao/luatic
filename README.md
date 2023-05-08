@@ -2,7 +2,7 @@
 
 ![](luatic.png)
 
-[![Lua Backend Tests](https://github.com/NeilKleistGao/luatic/actions/workflows/lua-test.yml/badge.svg)](https://github.com/NeilKleistGao/luatic/actions/workflows/lua-test.yml)
+[![Luatic Linux Tests](https://github.com/NeilKleistGao/luatic/actions/workflows/lua-test.yml/badge.svg)](https://github.com/NeilKleistGao/luatic/actions/workflows/linux-test.yml)
 
 > And if the band you're in starts playing different tunes
 >

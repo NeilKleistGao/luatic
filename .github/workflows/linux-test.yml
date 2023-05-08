@@ -1,4 +1,4 @@
-name: Lua Backend Tests
+name: Luatic Linux Tests
 
 on:
   push:
