@@ -23,6 +23,7 @@
  */
 
 #include <cstdio>
+#include <cstring>
 #include <filesystem>
 #include <gtest/gtest.h>
 #include <regex>
@@ -38,11 +39,13 @@ static std::string ReadFile(const std::string& p_filename) {
   }
 
   std::string res;
-  char buffer[1024];
+  const size_t buffer_size = 1024;
+  char buffer[buffer_size];
   while (true) {
-    auto size = fread(buffer, sizeof(char), 1024, fp);
+    auto size = fread(buffer, sizeof(char), buffer_size - 1, fp);
+    res[size] = 0;
     res += buffer;
-    if (size < 1024) {
+    if (size < buffer_size - 1) {
       break;
     }
   }
