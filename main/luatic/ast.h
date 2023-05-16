@@ -34,6 +34,8 @@
 #include "diagnostic.hpp"
 
 #define CASE(__NAME__) struct __NAME__: public ASTNode
+#define ADT(__NAME__, __FIRST__, __REST__...)                                  \
+using __NAME__ = std::variant<__FIRST__, ##__REST__>
 
 template<typename T>
 using Ptr = std::shared_ptr<T>;
@@ -44,7 +46,32 @@ struct ASTNode {
 
 struct Block;
 
-using Expr = void; // TODO: add expressions
+CASE(NilExpr){};
+CASE(BoolExpr) {
+  bool value = false;
+};
+CASE(VarArgExpr){};
+CASE(IntExpr) {
+  long long value = 0L;
+};
+CASE(FloatExpr) {
+  double value = 0.0;
+};
+CASE(StringExpr) {
+  std::string value;
+};
+CASE(VarExpr) {
+  std::string name;
+};
+
+ADT(Expr,
+    NilExpr,
+    BoolExpr,
+    VarArgExpr,
+    IntExpr,
+    FloatExpr,
+    StringExpr,
+    VarExpr);
 
 CASE(EmptyStmt){};
 CASE(BreakStmt){};
@@ -60,12 +87,13 @@ CASE(DoStmt) {
 
 // TODO: more statements
 
-using Stmt = std::variant<EmptyStmt, BreakStmt, LabelStmt, GotoStmt, DoStmt>;
+ADT(Stmt, EmptyStmt, BreakStmt, LabelStmt, GotoStmt, DoStmt);
 
 CASE(Block) {
   std::vector<Stmt> stmts;
 };
 
+#undef ADT
 #undef CASE
 
 #endif //LUATIC_AST_H
