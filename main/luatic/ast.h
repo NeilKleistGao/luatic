@@ -35,7 +35,9 @@
 
 #define CASE(__NAME__) struct __NAME__: public ASTNode
 #define ADT(__NAME__, __FIRST__, __REST__...)                                  \
-using __NAME__ = std::variant<__FIRST__, ##__REST__>
+struct __NAME__ {                                                              \
+std::variant<__FIRST__, ##__REST__> value;                                     \
+}
 
 template<typename T>
 using Ptr = std::shared_ptr<T>;
@@ -45,6 +47,7 @@ struct ASTNode {
 };
 
 struct Block;
+struct Expr;
 
 CASE(NilExpr){};
 CASE(BoolExpr) {

@@ -42,7 +42,7 @@ public:
 
 private:
   static const std::unordered_map<std::string, Keyword> m_keywords;
-  static const std::unordered_map<std::string, Operator> m_operators;
+  static const std::unordered_map<std::string, Punctuation> m_punctuations;
   const std::optional<std::string> m_filename;
 
   std::variant<Token, Diagnostic>

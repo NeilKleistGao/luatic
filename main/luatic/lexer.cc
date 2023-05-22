@@ -52,39 +52,39 @@ const std::unordered_map<std::string, Keyword> Lexer::m_keywords = {
   {   "while",  Keyword::KW_WHILE}
 };
 
-const std::unordered_map<std::string, Operator> Lexer::m_operators = {
-  {  "+",        Operator::OP_PLUS},
-  {  "-",       Operator::OP_MINUS},
-  {  "*",         Operator::OP_MUL},
-  {  "/",         Operator::OP_DIV},
-  {  "%",         Operator::OP_MOD},
-  {  "^",         Operator::OP_POW},
-  {  "#",         Operator::OP_LEN},
-  {  "&",         Operator::OP_AND},
-  {  "~",         Operator::OP_XOR},
-  {  "|",          Operator::OP_OR},
-  { "<<",  Operator::OP_LEFT_SHIFT},
-  { ">>", Operator::OP_RIGHT_SHIFT},
-  { "//",          Operator::OP_FD},
-  { "==",          Operator::OP_EQ},
-  { "~=",          Operator::OP_NE},
-  { "<=",          Operator::OP_LE},
-  { ">=",          Operator::OP_GE},
-  {  "<",        Operator::OP_LESS},
-  {  ">",       Operator::OP_GREAT},
-  {  "=",      Operator::OP_ASSIGN},
-  {  "(",    Operator::OP_LEFT_PAR},
-  {  ")",   Operator::OP_RIGHT_PAR},
-  {  "{",    Operator::OP_LEFT_BRA},
-  {  "}",   Operator::OP_RIGHT_BRA},
-  {  "[",    Operator::OP_LEFT_SQR},
-  {  "]",   Operator::OP_RIGHT_SQR},
-  {  ";",        Operator::OP_SEMI},
-  {  ":",       Operator::OP_COLON},
-  {  ",",       Operator::OP_COMMA},
-  {  ".",         Operator::OP_DOT},
-  { "..",        Operator::OP_DOT2},
-  {"...",        Operator::OP_DOT3}
+const std::unordered_map<std::string, Punctuation> Lexer::m_punctuations = {
+  {  "+",        Punctuation::PUN_PLUS},
+  {  "-",       Punctuation::PUN_MINUS},
+  {  "*",         Punctuation::PUN_MUL},
+  {  "/",         Punctuation::PUN_DIV},
+  {  "%",         Punctuation::PUN_MOD},
+  {  "^",         Punctuation::PUN_POW},
+  {  "#",         Punctuation::PUN_LEN},
+  {  "&",         Punctuation::PUN_AND},
+  {  "~",         Punctuation::PUN_XOR},
+  {  "|",          Punctuation::PUN_OR},
+  { "<<",  Punctuation::PUN_LEFT_SHIFT},
+  { ">>", Punctuation::PUN_RIGHT_SHIFT},
+  { "//",          Punctuation::PUN_FD},
+  { "==",          Punctuation::PUN_EQ},
+  { "~=",          Punctuation::PUN_NE},
+  { "<=",          Punctuation::PUN_LE},
+  { ">=",          Punctuation::PUN_GE},
+  {  "<",        Punctuation::PUN_LESS},
+  {  ">",       Punctuation::PUN_GREAT},
+  {  "=",      Punctuation::PUN_ASSIGN},
+  {  "(",    Punctuation::PUN_LEFT_PAR},
+  {  ")",   Punctuation::PUN_RIGHT_PAR},
+  {  "{",    Punctuation::PUN_LEFT_BRA},
+  {  "}",   Punctuation::PUN_RIGHT_BRA},
+  {  "[",    Punctuation::PUN_LEFT_SQR},
+  {  "]",   Punctuation::PUN_RIGHT_SQR},
+  {  ";",        Punctuation::PUN_SEMI},
+  {  ":",       Punctuation::PUN_COLON},
+  {  ",",       Punctuation::PUN_COMMA},
+  {  ".",         Punctuation::PUN_DOT},
+  { "..",        Punctuation::PUN_DOT2},
+  {"...",        Punctuation::PUN_DOT3}
 };
 
 Lexer::Lexer(std::optional<std::string> p_filename):
@@ -124,7 +124,7 @@ std::variant<Token, Diagnostic> Lexer::Parse(const std::string& p_code,
     if (head == '\n') {
       ++p_line;
     }
-    return Token(Operator::OP_SPACE, Location(line, p_pos++, m_filename));
+    return Token(Punctuation::PUN_SPACE, Location(line, p_pos++, m_filename));
   } else if (std::isdigit(head) ||
              (head == '.' && p_pos + 1 < length &&
               std::isdigit(p_code[p_pos + 1]))) {
@@ -185,15 +185,16 @@ std::variant<Token, Diagnostic> Lexer::Parse(const std::string& p_code,
   } else {
     int start = p_pos;
     auto op = std::string{head};
-    if (m_operators.find(op) != m_operators.end()) {
+    if (m_punctuations.find(op) != m_punctuations.end()) {
       ++p_pos;
       while (p_pos < length) {
         const auto next_op = op + p_code[p_pos];
-        if (m_operators.find(next_op) != m_operators.end()) {
+        if (m_punctuations.find(next_op) != m_punctuations.end()) {
           op = next_op;
           ++p_pos;
         } else {
-          return Token(m_operators.at(op), Location(p_line, start, m_filename));
+          return Token(m_punctuations.at(op),
+                       Location(p_line, start, m_filename));
         }
       }
     } else {
@@ -237,7 +238,7 @@ std::variant<Literal, Diagnostic>
                (prev == 'e' || prev == 'E' || prev == 'p' || prev == 'P')) {
       ++p_pos;
     } else if (std::isspace(c) ||
-               m_operators.find(std::string{c}) != m_operators.end()) {
+               m_punctuations.find(std::string{c}) != m_punctuations.end()) {
       break;
     } else {
       ++p_pos;
@@ -323,7 +324,8 @@ std::variant<Token, Diagnostic>
     if (multiple_line) {
       const auto res = ParseMultipleLineBlock(p_code, p_pos, p_line);
       if (res.index() == 0) {
-        return Token(Operator::OP_SPACE, Location(p_line, start, m_filename));
+        return Token(Punctuation::PUN_SPACE,
+                     Location(p_line, start, m_filename));
       } else {
         return std::get<1>(res);
       }
@@ -335,9 +337,9 @@ std::variant<Token, Diagnostic>
       }
 
       ++p_pos;
-      return Token(Operator::OP_SPACE, Location(p_line, start, m_filename));
+      return Token(Punctuation::PUN_SPACE, Location(p_line, start, m_filename));
     }
   } else {
-    return Token(Operator::OP_SPACE, Location(p_line, start, m_filename));
+    return Token(Punctuation::PUN_SPACE, Location(p_line, start, m_filename));
   }
 }

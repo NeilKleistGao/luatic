@@ -52,20 +52,20 @@ struct Literal {
   explicit Literal(std::string p_v): value(std::move(p_v)) {}
 };
 
-enum class Operator {
-  OP_PLUS, OP_MINUS, OP_MUL, OP_DIV, OP_MOD, OP_POW,
-  OP_LEN, OP_AND, OP_XOR, OP_OR, OP_LEFT_SHIFT, OP_RIGHT_SHIFT,
-  OP_FD, OP_EQ, OP_NE, OP_LE, OP_GE, OP_LESS, OP_GREAT, OP_ASSIGN,
-  OP_LEFT_PAR, OP_RIGHT_PAR, OP_LEFT_BRA, OP_RIGHT_BRA,
-  OP_LEFT_SQR, OP_RIGHT_SQR, OP_SEMI, OP_COLON, OP_COMMA, OP_DOT,
-  OP_DOT2, OP_DOT3, OP_SPACE
+enum class Punctuation {
+  PUN_PLUS, PUN_MINUS, PUN_MUL, PUN_DIV, PUN_MOD, PUN_POW,
+  PUN_LEN, PUN_AND, PUN_XOR, PUN_OR, PUN_LEFT_SHIFT, PUN_RIGHT_SHIFT,
+  PUN_FD, PUN_EQ, PUN_NE, PUN_LE, PUN_GE, PUN_LESS, PUN_GREAT, PUN_ASSIGN,
+  PUN_LEFT_PAR, PUN_RIGHT_PAR, PUN_LEFT_BRA, PUN_RIGHT_BRA,
+  PUN_LEFT_SQR, PUN_RIGHT_SQR, PUN_SEMI, PUN_COLON, PUN_COMMA, PUN_DOT,
+  PUN_DOT2, PUN_DOT3, PUN_SPACE
 };
 
 struct Token {
-  std::variant<Keyword, Identifier, Literal, Operator> token;
+  std::variant<Keyword, Identifier, Literal, Punctuation> token;
   Location location;
 
-  Token(std::variant<Keyword, Identifier, Literal, Operator> p_tok, Location p_loc): token(std::move(p_tok)), location(std::move(p_loc)) {}
+  Token(std::variant<Keyword, Identifier, Literal, Punctuation> p_tok, Location p_loc): token(std::move(p_tok)), location(std::move(p_loc)) {}
 };
 
 template <typename T>
@@ -73,7 +73,7 @@ T Match(const Token& p_t,
         const std::function<T(const Keyword&)>& p_kw,
         const std::function<T(const Identifier&)>& p_id,
         const std::function<T(const Literal&)>& p_lt,
-        const std::function<T(const Operator&)>& p_op) {
+        const std::function<T(const Punctuation&)>& p_op) {
   switch (p_t.token.index()) {
     case 0:
       return p_kw(std::get<0>(p_t.token));
