@@ -32,6 +32,7 @@
 #include <vector>
 
 #include "diagnostic.hpp"
+#include "operators.hpp"
 
 #define CASE(__NAME__) struct __NAME__: public ASTNode
 #define ADT(__NAME__, __FIRST__, __REST__...)                                  \
@@ -66,6 +67,33 @@ CASE(StringExpr) {
 CASE(VarExpr) {
   std::string name;
 };
+CASE(UnaryExpr) {
+  UnaryOperator op;
+  Ptr<Expr> expr;
+};
+CASE(BinaryExpr) {
+  BinaryOperator op;
+  Ptr<Expr> lhs;
+  Ptr<Expr> rhs;
+};
+CASE(TableCtorExpr) {
+  using KV = std::pair<Ptr<Expr>, Ptr<Expr>>;
+  std::vector<KV> elements;
+};
+CASE(FunctionExpr) {
+  std::vector<Ptr<Expr>> params;
+  bool is_var;
+  Ptr<Block> body;
+};
+CASE(AccessExpr) {
+  enum class AccessType { ACC_DOT, ACC_COL, ACC_IDX } type;
+  Ptr<Expr> lhs;
+  Ptr<Expr> rhs;
+};
+CASE(CallExpr) {
+  Ptr<Expr> callee;
+  std::vector<Ptr<Expr>> params;
+};
 
 ADT(Expr,
     NilExpr,
@@ -74,7 +102,13 @@ ADT(Expr,
     IntExpr,
     FloatExpr,
     StringExpr,
-    VarExpr);
+    VarExpr,
+    UnaryExpr,
+    BinaryExpr,
+    TableCtorExpr,
+    FunctionExpr,
+    AccessExpr,
+    CallExpr);
 
 CASE(EmptyStmt){};
 CASE(BreakStmt){};
