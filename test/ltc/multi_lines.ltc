@@ -1,0 +1,20 @@
+[[Hello
+World
+!]]
+
+[===[Hello
+World?]===]
+
+-- comment1
+--[[
+long
+long
+comment
+--]]
+
+--[==[
+long
+long
+comment2
+--]==]
+

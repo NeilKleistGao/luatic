@@ -347,6 +347,8 @@ std::variant<Token, Diagnostic>
         if (p_code[p_pos] == '\n') {
           p_start = p_pos + 1;
           break;
+        } else {
+          ++p_pos;
         }
       }
 
