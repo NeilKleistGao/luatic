@@ -231,7 +231,8 @@ std::variant<Literal, Diagnostic>
     } else if ((c == 'x' || c == 'X') && prev == '0' && p_pos - 1 == start) {
       ++p_pos;
       hex = true;
-    } else if (c == '.' && !point) {
+    } else if (c == '.' &&
+               (!point && (p_pos + 1 == length || p_code[p_pos + 1] != '.'))) {
       ++p_pos;
       point = true;
     } else if (c == 'e' || c == 'E' && !science) {
@@ -244,7 +245,8 @@ std::variant<Literal, Diagnostic>
                (prev == 'e' || prev == 'E' || prev == 'p' || prev == 'P')) {
       ++p_pos;
     } else if (std::isspace(c) ||
-               m_punctuations.find(std::string{c}) != m_punctuations.end()) {
+               (m_punctuations.find(std::string{c}) != m_punctuations.end() &&
+                c != '.')) {
       break;
     } else {
       ++p_pos;

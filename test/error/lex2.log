@@ -1,0 +1,12 @@
+[lexer error]:
+  unexpected character @.
+  at ./test/error/lex2.ltc, line 1, 3
+[lexer error]:
+  unexpected character c in number literal.
+  at ./test/error/lex2.ltc, line 2, 3
+[lexer error]:
+  unexpected character . in number literal.
+  at ./test/error/lex2.ltc, line 3, 5
+[lexer error]:
+  unexpected character E in number literal.
+  at ./test/error/lex2.ltc, line 4, 2
