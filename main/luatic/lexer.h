@@ -45,9 +45,12 @@ private:
   static const std::unordered_map<std::string, Punctuation> m_punctuations;
   const std::optional<std::string> m_filename;
 
-  std::variant<Token, Diagnostic>
-    Parse(const std::string& p_code, int& p_pos, int& p_line) const noexcept;
+  std::variant<Token, Diagnostic> Parse(const std::string& p_code,
+                                        int& p_pos,
+                                        int& p_line,
+                                        int& p_start) const noexcept;
   std::variant<Literal, Diagnostic> ParseNumber(const std::string& p_code,
+                                                const int& p_start,
                                                 int& p_pos,
                                                 int p_line) const noexcept;
 
@@ -61,11 +64,13 @@ private:
   std::variant<std::string, Diagnostic>
     ParseMultipleLineBlock(const std::string& p_code,
                            int& p_pos,
-                           int& p_line) const noexcept;
+                           int& p_line,
+                           int& p_start) const noexcept;
 
   std::variant<Token, Diagnostic> ParseComment(const std::string& p_code,
                                                int& p_pos,
-                                               int& p_line) const noexcept;
+                                               int& p_line,
+                                               int& p_start) const noexcept;
 };
 
 #endif //LUATIC_LEXER_H

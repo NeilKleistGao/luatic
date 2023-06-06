@@ -97,9 +97,10 @@ std::variant<Lexer::TokenStream, Lexer::DiagnosticList>
 
   int pos = 0;
   int line = 1;
+  int start = 0;
   const auto length = p_code.length();
   while (pos < length) {
-    auto res = Parse(p_code, pos, line);
+    auto res = Parse(p_code, pos, line, start);
     if (res.index() == 0 && diags.empty()) {
       tokens.push_back(std::move(std::get<0>(res)));
     } else if (res.index() == 1) {
@@ -116,20 +117,22 @@ std::variant<Lexer::TokenStream, Lexer::DiagnosticList>
 
 std::variant<Token, Diagnostic> Lexer::Parse(const std::string& p_code,
                                              int& p_pos,
-                                             int& p_line) const noexcept {
+                                             int& p_line,
+                                             int& p_start) const noexcept {
   const auto length = p_code.length();
   const char head = p_code[p_pos];
   if (std::isspace(head)) {
     int line = p_line;
     if (head == '\n') {
       ++p_line;
+      p_start = p_pos + 1;
     }
     return Token(Punctuation::PUN_SPACE, Location(line, p_pos++, m_filename));
   } else if (std::isdigit(head) ||
              (head == '.' && p_pos + 1 < length &&
               std::isdigit(p_code[p_pos + 1]))) {
     int start = p_pos;
-    auto res = ParseNumber(p_code, p_pos, p_line);
+    auto res = ParseNumber(p_code, p_start, p_pos, p_line);
     if (res.index() == 0) {
       return Token(std::get<0>(res), Location(p_line, start, m_filename));
     } else {
@@ -153,9 +156,11 @@ std::variant<Token, Diagnostic> Lexer::Parse(const std::string& p_code,
     char prev[2] = {-1, head};
     while (p_pos < length && p_code[p_pos] != head) {
       if (p_code[p_pos] == '\n' && !(prev[0] == '\\' && prev[1] == 'z')) {
+        const int start_backup = p_start;
+        p_start = p_pos + 1;
         return RaiseError(p_line,
-                          p_pos,
-                          "use [[...]] for multiple-line string.");
+                          p_pos - start_backup,
+                          "unexpected end of string.");
       }
       prev[0] = prev[1];
       prev[1] = p_code[p_pos];
@@ -163,7 +168,7 @@ std::variant<Token, Diagnostic> Lexer::Parse(const std::string& p_code,
     }
 
     if (p_pos == length) {
-      return RaiseError(p_line, p_pos, "unexpected end of string.");
+      return RaiseError(p_line, p_pos - p_start, "unexpected end of string.");
     }
 
     ++p_pos;
@@ -172,7 +177,7 @@ std::variant<Token, Diagnostic> Lexer::Parse(const std::string& p_code,
   } else if (head == '[' && p_pos + 1 < length &&
              (p_code[p_pos + 1] == '[' || p_code[p_pos + 1] == '=')) {
     int start = p_pos;
-    const auto res = ParseMultipleLineBlock(p_code, p_pos, p_line);
+    const auto res = ParseMultipleLineBlock(p_code, p_pos, p_line, p_start);
     if (res.index() == 0) {
       return Token(
         Literal(std::string{"\""} + std::get<0>(res) + std::string{"\""}),
@@ -181,7 +186,7 @@ std::variant<Token, Diagnostic> Lexer::Parse(const std::string& p_code,
       return std::get<1>(res);
     }
   } else if (head == '-' && p_pos + 1 < length && p_code[p_pos + 1] == '-') {
-    return ParseComment(p_code, p_pos, p_line);
+    return ParseComment(p_code, p_pos, p_line, p_start);
   } else {
     int start = p_pos;
     auto op = std::string{head};
@@ -200,7 +205,7 @@ std::variant<Token, Diagnostic> Lexer::Parse(const std::string& p_code,
     } else {
       ++p_pos;
       return RaiseError(p_line,
-                        p_pos,
+                        p_pos - p_start,
                         std::string{"unexpected character "} + head + ".");
     }
   }
@@ -208,6 +213,7 @@ std::variant<Token, Diagnostic> Lexer::Parse(const std::string& p_code,
 
 std::variant<Literal, Diagnostic>
   Lexer::ParseNumber(const std::string& p_code,
+                     const int& p_start,
                      int& p_pos,
                      int p_line) const noexcept {
   bool science = false, hex = false, point = false;
@@ -243,7 +249,7 @@ std::variant<Literal, Diagnostic>
     } else {
       ++p_pos;
       return RaiseError(p_line,
-                        p_pos - 1,
+                        p_pos - 1 - p_start,
                         std::string{"unexpected character "} + c +
                           " in number literal.");
     }
@@ -257,7 +263,8 @@ std::variant<Literal, Diagnostic>
 std::variant<std::string, Diagnostic>
   Lexer::ParseMultipleLineBlock(const std::string& p_code,
                                 int& p_pos,
-                                int& p_line) const noexcept {
+                                int& p_line,
+                                int& p_start) const noexcept {
   std::string res;
   const auto length = p_code.length();
   int eq_num = 0, process = 0;
@@ -285,6 +292,7 @@ std::variant<std::string, Diagnostic>
     } else {
       if (c == '\n') {
         ++p_line;
+        p_start = p_pos;
       }
       process = 0;
       end_flag = false;
@@ -295,14 +303,17 @@ std::variant<std::string, Diagnostic>
   if (eq_num == process) {
     return res.substr(0, res.length() - eq_num - 2);
   } else {
-    return RaiseError(p_line, p_pos, "unfinished multiple-line block.");
+    return RaiseError(p_line,
+                      p_pos - p_start,
+                      "unfinished multiple-line block.");
   }
 }
 
 std::variant<Token, Diagnostic>
   Lexer::ParseComment(const std::string& p_code,
                       int& p_pos,
-                      int& p_line) const noexcept {
+                      int& p_line,
+                      int& p_start) const noexcept {
   int start = p_pos;
   const auto length = p_code.length();
   p_pos += 2;
@@ -322,7 +333,7 @@ std::variant<Token, Diagnostic>
     }
 
     if (multiple_line) {
-      const auto res = ParseMultipleLineBlock(p_code, p_pos, p_line);
+      const auto res = ParseMultipleLineBlock(p_code, p_pos, p_line, p_start);
       if (res.index() == 0) {
         return Token(Punctuation::PUN_SPACE,
                      Location(p_line, start, m_filename));
@@ -332,6 +343,7 @@ std::variant<Token, Diagnostic>
     } else {
       while (p_pos < length) {
         if (p_code[p_pos] == '\n') {
+          p_start = p_pos + 1;
           break;
         }
       }

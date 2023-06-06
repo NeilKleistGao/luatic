@@ -25,6 +25,7 @@
 #include <cstdio>
 #include <cstring>
 #include <filesystem>
+#include <fstream>
 #include <gtest/gtest.h>
 #include <regex>
 
@@ -42,8 +43,8 @@ static std::string ReadFile(const std::string& p_filename) {
   const size_t buffer_size = 1024;
   char buffer[buffer_size];
   while (true) {
+    std::memset(buffer, 0, sizeof(buffer));
     auto size = fread(buffer, sizeof(char), buffer_size - 1, fp);
-    res[size] = 0;
     res += buffer;
     if (size < buffer_size - 1) {
       break;
@@ -56,7 +57,7 @@ static std::string ReadFile(const std::string& p_filename) {
 TEST(LuaticDiffTests, LuaVM) {
   namespace fs = std::filesystem;
   const auto path = fs::path{"./test/lua"};
-  const auto reg = std::regex{"(.*)\\.luac"};
+  const auto reg = std::regex{R"((.*)\\.luac)"};
   const auto vm = LuaVM::StartVM();
 
   for (const auto& fp : fs::directory_iterator(path)) {
@@ -72,7 +73,7 @@ TEST(LuaticDiffTests, LuaVM) {
 TEST(LuaticDiffTests, LuaticCompiler) {
   namespace fs = std::filesystem;
   const auto path = fs::path{"./test/ltc"};
-  const auto reg = std::regex{"(.*)\\.ltc"};
+  const auto reg = std::regex{R"((.*)\.ltc)"};
   const auto vm = LuaVM::StartVM();
 
   bool success = true;
@@ -95,5 +96,38 @@ TEST(LuaticDiffTests, LuaticCompiler) {
   ASSERT_TRUE(success);
 }
 
-// TODO: error test
+TEST(LuaticDiffTests, LuaticLexError) {
+  namespace fs = std::filesystem;
+  const auto path = fs::path{"./test/error"};
+  const auto reg = std::regex{R"(.*lex([0-9]+)\.ltc)"};
+  const auto vm = LuaVM::StartVM();
+
+  bool success = true;
+  for (const auto& fp : fs::directory_iterator(path)) {
+    const auto filename = fp.path().string();
+    if (std::regex_match(filename, reg)) {
+      const auto lex = Lexer(filename);
+      const auto lex_res = lex.Parse(ReadFile(filename));
+      if (lex_res.index() != 0) {
+        const auto diags = std::get<1>(lex_res);
+        const auto backup = std::cerr.rdbuf();
+        std::ofstream log{filename.substr(0, filename.find(".ltc")) + ".log"};
+        std::cerr.rdbuf(log.rdbuf());
+        for (const auto& diag : diags) {
+          PrintDiagnostic(diag);
+        }
+
+        std::cerr.rdbuf(backup);
+        log.close();
+      } else {
+        success = false;
+      }
+    }
+  }
+
+  LuaVM::Halt();
+  ASSERT_TRUE(success);
+}
+
+// TODO: more error test
 // TODO: module test

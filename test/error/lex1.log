@@ -1,0 +1,9 @@
+[lexer error]:
+  unexpected end of string.
+  at ./test/error/lex1.ltc, line 1, 6
+[lexer error]:
+  unexpected end of string.
+  at ./test/error/lex1.ltc, line 2, 6
+[lexer error]:
+  unexpected end of string.
+  at ./test/error/lex1.ltc, line 4, 5
