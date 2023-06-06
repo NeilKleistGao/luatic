@@ -121,10 +121,54 @@ CASE(GotoStmt) {
 CASE(DoStmt) {
   Ptr<Block> block;
 };
+CASE(CallStmt) {
+  Ptr<CallExpr> call;
+};
+CASE(WhileStmt) {
+  Expr cond;
+  Ptr<Block> block;
+};
+CASE(RepeatStmt) {
+  Expr cond;
+  Ptr<Block> block;
+};
+CASE(IfStmt) {
+  using CondBranch = std::pair<Expr, Ptr<Block>>;
+  std::vector<CondBranch> branches;
+  Ptr<Block> else_branch;
+};
+CASE(ForStmt) {
+  using AssignPair = std::pair<std::string, Expr>;
+  std::vector<AssignPair> assigns;
+  Ptr<Block> block;
+};
+CASE(LocalVarDeclStmt) {
+  using AssignPair = std::pair<std::string, Expr>;
+  std::vector<AssignPair> assigns;
+};
+CASE(AssignStmt) {
+  using AssignPair = std::pair<Expr, Expr>;
+  std::vector<AssignPair> assigns;
+};
+CASE(FuncStmt) {
+  std::string name;
+  FunctionExpr func;
+};
 
-// TODO: more statements
-
-ADT(Stmt, EmptyStmt, BreakStmt, LabelStmt, GotoStmt, DoStmt);
+ADT(Stmt,
+    EmptyStmt,
+    BreakStmt,
+    LabelStmt,
+    GotoStmt,
+    DoStmt,
+    CallStmt,
+    WhileStmt,
+    RepeatStmt,
+    IfStmt,
+    ForStmt,
+    LocalVarDeclStmt,
+    AssignStmt,
+    FuncStmt);
 
 CASE(Block) {
   std::vector<Stmt> stmts;
