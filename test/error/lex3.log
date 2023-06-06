@@ -1,0 +1,3 @@
+[lexer error]:
+  unfinished multiple-line block.
+  at ./test/error/lex3.ltc, line 4, 0

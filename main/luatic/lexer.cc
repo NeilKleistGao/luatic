@@ -302,7 +302,7 @@ std::variant<std::string, Diagnostic>
     }
   }
 
-  if (eq_num == process) {
+  if (eq_num == process && end_flag) {
     return res.substr(0, res.length() - eq_num - 2);
   } else {
     return RaiseError(p_line,
