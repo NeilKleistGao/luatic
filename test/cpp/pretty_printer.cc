@@ -41,15 +41,22 @@ namespace std {
   }
 } // namespace std
 
+static void PrintLocation(const Location& p_loc) {
+  std::cerr << "line " << p_loc.begin.line << ", " << p_loc.begin.column << " .. "
+    << "line " << p_loc.end.line << ", " << p_loc.end.column;
+}
+
 void PrintDiagnostic(const Diagnostic& p_diag) {
   std::cerr << "[" << std::to_string(p_diag.type) << " error]:" << std::endl;
   std::cerr << "  " << p_diag.info << std::endl;
 
   const auto& loc = p_diag.location;
   if (loc.filename.has_value()) {
-    std::cerr << "  at " << loc.filename.value() << ", line " << loc.line
-              << ", " << loc.column << std::endl;
+    std::cerr << "  at " << loc.filename.value() << ", ";
   } else {
-    std::cerr << "  at line " << loc.line << ", " << loc.column << std::endl;
+    std::cerr << "  at ";
   }
+
+  PrintLocation(loc);
+  std::cerr << std::endl;
 }

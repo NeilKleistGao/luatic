@@ -29,12 +29,18 @@
 #include <string>
 #include <utility>
 
-struct Location {
+struct Position {
   int line{};
   int column{};
+
+  Position(int p_l, int p_c): line(p_l), column(p_c) {}
+};
+
+struct Location {
+  Position begin, end;
   std::optional<std::string> filename;
 
-  Location(int p_line, int p_col, std::optional<std::string> p_file): line(p_line), column(p_col), filename(std::move(p_file)) {}
+  Location(Position p_begin, Position p_end, std::optional<std::string> p_file): begin(p_begin), end(p_end), filename(std::move(p_file)) {}
 };
 
 enum class DiagnosticType {
