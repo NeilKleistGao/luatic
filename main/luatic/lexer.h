@@ -60,11 +60,17 @@ private:
                                                 int& p_pos,
                                                 int p_line) const noexcept;
 
-  [[nodiscard]] inline Location Locate(int p_line1, int p_col1, int p_line2, int p_col2) const {
-    return Location{Position{p_line1, p_col1}, Position{p_line2, p_col2}, m_filename};
+  [[nodiscard]] inline Location
+    Locate(int p_line1, int p_col1, int p_line2, int p_col2) const {
+    return Location{
+      Position{p_line1, p_col1},
+      Position{p_line2, p_col2},
+      m_filename
+    };
   }
 
-  [[nodiscard]] inline Location Locate(int p_line1, int p_col1, int p_col2) const {
+  [[nodiscard]] inline Location
+    Locate(int p_line1, int p_col1, int p_col2) const {
     return Locate(p_line1, p_col1, p_line1, p_col2);
   }
 
@@ -74,9 +80,7 @@ private:
 
   [[nodiscard]] inline Diagnostic
     RaiseError(Location p_loc, std::string p_info) const noexcept {
-    return RaiseErrorByType(DiagnosticType::DIAG_LEX,
-                            p_loc,
-                            std::move(p_info));
+    return RaiseErrorByType(DiagnosticType::DIAG_LEX, p_loc, std::move(p_info));
   }
 
   std::variant<std::string, Diagnostic>
@@ -85,10 +89,11 @@ private:
                            int& p_line,
                            int& p_line_start) const noexcept;
 
-  std::variant<Token, Diagnostic> ParseComment(const std::string& p_code,
-                                               int& p_pos,
-                                               int& p_line,
-                                               int& p_line_start) const noexcept;
+  std::variant<Token, Diagnostic>
+    ParseComment(const std::string& p_code,
+                 int& p_pos,
+                 int& p_line,
+                 int& p_line_start) const noexcept;
 };
 
 #endif //LUATIC_LEXER_H

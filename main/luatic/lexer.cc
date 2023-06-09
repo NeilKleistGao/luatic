@@ -134,7 +134,8 @@ std::variant<Token, Diagnostic> Lexer::Parse(const std::string& p_code,
     int start = p_pos;
     auto res = ParseNumber(p_code, p_line_start, p_pos, p_line);
     if (res.index() == 0) {
-      return Token(std::get<0>(res), Locate(p_line, start - p_line_start, p_pos - p_line_start));
+      return Token(std::get<0>(res),
+                   Locate(p_line, start - p_line_start, p_pos - p_line_start));
     } else {
       return std::get<1>(res);
     }
@@ -147,9 +148,11 @@ std::variant<Token, Diagnostic> Lexer::Parse(const std::string& p_code,
 
     std::string res = p_code.substr(start, p_pos - start);
     if (m_keywords.find(res) != m_keywords.end()) {
-      return Token(m_keywords.at(res), Locate(p_line, start - p_line_start, p_pos - p_line_start));
+      return Token(m_keywords.at(res),
+                   Locate(p_line, start - p_line_start, p_pos - p_line_start));
     } else {
-      return Token(Identifier(res), Locate(p_line, start - p_line_start, p_pos - p_line_start));
+      return Token(Identifier(res),
+                   Locate(p_line, start - p_line_start, p_pos - p_line_start));
     }
   } else if (head == '"' || head == '\'') {
     int start = p_pos++;
@@ -158,8 +161,9 @@ std::variant<Token, Diagnostic> Lexer::Parse(const std::string& p_code,
       if (p_code[p_pos] == '\n' && !(prev[0] == '\\' && prev[1] == 'z')) {
         const int start_backup = p_line_start;
         p_line_start = p_pos + 1;
-        return RaiseError(Locate(p_line, start - start_backup, p_pos - start_backup),
-                          "unexpected end of string.");
+        return RaiseError(
+          Locate(p_line, start - start_backup, p_pos - start_backup),
+          "unexpected end of string.");
       }
       prev[0] = prev[1];
       prev[1] = p_code[p_pos];
@@ -167,7 +171,9 @@ std::variant<Token, Diagnostic> Lexer::Parse(const std::string& p_code,
     }
 
     if (p_pos == length) {
-      return RaiseError(Locate(p_line, start - p_line_start, p_pos - p_line_start), "unexpected end of string.");
+      return RaiseError(
+        Locate(p_line, start - p_line_start, p_pos - p_line_start),
+        "unexpected end of string.");
     }
 
     ++p_pos;
@@ -178,7 +184,8 @@ std::variant<Token, Diagnostic> Lexer::Parse(const std::string& p_code,
     int start = p_pos;
     int line = p_line;
     int line_start = p_line_start;
-    const auto res = ParseMultipleLineBlock(p_code, p_pos, p_line, p_line_start);
+    const auto res =
+      ParseMultipleLineBlock(p_code, p_pos, p_line, p_line_start);
     if (res.index() == 0) {
       return Token(
         Literal(std::string{"\""} + std::get<0>(res) + std::string{"\""}),
@@ -199,8 +206,9 @@ std::variant<Token, Diagnostic> Lexer::Parse(const std::string& p_code,
           op = next_op;
           ++p_pos;
         } else {
-          return Token(m_punctuations.at(op),
-                       Locate(p_line, start - p_line_start, p_pos - p_line_start));
+          return Token(
+            m_punctuations.at(op),
+            Locate(p_line, start - p_line_start, p_pos - p_line_start));
         }
       }
     } else {
@@ -308,8 +316,9 @@ std::variant<std::string, Diagnostic>
   if (eq_num == process && end_flag) {
     return res.substr(0, res.length() - eq_num - 2);
   } else {
-    return RaiseError(Locate(line, start - line_start, p_line, p_pos - p_line_start),
-                      "unfinished multiple-line block.");
+    return RaiseError(
+      Locate(line, start - line_start, p_line, p_pos - p_line_start),
+      "unfinished multiple-line block.");
   }
 }
 
@@ -339,10 +348,12 @@ std::variant<Token, Diagnostic>
     }
 
     if (multiple_line) {
-      const auto res = ParseMultipleLineBlock(p_code, p_pos, p_line, p_line_start);
+      const auto res =
+        ParseMultipleLineBlock(p_code, p_pos, p_line, p_line_start);
       if (res.index() == 0) {
-        return Token(Punctuation::PUN_SPACE,
-                     Locate(line, start - line_start, p_line, p_pos - p_line_start));
+        return Token(
+          Punctuation::PUN_SPACE,
+          Locate(line, start - line_start, p_line, p_pos - p_line_start));
       } else {
         return std::get<1>(res);
       }
@@ -357,9 +368,13 @@ std::variant<Token, Diagnostic>
       }
 
       ++p_pos;
-      return Token(Punctuation::PUN_SPACE, Locate(line, start - line_start, p_line, p_pos - p_line_start));
+      return Token(
+        Punctuation::PUN_SPACE,
+        Locate(line, start - line_start, p_line, p_pos - p_line_start));
     }
   } else {
-    return Token(Punctuation::PUN_SPACE, Locate(line, start - line_start, p_line, p_pos - p_line_start));
+    return Token(
+      Punctuation::PUN_SPACE,
+      Locate(line, start - line_start, p_line, p_pos - p_line_start));
   }
 }

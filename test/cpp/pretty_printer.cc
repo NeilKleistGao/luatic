@@ -42,8 +42,9 @@ namespace std {
 } // namespace std
 
 static void PrintLocation(const Location& p_loc) {
-  std::cerr << "line " << p_loc.begin.line << ", " << p_loc.begin.column << " .. "
-    << "line " << p_loc.end.line << ", " << p_loc.end.column;
+  std::cerr << "line " << p_loc.begin.line << ", " << p_loc.begin.column
+            << " .. "
+            << "line " << p_loc.end.line << ", " << p_loc.end.column;
 }
 
 void PrintDiagnostic(const Diagnostic& p_diag) {
