@@ -21,7 +21,8 @@ include(backends/CMakeLists.txt)
 list(APPEND luatic_source
         main/lua/lua_vm.cc
         main/luatic/lexer.cc
-        main/luatic/ast.cc)
+        main/luatic/ast.cc
+        main/luatic/parser.cc)
 
 add_executable(luatic main/main.cc ${luatic_source})
 target_link_libraries(luatic ${CMAKE_SOURCE_DIR}/bin/lib/libbackend.a ${CMAKE_DL_LIBS})

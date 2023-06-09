@@ -40,6 +40,12 @@ public:
   [[nodiscard]] std::variant<TokenStream, DiagnosticList>
     Parse(const std::string& p_code) const noexcept;
 
+  ~Lexer() = default;
+  Lexer(const Lexer&) = delete;
+  Lexer& operator=(const Lexer&) = delete;
+  Lexer(Lexer&&) = delete;
+  Lexer& operator=(Lexer&&) = delete;
+
 private:
   static const std::unordered_map<std::string, Keyword> m_keywords;
   static const std::unordered_map<std::string, Punctuation> m_punctuations;
