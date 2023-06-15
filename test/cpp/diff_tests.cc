@@ -31,6 +31,7 @@
 
 #include "lua/lua_vm.h"
 #include "luatic/lexer.h"
+#include "luatic/parser.h"
 #include "pretty_printer.h"
 
 static std::string ReadFile(const std::string& p_filename) {
@@ -85,6 +86,19 @@ TEST(LuaticDiffTests, LuaticCompiler) {
       if (lex_res.index() != 0) {
         success = false;
         const auto diags = std::get<1>(lex_res);
+        for (const auto& diag : diags) {
+          PrintDiagnostic(diag);
+        }
+
+        continue;
+      }
+
+      auto tokens = std::get<0>(lex_res);
+      const auto parser = Parser(filename);
+      const auto parse_res = parser.Parse(std::move(tokens));
+      if (parse_res.index() != 0) {
+        success = false;
+        const auto diags = std::get<1>(parse_res);
         for (const auto& diag : diags) {
           PrintDiagnostic(diag);
         }

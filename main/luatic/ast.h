@@ -28,6 +28,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <utility>
 #include <variant>
 #include <vector>
 
@@ -35,6 +36,9 @@
 #include "operators.hpp"
 
 #define CASE(__NAME__) struct __NAME__: public ASTNode
+#define INIT(__NAME__)                                                         \
+__NAME__(const Position& p_begin, const std::optional<std::string>& p_file):   \
+  ASTNode(p_begin, p_file)
 #define ADT(__NAME__, __FIRST__, __REST__...)                                  \
 struct __NAME__ {                                                              \
 std::variant<__FIRST__, ##__REST__> value;                                     \
@@ -45,6 +49,11 @@ using Ptr = std::shared_ptr<T>;
 
 struct ASTNode {
   Location loc;
+
+  ASTNode(const Position& p_begin, const std::optional<std::string>& p_file):
+    loc{
+      Location{p_begin, p_begin, p_file}
+  } {}
 };
 
 struct Block;
@@ -171,10 +180,12 @@ ADT(Stmt,
     FuncStmt);
 
 CASE(Block) {
+  INIT(Block) {}
   std::vector<Stmt> stmts;
 };
 
 #undef ADT
+#undef INIT
 #undef CASE
 
 #endif //LUATIC_AST_H

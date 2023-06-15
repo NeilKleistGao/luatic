@@ -34,8 +34,7 @@ public:
 
   explicit Parser(std::optional<std::string> p_filename);
   [[nodiscard]] std::variant<Block, DiagnosticList>
-    Parse(const std::string& p_code,
-          Lexer::TokenStream&& p_tokens) const noexcept;
+    Parse(Lexer::TokenStream&& p_tokens) const noexcept;
 
   ~Parser() = default;
   Parser(const Parser&) = delete;

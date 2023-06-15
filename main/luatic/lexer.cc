@@ -217,6 +217,8 @@ std::variant<Token, Diagnostic> Lexer::Parse(const std::string& p_code,
                         std::string{"unexpected character "} + head + ".");
     }
   }
+
+  return RaiseError(Locate(0, 0), std::string{"unexpected error."});
 }
 
 std::variant<Literal, Diagnostic>
@@ -296,7 +298,7 @@ std::variant<std::string, Diagnostic>
       res += c;
       if (!end_flag) {
         end_flag = true;
-      } else if (end_flag && process == eq_num) {
+      } else if (process == eq_num) {
         break;
       } else {
         process = 0;

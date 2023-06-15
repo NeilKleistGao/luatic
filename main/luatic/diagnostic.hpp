@@ -41,6 +41,10 @@ struct Location {
   std::optional<std::string> filename;
 
   Location(Position p_begin, Position p_end, std::optional<std::string> p_file): begin(p_begin), end(p_end), filename(std::move(p_file)) {}
+
+  static Position Begin() {
+    return Position{1, 0};
+  }
 };
 
 enum class DiagnosticType {

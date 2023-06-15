@@ -30,8 +30,15 @@ Parser::Parser(std::optional<std::string> p_filename):
   m_filename(std::move(p_filename)) {}
 
 std::variant<Block, Parser::DiagnosticList>
-  Parser::Parse(const std::string& p_code,
-                Lexer::TokenStream&& p_tokens) const noexcept {
+  Parser::Parse(Lexer::TokenStream&& p_tokens) const noexcept {
   DiagnosticList diags{};
-  return diags; // TODO
+  Block block{Location::Begin(), m_filename};
+
+  // TODO:
+
+  if (diags.empty()) {
+    return block;
+  } else {
+    return diags;
+  }
 }
