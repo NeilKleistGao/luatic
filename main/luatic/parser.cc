@@ -30,11 +30,24 @@ Parser::Parser(std::optional<std::string> p_filename):
   m_filename(std::move(p_filename)) {}
 
 std::variant<Block, Parser::DiagnosticList>
-  Parser::Parse(Lexer::TokenStream&& p_tokens) const noexcept {
+  Parser::Parse(const Lexer::TokenStream& p_tokens) const noexcept {
   DiagnosticList diags{};
-  Block block{Location::Begin(), m_filename};
+  Block block{Location::Begin()};
 
-  // TODO:
+  for (auto p = p_tokens.cbegin(); p != p_tokens.cend(); ++p) {
+    const auto res = ParseStatement(p);
+    if (res.index() == 0) {
+      auto stmt = std::get<0>(res);
+      block.stmts.push_back(std::move(stmt));
+    } else {
+      auto diag = std::get<1>(res);
+      diags.push_back(std::move(diag));
+    }
+  }
+
+  if (!p_tokens.empty()) {
+    block.loc.end = p_tokens.back().location.end;
+  }
 
   if (diags.empty()) {
     return block;
@@ -42,3 +55,44 @@ std::variant<Block, Parser::DiagnosticList>
     return diags;
   }
 }
+
+#define CASE_KEY(__CUR__) if (__CUR__->token.index() == 0)
+#define CASE_IDENT(__CUR__) if (__CUR__->token.index() == 1)
+#define CASE_LIT(__CUR__) if (__CUR__->token.index() == 2)
+#define CASE_PUNC(__CUR__) if (__CUR__->token.index() == 3)
+
+#define GET_KEY(__CUR__, __RES__)                                              \
+const auto __RES__ = std::get<0>(__CUR__->token)
+#define GET_IDENT(__CUR__, __RES__)                                            \
+const auto __RES__ = std::get<1>(__CUR__->token)
+#define GET_LIT(__CUR__, __RES__)                                              \
+const auto __RES__ = std::get<2>(__CUR__->token)
+#define GET_PUNC(__CUR__, __RES__)                                             \
+const auto __RES__ = std::get<3>(__CUR__->token)
+
+std::variant<Stmt, Diagnostic>
+  Parser::ParseStatement(TokenPointer p_cur) const noexcept {
+  CASE_KEY(p_cur) {
+    GET_KEY(p_cur, kw);
+    return Stmt{EmptyStmt{p_cur->location.begin}};
+  }
+  CASE_IDENT(p_cur) {
+    GET_IDENT(p_cur, id);
+    return Stmt{EmptyStmt{p_cur->location.begin}};
+  }
+  CASE_PUNC(p_cur) {
+    GET_PUNC(p_cur, punc);
+    return Stmt{EmptyStmt{p_cur->location.begin}};
+  }
+
+  return RaiseError(p_cur->location, "unexpected literal symbol.");
+}
+
+#undef GET_KEY
+#undef GET_IDENT
+#undef GET_LIT
+#undef GET_PUNC
+#undef CASE_PUNC
+#undef CASE_LIT
+#undef CASE_IDENT
+#undef CASE_KEY

@@ -68,22 +68,4 @@ struct Token {
   Token(std::variant<Keyword, Identifier, Literal, Punctuation> p_tok, Location p_loc): token(std::move(p_tok)), location(std::move(p_loc)) {}
 };
 
-template <typename T>
-T Match(const Token& p_t,
-        const std::function<T(const Keyword&)>& p_kw,
-        const std::function<T(const Identifier&)>& p_id,
-        const std::function<T(const Literal&)>& p_lt,
-        const std::function<T(const Punctuation&)>& p_op) {
-  switch (p_t.token.index()) {
-    case 0:
-      return p_kw(std::get<0>(p_t.token));
-    case 1:
-      return p_id(std::get<1>(p_t.token));
-    case 2:
-      return p_lt(std::get<2>(p_t.token));
-    case 3:
-      return p_op(std::get<3>(p_t.token));
-  }
-}
-
 #endif //LUATIC_TOKENS_HPP

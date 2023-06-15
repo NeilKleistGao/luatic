@@ -37,11 +37,12 @@
 
 #define CASE(__NAME__) struct __NAME__: public ASTNode
 #define INIT(__NAME__)                                                         \
-__NAME__(const Position& p_begin, const std::optional<std::string>& p_file):   \
-  ASTNode(p_begin, p_file)
+explicit __NAME__(const Position& p_begin): ASTNode(p_begin)
 #define ADT(__NAME__, __FIRST__, __REST__...)                                  \
 struct __NAME__ {                                                              \
 std::variant<__FIRST__, ##__REST__> value;                                     \
+explicit __NAME__(std::variant<__FIRST__, ##__REST__> p):                      \
+  value(std::move(p)) {}                                                       \
 }
 
 template<typename T>
@@ -50,9 +51,9 @@ using Ptr = std::shared_ptr<T>;
 struct ASTNode {
   Location loc;
 
-  ASTNode(const Position& p_begin, const std::optional<std::string>& p_file):
+  ASTNode(const Position& p_begin):
     loc{
-      Location{p_begin, p_begin, p_file}
+      Location{p_begin, p_begin}
   } {}
 };
 
@@ -119,7 +120,9 @@ ADT(Expr,
     AccessExpr,
     CallExpr);
 
-CASE(EmptyStmt){};
+CASE(EmptyStmt) {
+  INIT(EmptyStmt){};
+};
 CASE(BreakStmt){};
 CASE(LabelStmt) {
   std::string name;

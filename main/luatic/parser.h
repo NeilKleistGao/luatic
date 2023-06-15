@@ -34,7 +34,7 @@ public:
 
   explicit Parser(std::optional<std::string> p_filename);
   [[nodiscard]] std::variant<Block, DiagnosticList>
-    Parse(Lexer::TokenStream&& p_tokens) const noexcept;
+    Parse(const Lexer::TokenStream& p_tokens) const noexcept;
 
   ~Parser() = default;
   Parser(const Parser&) = delete;
@@ -44,6 +44,19 @@ public:
 
 private:
   std::optional<std::string> m_filename;
+
+  using TokenPointer = Lexer::TokenStream::const_iterator;
+
+  [[nodiscard]] std::variant<Stmt, Diagnostic>
+    ParseStatement(TokenPointer p_cur) const noexcept;
+
+  [[nodiscard]] inline Diagnostic
+    RaiseError(Location p_loc, std::string p_info) const noexcept {
+    return RaiseErrorByType(DiagnosticType::DIAG_PARSE,
+                            p_loc,
+                            std::move(p_info),
+                            this->m_filename);
+  }
 };
 
 #endif //LUATIC_PARSER_H

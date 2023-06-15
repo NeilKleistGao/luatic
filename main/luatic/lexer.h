@@ -65,7 +65,6 @@ private:
     return Location{
       Position{p_line1, p_col1},
       Position{p_line2, p_col2},
-      m_filename
     };
   }
 
@@ -80,7 +79,10 @@ private:
 
   [[nodiscard]] inline Diagnostic
     RaiseError(Location p_loc, std::string p_info) const noexcept {
-    return RaiseErrorByType(DiagnosticType::DIAG_LEX, p_loc, std::move(p_info));
+    return RaiseErrorByType(DiagnosticType::DIAG_LEX,
+                            p_loc,
+                            std::move(p_info),
+                            this->m_filename);
   }
 
   std::variant<std::string, Diagnostic>

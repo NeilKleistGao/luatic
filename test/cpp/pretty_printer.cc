@@ -52,8 +52,8 @@ void PrintDiagnostic(const Diagnostic& p_diag) {
   std::cerr << "  " << p_diag.info << std::endl;
 
   const auto& loc = p_diag.location;
-  if (loc.filename.has_value()) {
-    std::cerr << "  at " << loc.filename.value() << ", ";
+  if (p_diag.filename.has_value()) {
+    std::cerr << "  at " << p_diag.filename.value() << ", ";
   } else {
     std::cerr << "  at ";
   }
