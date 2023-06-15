@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef LUATIC_AST_H
-#define LUATIC_AST_H
+#ifndef LUATIC_AST_HPP
+#define LUATIC_AST_HPP
 
 #include <memory>
 #include <optional>
@@ -51,7 +51,7 @@ using Ptr = std::shared_ptr<T>;
 struct ASTNode {
   Location loc;
 
-  ASTNode(const Position& p_begin):
+  explicit ASTNode(const Position& p_begin):
     loc{
       Location{p_begin, p_begin}
   } {}
@@ -60,47 +60,62 @@ struct ASTNode {
 struct Block;
 struct Expr;
 
-CASE(NilExpr){};
+CASE(NilExpr){
+  INIT(NilExpr) {}
+};
 CASE(BoolExpr) {
+  INIT(BoolExpr) {}
   bool value = false;
 };
-CASE(VarArgExpr){};
+CASE(VarArgExpr){
+  INIT(VarArgExpr) {}
+};
 CASE(IntExpr) {
+  INIT(IntExpr) {}
   long long value = 0L;
 };
 CASE(FloatExpr) {
+  INIT(FloatExpr) {}
   double value = 0.0;
 };
 CASE(StringExpr) {
+  INIT(StringExpr) {}
   std::string value;
 };
 CASE(VarExpr) {
+  INIT(VarExpr) {}
   std::string name;
 };
 CASE(UnaryExpr) {
-  UnaryOperator op;
+  INIT(UnaryExpr) {}
+  UnaryOperator op = UnaryOperator::OP_LEN;
   Ptr<Expr> expr;
 };
 CASE(BinaryExpr) {
-  BinaryOperator op;
+  INIT(BinaryExpr) {}
+  BinaryOperator op = BinaryOperator::OP_ADD;
   Ptr<Expr> lhs;
   Ptr<Expr> rhs;
 };
 CASE(TableCtorExpr) {
+  INIT(TableCtorExpr) {}
   using KV = std::pair<Ptr<Expr>, Ptr<Expr>>;
   std::vector<KV> elements;
 };
 CASE(FunctionExpr) {
+  INIT(FunctionExpr) {}
   std::vector<Ptr<Expr>> params;
-  bool is_var;
+  bool is_var = false;
   Ptr<Block> body;
 };
 CASE(AccessExpr) {
-  enum class AccessType { ACC_DOT, ACC_COL, ACC_IDX } type;
+  INIT(AccessExpr) {}
+  enum class AccessType { ACC_DOT, ACC_COL, ACC_IDX } type = AccessType::ACC_DOT;
   Ptr<Expr> lhs;
   Ptr<Expr> rhs;
 };
 CASE(CallExpr) {
+  INIT(CallExpr) {}
   Ptr<Expr> callee;
   std::vector<Ptr<Expr>> params;
 };
@@ -123,48 +138,61 @@ ADT(Expr,
 CASE(EmptyStmt) {
   INIT(EmptyStmt){};
 };
-CASE(BreakStmt){};
+CASE(BreakStmt){
+  INIT(BreakStmt) {}
+};
 CASE(LabelStmt) {
+  INIT(LabelStmt) {}
   std::string name;
 };
 CASE(GotoStmt) {
+  INIT(GotoStmt) {}
   std::string name;
 };
 CASE(DoStmt) {
+  INIT(DoStmt) {}
   Ptr<Block> block;
 };
 CASE(CallStmt) {
+  INIT(CallStmt) {}
   Ptr<CallExpr> call;
 };
 CASE(WhileStmt) {
-  Expr cond;
+  INIT(WhileStmt) {}
+  Ptr<Expr> cond;
   Ptr<Block> block;
 };
 CASE(RepeatStmt) {
-  Expr cond;
+  INIT(RepeatStmt) {}
+  Ptr<Expr> cond;
   Ptr<Block> block;
 };
 CASE(IfStmt) {
+  INIT(IfStmt) {}
   using CondBranch = std::pair<Expr, Ptr<Block>>;
   std::vector<CondBranch> branches;
   Ptr<Block> else_branch;
 };
 CASE(ForStmt) {
+  INIT(ForStmt) {}
   using AssignPair = std::pair<std::string, Expr>;
   std::vector<AssignPair> assigns;
   Ptr<Block> block;
 };
 CASE(LocalVarDeclStmt) {
+  INIT(LocalVarDeclStmt) {}
   using AssignPair = std::pair<std::string, Expr>;
   std::vector<AssignPair> assigns;
 };
 CASE(AssignStmt) {
+  INIT(AssignStmt) {}
   using AssignPair = std::pair<Expr, Expr>;
   std::vector<AssignPair> assigns;
 };
 CASE(FuncStmt) {
+  INIT(FuncStmt) {}
   std::string name;
-  FunctionExpr func;
+  Ptr<FunctionExpr> func;
 };
 
 ADT(Stmt,
@@ -191,4 +219,4 @@ CASE(Block) {
 #undef INIT
 #undef CASE
 
-#endif //LUATIC_AST_H
+#endif //LUATIC_AST_HPP

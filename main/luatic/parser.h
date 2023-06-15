@@ -25,7 +25,7 @@
 #ifndef LUATIC_PARSER_H
 #define LUATIC_PARSER_H
 
-#include "ast.h"
+#include "ast.hpp"
 #include "lexer.h"
 
 class Parser {
