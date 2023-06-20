@@ -102,9 +102,9 @@ std::variant<Lexer::TokenStream, Lexer::DiagnosticList>
   while (pos < length) {
     auto res = Parse(p_code, pos, line, start);
     if (res.index() == 0 && diags.empty()) {
-      tokens.push_back(std::move(std::get<0>(res)));
+      tokens.push_back(std::move(std::get<Token>(res)));
     } else if (res.index() == 1) {
-      diags.push_back(std::move(std::get<1>(res)));
+      diags.push_back(std::move(std::get<Diagnostic>(res)));
     }
   }
 
@@ -134,10 +134,10 @@ std::variant<Token, Diagnostic> Lexer::Parse(const std::string& p_code,
     int start = p_pos;
     auto res = ParseNumber(p_code, p_line_start, p_pos, p_line);
     if (res.index() == 0) {
-      return Token(std::get<0>(res),
+      return Token(std::get<Literal>(res),
                    Locate(p_line, start - p_line_start, p_pos - p_line_start));
     } else {
-      return std::get<1>(res);
+      return std::get<Diagnostic>(res);
     }
   } else if (std::isalpha(head) || head == '_') {
     int start = p_pos++;
@@ -188,10 +188,10 @@ std::variant<Token, Diagnostic> Lexer::Parse(const std::string& p_code,
       ParseMultipleLineBlock(p_code, p_pos, p_line, p_line_start);
     if (res.index() == 0) {
       return Token(
-        Literal(std::string{"\""} + std::get<0>(res) + std::string{"\""}),
+        Literal(std::string{"\""} + std::get<std::string>(res) + std::string{"\""}),
         Locate(line, start - line_start, p_line, p_pos - p_line_start));
     } else {
-      return std::get<1>(res);
+      return std::get<Diagnostic>(res);
     }
   } else if (head == '-' && p_pos + 1 < length && p_code[p_pos + 1] == '-') {
     return ParseComment(p_code, p_pos, p_line, p_line_start);
@@ -357,7 +357,7 @@ std::variant<Token, Diagnostic>
           Punctuation::PUN_SPACE,
           Locate(line, start - line_start, p_line, p_pos - p_line_start));
       } else {
-        return std::get<1>(res);
+        return std::get<Diagnostic>(res);
       }
     } else {
       while (p_pos < length) {

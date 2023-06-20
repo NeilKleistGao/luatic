@@ -37,10 +37,10 @@ std::variant<Block, Parser::DiagnosticList>
   for (auto p = p_tokens.cbegin(); p != p_tokens.cend(); ++p) {
     const auto res = ParseStatement(p);
     if (res.index() == 0) {
-      auto stmt = std::get<0>(res);
+      auto stmt = std::get<Stmt>(res);
       block.stmts.push_back(std::move(stmt));
     } else {
-      auto diag = std::get<1>(res);
+      auto diag = std::get<Diagnostic>(res);
       diags.push_back(std::move(diag));
     }
   }
@@ -62,13 +62,13 @@ std::variant<Block, Parser::DiagnosticList>
 #define CASE_PUNC(__CUR__) if (__CUR__->token.index() == 3)
 
 #define GET_KEY(__CUR__, __RES__)                                              \
-const auto __RES__ = std::get<0>(__CUR__->token)
+const auto __RES__ = std::get<Keyword>(__CUR__->token)
 #define GET_IDENT(__CUR__, __RES__)                                            \
-const auto __RES__ = std::get<1>(__CUR__->token)
+const auto __RES__ = std::get<Identifier>(__CUR__->token)
 #define GET_LIT(__CUR__, __RES__)                                              \
-const auto __RES__ = std::get<2>(__CUR__->token)
+const auto __RES__ = std::get<Literal>(__CUR__->token)
 #define GET_PUNC(__CUR__, __RES__)                                             \
-const auto __RES__ = std::get<3>(__CUR__->token)
+const auto __RES__ = std::get<Punctuation>(__CUR__->token)
 
 std::variant<Stmt, Diagnostic>
   Parser::ParseStatement(TokenPointer p_cur) const noexcept {
