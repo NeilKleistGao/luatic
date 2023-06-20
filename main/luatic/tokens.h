@@ -22,22 +22,40 @@
  * SOFTWARE.
  */
 
-#ifndef LUATIC_TOKENS_HPP
-#define LUATIC_TOKENS_HPP
+#ifndef LUATIC_TOKENS_H
+#define LUATIC_TOKENS_H
 
-#include <utility>
-#include <variant>
-#include <string>
 #include <functional>
 #include <optional>
+#include <string>
+#include <utility>
+#include <variant>
 
 #include "diagnostic.hpp"
 
-enum class Keyword{
-  KW_AND, KW_BREAK, KW_DO, KW_ELSE, KW_ELSEIF, KW_END,
-  KW_FALSE, KW_FOR, KW_FUN, KW_GOTO, KW_IF, KW_IN,
-  KW_LOCAL, KW_NIL, KW_NOT, KW_OR, LW_REPEAT, KW_RETURN,
-  KW_THEN, KW_TRUE, KW_UNTIL, KW_WHILE
+enum class Keyword {
+  KW_AND,
+  KW_BREAK,
+  KW_DO,
+  KW_ELSE,
+  KW_ELSEIF,
+  KW_END,
+  KW_FALSE,
+  KW_FOR,
+  KW_FUN,
+  KW_GOTO,
+  KW_IF,
+  KW_IN,
+  KW_LOCAL,
+  KW_NIL,
+  KW_NOT,
+  KW_OR,
+  KW_REPEAT,
+  KW_RETURN,
+  KW_THEN,
+  KW_TRUE,
+  KW_UNTIL,
+  KW_WHILE
 };
 
 struct Identifier {
@@ -53,19 +71,53 @@ struct Literal {
 };
 
 enum class Punctuation {
-  PUN_PLUS, PUN_MINUS, PUN_MUL, PUN_DIV, PUN_MOD, PUN_POW,
-  PUN_LEN, PUN_AND, PUN_XOR, PUN_OR, PUN_LEFT_SHIFT, PUN_RIGHT_SHIFT,
-  PUN_FD, PUN_EQ, PUN_NE, PUN_LE, PUN_GE, PUN_LESS, PUN_GREAT, PUN_ASSIGN,
-  PUN_LEFT_PAR, PUN_RIGHT_PAR, PUN_LEFT_BRA, PUN_RIGHT_BRA,
-  PUN_LEFT_SQR, PUN_RIGHT_SQR, PUN_SEMI, PUN_COLON, PUN_COMMA, PUN_DOT,
-  PUN_DOT2, PUN_DOT3, PUN_SPACE
+  PUN_PLUS,
+  PUN_MINUS,
+  PUN_MUL,
+  PUN_DIV,
+  PUN_MOD,
+  PUN_POW,
+  PUN_LEN,
+  PUN_AND,
+  PUN_XOR,
+  PUN_OR,
+  PUN_LEFT_SHIFT,
+  PUN_RIGHT_SHIFT,
+  PUN_FD,
+  PUN_EQ,
+  PUN_NE,
+  PUN_LE,
+  PUN_GE,
+  PUN_LESS,
+  PUN_GREAT,
+  PUN_ASSIGN,
+  PUN_LEFT_PAR,
+  PUN_RIGHT_PAR,
+  PUN_LEFT_BRA,
+  PUN_RIGHT_BRA,
+  PUN_LEFT_SQR,
+  PUN_RIGHT_SQR,
+  PUN_SEMI,
+  PUN_COLON,
+  PUN_COMMA,
+  PUN_DOT,
+  PUN_DOT2,
+  PUN_DOT3,
+  PUN_SPACE
 };
 
 struct Token {
   std::variant<Keyword, Identifier, Literal, Punctuation> token;
   Location location;
 
-  Token(std::variant<Keyword, Identifier, Literal, Punctuation> p_tok, Location p_loc): token(std::move(p_tok)), location(std::move(p_loc)) {}
+  Token(std::variant<Keyword, Identifier, Literal, Punctuation> p_tok,
+        Location p_loc):
+    token(std::move(p_tok)),
+    location(std::move(p_loc)) {}
 };
 
-#endif //LUATIC_TOKENS_HPP
+namespace std {
+  std::string to_string(Keyword p_kw);
+} // namespace std
+
+#endif //LUATIC_TOKENS_H

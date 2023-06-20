@@ -44,7 +44,7 @@ const std::unordered_map<std::string, Keyword> Lexer::m_keywords = {
   {     "nil",    Keyword::KW_NIL},
   {     "not",    Keyword::KW_NOT},
   {      "or",     Keyword::KW_OR},
-  {  "repeat", Keyword::LW_REPEAT},
+  {  "repeat", Keyword::KW_REPEAT},
   {  "return", Keyword::KW_RETURN},
   {    "then",   Keyword::KW_THEN},
   {    "true",   Keyword::KW_TRUE},

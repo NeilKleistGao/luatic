@@ -29,7 +29,7 @@
 #include <vector>
 
 #include "diagnostic.hpp"
-#include "tokens.hpp"
+#include "tokens.h"
 
 class Lexer {
 public:

@@ -74,7 +74,19 @@ std::variant<Stmt, Diagnostic>
   Parser::ParseStatement(TokenPointer p_cur) const noexcept {
   CASE_KEY(p_cur) {
     GET_KEY(p_cur, kw);
-    return Stmt{EmptyStmt{p_cur->location.begin}};
+    if (kw == Keyword::KW_BREAK) {
+      return Stmt{BreakStmt{p_cur->location.begin}};
+    } else if (kw == Keyword::KW_GOTO) {
+    } else if (kw == Keyword::KW_DO) {
+    } else if (kw == Keyword::KW_WHILE) {
+    } else if (kw == Keyword::KW_REPEAT) {
+    } else if (kw == Keyword::KW_IF) {
+    } else if (kw == Keyword::KW_FOR) {
+    } else if (kw == Keyword::KW_FUN) {
+    } else if (kw == Keyword::KW_LOCAL) {
+    }
+    return RaiseError(p_cur->location,
+                      "unexpected " + std::to_string(kw) + ".");
   }
   CASE_IDENT(p_cur) {
     GET_IDENT(p_cur, id);
@@ -82,7 +94,11 @@ std::variant<Stmt, Diagnostic>
   }
   CASE_PUNC(p_cur) {
     GET_PUNC(p_cur, punc);
-    return Stmt{EmptyStmt{p_cur->location.begin}};
+    if (punc == Punctuation::PUN_SEMI || punc == Punctuation::PUN_SPACE) {
+      return Stmt{EmptyStmt{p_cur->location.begin}};
+    }
+
+    return RaiseError(p_cur->location, "unexpected punctuation.");
   }
 
   return RaiseError(p_cur->location, "unexpected literal symbol.");
