@@ -188,7 +188,8 @@ std::variant<Token, Diagnostic> Lexer::Parse(const std::string& p_code,
       ParseMultipleLineBlock(p_code, p_pos, p_line, p_line_start);
     if (res.index() == 0) {
       return Token(
-        Literal(std::string{"\""} + std::get<std::string>(res) + std::string{"\""}),
+        Literal(std::string{"\""} + std::get<std::string>(res) +
+                std::string{"\""}),
         Locate(line, start - line_start, p_line, p_pos - p_line_start));
     } else {
       return std::get<Diagnostic>(res);
