@@ -81,8 +81,8 @@ TEST(LuaticDiffTests, LuaticCompiler) {
   for (const auto& fp : fs::directory_iterator(path)) {
     const auto filename = fp.path().string();
     if (std::regex_match(filename, reg)) {
-      const auto lex = Lexer(filename);
-      const auto lex_res = lex.Parse(ReadFile(filename));
+      const auto lex = Lexer(filename, ReadFile(filename));
+      const auto lex_res = lex.Parse();
       if (lex_res.index() != 0) {
         success = false;
         const auto diags = std::get<1>(lex_res);
@@ -93,7 +93,6 @@ TEST(LuaticDiffTests, LuaticCompiler) {
         continue;
       }
 
-      auto tokens = std::get<0>(lex_res);
       const auto parser = Parser(filename, std::get<0>(lex_res));
       const auto parse_res = parser.Parse();
       if (parse_res.index() != 0) { // TODO:
@@ -120,8 +119,8 @@ TEST(LuaticDiffTests, LuaticLexError) {
   for (const auto& fp : fs::directory_iterator(path)) {
     const auto filename = fp.path().string();
     if (std::regex_match(filename, reg)) {
-      const auto lex = Lexer(filename);
-      const auto lex_res = lex.Parse(ReadFile(filename));
+      const auto lex = Lexer(filename, ReadFile(filename));
+      const auto lex_res = lex.Parse();
       if (lex_res.index() != 0) {
         const auto diags = std::get<1>(lex_res);
         const auto backup = std::cerr.rdbuf();
