@@ -212,7 +212,7 @@ ADT(Stmt,
 
 CASE(Block) {
   INIT(Block) {}
-  std::vector<Stmt> stmts;
+  std::vector<Stmt> stmts{};
 };
 
 #undef ADT

@@ -93,7 +93,7 @@ TEST(LuaticDiffTests, LuaticCompiler) {
         continue;
       }
 
-      const auto parser = Parser(filename, std::get<0>(lex_res));
+      auto parser = Parser(filename, std::get<0>(lex_res));
       const auto parse_res = parser.Parse();
       if (parse_res.index() != 0) { // TODO:
         //        success = false;

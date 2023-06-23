@@ -31,18 +31,13 @@ Parser::Parser(std::optional<std::string> p_filename,
   m_filename(std::move(p_filename)),
   m_stream(std::move(p_tokens)), m_ending(m_stream.cend()) {}
 
-std::variant<Block, Parser::DiagnosticList> Parser::Parse() const noexcept {
-  DiagnosticList diags{};
+std::variant<Block, Parser::DiagnosticList> Parser::Parse() noexcept {
   Block block{Location::Begin()};
 
   for (auto p = m_stream.cbegin(); p != m_ending; ++p) {
-    const auto res = ParseStatement(p);
-    if (res.index() == 0) {
-      auto stmt = std::get<Stmt>(res);
-      block.stmts.push_back(std::move(stmt));
-    } else {
-      auto diag = std::get<Diagnostic>(res);
-      diags.push_back(std::move(diag));
+    auto res = ParseStatement(p);
+    if (res.has_value()) {
+      block.stmts.push_back(res.value());
     }
   }
 
@@ -50,10 +45,10 @@ std::variant<Block, Parser::DiagnosticList> Parser::Parse() const noexcept {
     block.loc.end = m_stream.back().location.end;
   }
 
-  if (diags.empty()) {
+  if (m_diags.empty()) {
     return block;
   } else {
-    return diags;
+    return m_diags;
   }
 }
 
@@ -71,15 +66,15 @@ const auto __RES__ = std::get<Literal>(__CUR__->token)
 #define GET_PUNC(__CUR__, __RES__)                                             \
 const auto __RES__ = std::get<Punctuation>(__CUR__->token)
 
-std::variant<Stmt, Diagnostic>
-  Parser::ParseStatement(TokenPointer p_cur) const noexcept {
+std::optional<Stmt> Parser::ParseStatement(TokenPointer& p_cur) noexcept {
   CASE_KEY(p_cur) {
     GET_KEY(p_cur, kw);
     if (kw == Keyword::KW_BREAK) {
       return Stmt{BreakStmt{p_cur->location.begin}};
     } else if (kw == Keyword::KW_GOTO) {
-      return GetOrError<Stmt, GotoStmt>(ParseGoto(Skip(p_cur + 1)));
+      return std::optional<Stmt>{ParseGoto(++p_cur)};
     } else if (kw == Keyword::KW_DO) {
+      return std::optional<Stmt>{ParseDo(++p_cur)};
     } else if (kw == Keyword::KW_WHILE) {
     } else if (kw == Keyword::KW_REPEAT) {
     } else if (kw == Keyword::KW_IF) {
@@ -87,8 +82,8 @@ std::variant<Stmt, Diagnostic>
     } else if (kw == Keyword::KW_FUN) {
     } else if (kw == Keyword::KW_LOCAL) {
     }
-    return RaiseError(p_cur->location,
-                      "unexpected " + std::to_string(kw) + ".");
+    return RaiseError<Stmt>(p_cur->location,
+                            "unexpected " + std::to_string(kw) + ".");
   }
   CASE_IDENT(p_cur) {
     GET_IDENT(p_cur, id);
@@ -100,10 +95,10 @@ std::variant<Stmt, Diagnostic>
       return Stmt{EmptyStmt{p_cur->location.begin}};
     }
 
-    return RaiseError(p_cur->location, "unexpected punctuation.");
+    return RaiseError<Stmt>(p_cur->location, "unexpected punctuation.");
   }
 
-  return RaiseError(p_cur->location, "unexpected literal symbol.");
+  return RaiseError<Stmt>(p_cur->location, "unexpected literal symbol.");
 }
 
 Parser::TokenPointer Parser::Skip(TokenPointer p_cur) const noexcept {
@@ -122,20 +117,54 @@ Parser::TokenPointer Parser::Skip(TokenPointer p_cur) const noexcept {
   return p_cur;
 }
 
-std::variant<GotoStmt, Diagnostic>
-  Parser::ParseGoto(TokenPointer p_cur) const noexcept {
+std::optional<GotoStmt> Parser::ParseGoto(TokenPointer& p_cur) noexcept {
   if (p_cur == m_ending) {
-    return RaiseError(p_cur->location, "goto label is missing.");
+    return RaiseError<GotoStmt>(p_cur->location, "goto label is missing.");
   }
+
+  auto stmt = GotoStmt{p_cur->location.begin};
+  p_cur = Skip(p_cur);
 
   CASE_IDENT(p_cur) {
     GET_IDENT(p_cur, id);
-    auto stmt = GotoStmt{p_cur->location.begin};
     stmt.name = id.name;
+    stmt.loc.end = p_cur->location.end;
     return stmt;
   }
 
-  return RaiseError(p_cur->location, "unexpected goto label.");
+  return RaiseError<GotoStmt>(p_cur->location, "unexpected goto label.");
+}
+
+std::optional<DoStmt> Parser::ParseDo(TokenPointer& p_cur) noexcept {
+  if (p_cur == m_ending) {
+    return RaiseError<DoStmt>(p_cur->location, "unexpected keyword do.");
+  }
+  auto stmt = DoStmt{p_cur->location.begin};
+  p_cur = Skip(p_cur);
+  stmt.block = std::make_shared<Block>(p_cur->location.begin);
+  while (p_cur != m_ending) {
+    p_cur = Skip(p_cur);
+    CASE_KEY(p_cur) {
+      GET_KEY(p_cur, kw);
+      if (kw == Keyword::KW_END) {
+        stmt.loc.end = p_cur->location.end;
+        return stmt;
+      }
+    }
+
+    auto s = ParseStatement(p_cur);
+    if (s.has_value()) {
+      stmt.block->stmts.push_back(s.value());
+    }
+    stmt.block->loc.end = p_cur->location.end;
+
+    if (p_cur == m_ending) {
+      break;
+    }
+    ++p_cur;
+  }
+
+  return RaiseError<DoStmt>(p_cur->location, "the do block is not finished.");
 }
 
 #undef GET_KEY

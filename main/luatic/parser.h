@@ -25,6 +25,8 @@
 #ifndef LUATIC_PARSER_H
 #define LUATIC_PARSER_H
 
+#include <optional>
+
 #include "ast.hpp"
 #include "lexer.h"
 
@@ -33,7 +35,7 @@ public:
   using DiagnosticList = std::vector<Diagnostic>;
 
   Parser(std::optional<std::string> p_filename, Lexer::TokenStream p_tokens);
-  [[nodiscard]] std::variant<Block, DiagnosticList> Parse() const noexcept;
+  [[nodiscard]] std::variant<Block, DiagnosticList> Parse() noexcept;
 
   ~Parser() = default;
   Parser(const Parser&) = delete;
@@ -42,29 +44,30 @@ public:
   Parser& operator=(Parser&&) = delete;
 
 private:
-  std::optional<std::string> m_filename;
+  const std::optional<std::string> m_filename;
 
   using TokenPointer = Lexer::TokenStream::const_iterator;
 
-  Lexer::TokenStream m_stream;
-  TokenPointer m_ending;
+  const Lexer::TokenStream m_stream;
+  const TokenPointer m_ending;
+  DiagnosticList m_diags{};
 
-  [[nodiscard]] std::variant<Stmt, Diagnostic>
-    ParseStatement(TokenPointer p_cur) const noexcept;
+  [[nodiscard]] std::optional<Stmt>
+    ParseStatement(TokenPointer& p_cur) noexcept;
 
   [[nodiscard]] TokenPointer Skip(TokenPointer p_cur) const noexcept;
 
-  [[nodiscard]] std::variant<GotoStmt, Diagnostic>
-    ParseGoto(TokenPointer p_cur) const noexcept;
-  // TODO:
-  // [[nodiscard]] std::variant<DoStmt, Diagnostic> ParseDo(TokenPointer p_cur) const noexcept;
+  [[nodiscard]] std::optional<GotoStmt> ParseGoto(TokenPointer& p_cur) noexcept;
+  [[nodiscard]] std::optional<DoStmt> ParseDo(TokenPointer& p_cur) noexcept;
 
-  [[nodiscard]] inline Diagnostic
-    RaiseError(Location p_loc, std::string p_info) const noexcept {
-    return RaiseErrorByType(DiagnosticType::DIAG_PARSE,
-                            p_loc,
-                            std::move(p_info),
-                            this->m_filename);
+  template<typename T>
+  [[nodiscard]] inline std::optional<T>
+    RaiseError(Location p_loc, std::string p_info) noexcept {
+    m_diags.push_back(RaiseErrorByType(DiagnosticType::DIAG_PARSE,
+                                       p_loc,
+                                       std::move(p_info),
+                                       this->m_filename));
+    return std::nullopt;
   }
 };
 
