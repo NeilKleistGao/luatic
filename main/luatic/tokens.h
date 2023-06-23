@@ -113,11 +113,20 @@ struct Token {
   Token(std::variant<Keyword, Identifier, Literal, Punctuation> p_tok,
         Location p_loc):
     token(std::move(p_tok)),
-    location(std::move(p_loc)) {}
+    location(p_loc) {}
 };
 
 namespace std {
   std::string to_string(Keyword p_kw);
+  std::string to_string(Punctuation p_punc);
+
+  inline std::string to_string(const Identifier& p_id) {
+    return "symbol " + p_id.name;
+  }
+
+  inline std::string to_string(const Literal& p_lit) {
+    return "literal " + p_lit.value;
+  }
 } // namespace std
 
 #endif //LUATIC_TOKENS_H

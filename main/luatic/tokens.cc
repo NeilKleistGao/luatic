@@ -73,4 +73,75 @@ namespace std {
         return "while";
     }
   }
+
+  std::string to_string(Punctuation p_punc) {
+    switch (p_punc) {
+      case Punctuation::PUN_PLUS:
+        return "+";
+      case Punctuation::PUN_MINUS:
+        return "-";
+      case Punctuation::PUN_MUL:
+        return "*";
+      case Punctuation::PUN_DIV:
+        return "/";
+      case Punctuation::PUN_MOD:
+        return "%";
+      case Punctuation::PUN_POW:
+        return "^";
+      case Punctuation::PUN_LEN:
+        return "#";
+      case Punctuation::PUN_AND:
+        return "&";
+      case Punctuation::PUN_XOR:
+        return "~";
+      case Punctuation::PUN_OR:
+        return "|";
+      case Punctuation::PUN_LEFT_SHIFT:
+        return "<<";
+      case Punctuation::PUN_RIGHT_SHIFT:
+        return ">>";
+      case Punctuation::PUN_FD:
+        return "//";
+      case Punctuation::PUN_EQ:
+        return "==";
+      case Punctuation::PUN_NE:
+        return "";
+      case Punctuation::PUN_LE:
+        return "<=";
+      case Punctuation::PUN_GE:
+        return ">=";
+      case Punctuation::PUN_LESS:
+        return "<";
+      case Punctuation::PUN_GREAT:
+        return ">";
+      case Punctuation::PUN_ASSIGN:
+        return "=";
+      case Punctuation::PUN_LEFT_PAR:
+        return "(";
+      case Punctuation::PUN_RIGHT_PAR:
+        return ")";
+      case Punctuation::PUN_LEFT_BRA:
+        return "{";
+      case Punctuation::PUN_RIGHT_BRA:
+        return "}";
+      case Punctuation::PUN_LEFT_SQR:
+        return "[";
+      case Punctuation::PUN_RIGHT_SQR:
+        return "]";
+      case Punctuation::PUN_SEMI:
+        return ";";
+      case Punctuation::PUN_COLON:
+        return ":";
+      case Punctuation::PUN_COMMA:
+        return ",";
+      case Punctuation::PUN_DOT:
+        return ".";
+      case Punctuation::PUN_DOT2:
+        return "..";
+      case Punctuation::PUN_DOT3:
+        return "...";
+      case Punctuation::PUN_SPACE:
+        return " ";
+    }
+  }
 } // namespace std

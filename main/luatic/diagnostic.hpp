@@ -28,6 +28,7 @@
 #include <optional>
 #include <string>
 #include <utility>
+#include <variant>
 
 struct Position {
   int line{};
@@ -65,6 +66,16 @@ struct Diagnostic {
 
 inline Diagnostic RaiseErrorByType(DiagnosticType p_type, Location p_loc, std::string p_info, std::optional<std::string> p_filename) {
   return {p_type, p_loc, std::move(p_info), std::move(p_filename)};
+}
+
+template <typename Outer, typename Inner>
+inline std::variant<Outer, Diagnostic> GetOrError(const std::variant<Inner, Diagnostic>& p_v) {
+  if (p_v.index() == 0) {
+    return Outer{std::get<Inner>(p_v)};
+  }
+  else {
+    return std::get<Diagnostic>(p_v);
+  }
 }
 
 #endif //LUATIC_DIAGNOSTIC_HPP

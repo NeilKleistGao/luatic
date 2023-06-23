@@ -32,9 +32,8 @@ class Parser {
 public:
   using DiagnosticList = std::vector<Diagnostic>;
 
-  explicit Parser(std::optional<std::string> p_filename);
-  [[nodiscard]] std::variant<Block, DiagnosticList>
-    Parse(const Lexer::TokenStream& p_tokens) const noexcept;
+  Parser(std::optional<std::string> p_filename, Lexer::TokenStream p_tokens);
+  [[nodiscard]] std::variant<Block, DiagnosticList> Parse() const noexcept;
 
   ~Parser() = default;
   Parser(const Parser&) = delete;
@@ -47,8 +46,18 @@ private:
 
   using TokenPointer = Lexer::TokenStream::const_iterator;
 
+  Lexer::TokenStream m_stream;
+  TokenPointer m_ending;
+
   [[nodiscard]] std::variant<Stmt, Diagnostic>
     ParseStatement(TokenPointer p_cur) const noexcept;
+
+  [[nodiscard]] TokenPointer Skip(TokenPointer p_cur) const noexcept;
+
+  [[nodiscard]] std::variant<GotoStmt, Diagnostic>
+    ParseGoto(TokenPointer p_cur) const noexcept;
+  // TODO:
+  // [[nodiscard]] std::variant<DoStmt, Diagnostic> ParseDo(TokenPointer p_cur) const noexcept;
 
   [[nodiscard]] inline Diagnostic
     RaiseError(Location p_loc, std::string p_info) const noexcept {

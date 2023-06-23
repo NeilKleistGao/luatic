@@ -26,15 +26,16 @@
 
 #include <utility>
 
-Parser::Parser(std::optional<std::string> p_filename):
-  m_filename(std::move(p_filename)) {}
+Parser::Parser(std::optional<std::string> p_filename,
+               Lexer::TokenStream p_tokens):
+  m_filename(std::move(p_filename)),
+  m_stream(std::move(p_tokens)), m_ending(m_stream.cend()) {}
 
-std::variant<Block, Parser::DiagnosticList>
-  Parser::Parse(const Lexer::TokenStream& p_tokens) const noexcept {
+std::variant<Block, Parser::DiagnosticList> Parser::Parse() const noexcept {
   DiagnosticList diags{};
   Block block{Location::Begin()};
 
-  for (auto p = p_tokens.cbegin(); p != p_tokens.cend(); ++p) {
+  for (auto p = m_stream.cbegin(); p != m_ending; ++p) {
     const auto res = ParseStatement(p);
     if (res.index() == 0) {
       auto stmt = std::get<Stmt>(res);
@@ -45,8 +46,8 @@ std::variant<Block, Parser::DiagnosticList>
     }
   }
 
-  if (!p_tokens.empty()) {
-    block.loc.end = p_tokens.back().location.end;
+  if (!m_stream.empty()) {
+    block.loc.end = m_stream.back().location.end;
   }
 
   if (diags.empty()) {
@@ -77,6 +78,7 @@ std::variant<Stmt, Diagnostic>
     if (kw == Keyword::KW_BREAK) {
       return Stmt{BreakStmt{p_cur->location.begin}};
     } else if (kw == Keyword::KW_GOTO) {
+      return GetOrError<Stmt, GotoStmt>(ParseGoto(Skip(p_cur + 1)));
     } else if (kw == Keyword::KW_DO) {
     } else if (kw == Keyword::KW_WHILE) {
     } else if (kw == Keyword::KW_REPEAT) {
@@ -102,6 +104,38 @@ std::variant<Stmt, Diagnostic>
   }
 
   return RaiseError(p_cur->location, "unexpected literal symbol.");
+}
+
+Parser::TokenPointer Parser::Skip(TokenPointer p_cur) const noexcept {
+  while (p_cur != m_ending) {
+    CASE_PUNC(p_cur) {
+      GET_PUNC(p_cur, punc);
+      if (punc == Punctuation::PUN_SPACE) {
+        ++p_cur;
+        continue;
+      }
+    }
+
+    break;
+  }
+
+  return p_cur;
+}
+
+std::variant<GotoStmt, Diagnostic>
+  Parser::ParseGoto(TokenPointer p_cur) const noexcept {
+  if (p_cur == m_ending) {
+    return RaiseError(p_cur->location, "goto label is missing.");
+  }
+
+  CASE_IDENT(p_cur) {
+    GET_IDENT(p_cur, id);
+    auto stmt = GotoStmt{p_cur->location.begin};
+    stmt.name = id.name;
+    return stmt;
+  }
+
+  return RaiseError(p_cur->location, "unexpected goto label.");
 }
 
 #undef GET_KEY
