@@ -134,6 +134,14 @@ std::optional<Expr> Parser::ParseExpr(TokenPointer& p_cur) noexcept {
       return Expr{res};
     }
   }
+  CASE_PUNC(p_cur) {
+    GET_PUNC(p_cur, punc);
+    if (punc == Punctuation::PUN_DOT3) {
+      auto res = VarArgExpr{p_cur->location.begin};
+      res.loc.end = p_cur->location.end;
+      return Expr{res};
+    }
+  }
 
   return RaiseError<Expr>(p_cur->location,
                           "wrong expression."); // TODO: improve
