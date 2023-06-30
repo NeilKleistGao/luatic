@@ -55,6 +55,8 @@ private:
   [[nodiscard]] std::optional<Stmt>
     ParseStatement(TokenPointer& p_cur) noexcept;
 
+  [[nodiscard]] std::optional<Expr> ParseExpr(TokenPointer& p_cur) noexcept;
+
   [[nodiscard]] TokenPointer Skip(TokenPointer p_cur) const noexcept;
 
   [[nodiscard]] std::optional<GotoStmt> ParseGoto(TokenPointer& p_cur) noexcept;

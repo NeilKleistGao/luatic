@@ -25,6 +25,7 @@
 #ifndef LUATIC_LEXER_H
 #define LUATIC_LEXER_H
 
+#include <sstream>
 #include <unordered_map>
 #include <vector>
 
@@ -90,6 +91,16 @@ private:
 
   std::variant<Token, Diagnostic>
     ParseComment(int& p_pos, int& p_line, int& p_line_start) const noexcept;
+
+  template<typename T>
+  static T String2(const std::string& p_str) {
+    T res;
+    std::stringstream stream;
+    stream << p_str;
+    stream >> res;
+    stream.clear();
+    return res;
+  }
 };
 
 #endif //LUATIC_LEXER_H

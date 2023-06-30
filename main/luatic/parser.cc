@@ -101,6 +101,44 @@ std::optional<Stmt> Parser::ParseStatement(TokenPointer& p_cur) noexcept {
   return RaiseError<Stmt>(p_cur->location, "unexpected literal symbol.");
 }
 
+std::optional<Expr> Parser::ParseExpr(TokenPointer& p_cur) noexcept {
+  CASE_KEY(p_cur) {
+    GET_KEY(p_cur, kw);
+    if (kw == Keyword::KW_NIL) {
+      auto expr = NilExpr{p_cur->location.begin};
+      expr.loc.end = p_cur->location.end;
+      return Expr{expr};
+    } else if (kw == Keyword::KW_TRUE || kw == Keyword::KW_FALSE) {
+      auto expr = BoolExpr{p_cur->location.begin};
+      expr.loc.end = p_cur->location.end;
+      expr.value = kw == Keyword::KW_TRUE;
+      return Expr{expr};
+    }
+  }
+  CASE_LIT(p_cur) {
+    GET_LIT(p_cur, lit);
+    if (lit.index() == 0) {
+      auto res = StringExpr{p_cur->location.begin};
+      res.loc.end = p_cur->location.end;
+      res.value = std::get<std::string>(lit);
+      return Expr{res};
+    } else if (lit.index() == 1) {
+      auto res = IntExpr{p_cur->location.begin};
+      res.loc.end = p_cur->location.end;
+      res.value = std::get<long long>(lit);
+      return Expr{res};
+    } else {
+      auto res = FloatExpr{p_cur->location.begin};
+      res.loc.end = p_cur->location.end;
+      res.value = std::get<double>(lit);
+      return Expr{res};
+    }
+  }
+
+  return RaiseError<Expr>(p_cur->location,
+                          "wrong expression."); // TODO: improve
+}
+
 Parser::TokenPointer Parser::Skip(TokenPointer p_cur) const noexcept {
   while (p_cur != m_ending) {
     CASE_PUNC(p_cur) {

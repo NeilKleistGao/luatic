@@ -64,11 +64,7 @@ struct Identifier {
   explicit Identifier(std::string p_n): name(std::move(p_n)) {}
 };
 
-struct Literal {
-  std::string value;
-
-  explicit Literal(std::string p_v): value(std::move(p_v)) {}
-};
+using Literal = std::variant<std::string, long long, double>;
 
 enum class Punctuation {
   PUN_PLUS,
@@ -119,13 +115,10 @@ struct Token {
 namespace std {
   std::string to_string(Keyword p_kw);
   std::string to_string(Punctuation p_punc);
+  std::string to_string(const Literal& p_lit);
 
   inline std::string to_string(const Identifier& p_id) {
     return "symbol " + p_id.name;
-  }
-
-  inline std::string to_string(const Literal& p_lit) {
-    return "literal " + p_lit.value;
   }
 } // namespace std
 

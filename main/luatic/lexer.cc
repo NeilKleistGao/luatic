@@ -264,7 +264,11 @@ std::variant<Literal, Diagnostic>
     prev = c;
   }
 
-  return Literal(m_code.substr(start, p_pos - start));
+  if (science || point) {
+    return Literal(String2<double>(m_code.substr(start, p_pos - start)));
+  } else {
+    return Literal(String2<long long>(m_code.substr(start, p_pos - start)));
+  }
 }
 
 std::variant<std::string, Diagnostic>

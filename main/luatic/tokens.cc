@@ -144,4 +144,14 @@ namespace std {
         return " ";
     }
   }
+
+  std::string to_string(const Literal& p_lit) {
+    if (p_lit.index() == 0) {
+      return "literal \"" + std::get<std::string>(p_lit) + "\"";
+    } else if (p_lit.index() == 1) {
+      return "literal " + std::to_string(std::get<long long>(p_lit));
+    } else {
+      return "literal " + std::to_string(std::get<double>(p_lit));
+    }
+  }
 } // namespace std

@@ -35,3 +35,4 @@
 bin/
 cmake-build-debug/
 .idea/
+build/
