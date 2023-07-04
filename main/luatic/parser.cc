@@ -102,7 +102,47 @@ std::optional<Stmt> Parser::ParseStatement(TokenPointer& p_cur) noexcept {
 }
 
 std::optional<Expr> Parser::ParseExpr(TokenPointer& p_cur) noexcept {
-  return ParseExpr10(p_cur);
+  return ParseExpr0(p_cur);
+}
+
+std::optional<Expr> Parser::ParseExpr0(TokenPointer& p_cur) noexcept {
+  return ParseExpr1(p_cur); // TODO
+}
+
+std::optional<Expr> Parser::ParseExpr1(TokenPointer& p_cur) noexcept {
+  return ParseExpr2(p_cur); // TODO
+}
+
+std::optional<Expr> Parser::ParseExpr2(TokenPointer& p_cur) noexcept {
+  return ParseExpr3(p_cur); // TODO
+}
+
+std::optional<Expr> Parser::ParseExpr3(TokenPointer& p_cur) noexcept {
+  return ParseExpr4(p_cur); // TODO
+}
+
+std::optional<Expr> Parser::ParseExpr4(TokenPointer& p_cur) noexcept {
+  return ParseExpr5(p_cur); // TODO
+}
+
+std::optional<Expr> Parser::ParseExpr5(TokenPointer& p_cur) noexcept {
+  return ParseExpr6(p_cur); // TODO
+}
+
+std::optional<Expr> Parser::ParseExpr6(TokenPointer& p_cur) noexcept {
+  return ParseExpr7(p_cur); // TODO
+}
+
+std::optional<Expr> Parser::ParseExpr7(TokenPointer& p_cur) noexcept {
+  return ParseExpr8(p_cur); // TODO
+}
+
+std::optional<Expr> Parser::ParseExpr8(TokenPointer& p_cur) noexcept {
+  return ParseExpr9(p_cur); // TODO
+}
+
+std::optional<Expr> Parser::ParseExpr9(TokenPointer& p_cur) noexcept {
+  return ParseExpr10(p_cur); // TODO
 }
 
 std::optional<Expr> Parser::ParseExpr10(TokenPointer& p_cur) noexcept {

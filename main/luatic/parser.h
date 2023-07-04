@@ -57,6 +57,26 @@ private:
 
   [[nodiscard]] std::optional<Expr> ParseExpr(TokenPointer& p_cur) noexcept;
   [[nodiscard]] std::optional<Expr>
+    ParseExpr0(TokenPointer& p_cur) noexcept; // or
+  [[nodiscard]] std::optional<Expr>
+    ParseExpr1(TokenPointer& p_cur) noexcept; // and
+  [[nodiscard]] std::optional<Expr>
+    ParseExpr2(TokenPointer& p_cur) noexcept; // < > <= >= == ~=
+  [[nodiscard]] std::optional<Expr>
+    ParseExpr3(TokenPointer& p_cur) noexcept; // |
+  [[nodiscard]] std::optional<Expr>
+    ParseExpr4(TokenPointer& p_cur) noexcept; // ~
+  [[nodiscard]] std::optional<Expr>
+    ParseExpr5(TokenPointer& p_cur) noexcept; //&
+  [[nodiscard]] std::optional<Expr>
+    ParseExpr6(TokenPointer& p_cur) noexcept; // << >>
+  [[nodiscard]] std::optional<Expr>
+    ParseExpr7(TokenPointer& p_cur) noexcept; // ..
+  [[nodiscard]] std::optional<Expr>
+    ParseExpr8(TokenPointer& p_cur) noexcept; // + -
+  [[nodiscard]] std::optional<Expr>
+    ParseExpr9(TokenPointer& p_cur) noexcept; // * / // %
+  [[nodiscard]] std::optional<Expr>
     ParseExpr10(TokenPointer& p_cur) noexcept; // unary
   [[nodiscard]] std::optional<Expr>
     ParseExpr11(TokenPointer& p_cur) noexcept; // ^
