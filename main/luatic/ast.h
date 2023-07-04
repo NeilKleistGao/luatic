@@ -60,16 +60,12 @@ struct ASTNode {
 struct Block;
 struct Expr;
 
-CASE(NilExpr){
-  INIT(NilExpr) {}
-};
+CASE(NilExpr){INIT(NilExpr){}};
 CASE(BoolExpr) {
   INIT(BoolExpr) {}
   bool value = false;
 };
-CASE(VarArgExpr){
-  INIT(VarArgExpr) {}
-};
+CASE(VarArgExpr){INIT(VarArgExpr){}};
 CASE(IntExpr) {
   INIT(IntExpr) {}
   long long value = 0L;
@@ -110,7 +106,11 @@ CASE(FunctionExpr) {
 };
 CASE(AccessExpr) {
   INIT(AccessExpr) {}
-  enum class AccessType { ACC_DOT, ACC_COL, ACC_IDX } type = AccessType::ACC_DOT;
+  enum class AccessType {
+    ACC_DOT,
+    ACC_COL,
+    ACC_IDX
+  } type = AccessType::ACC_DOT;
   Ptr<Expr> lhs;
   Ptr<Expr> rhs;
 };
@@ -138,9 +138,7 @@ ADT(Expr,
 CASE(EmptyStmt) {
   INIT(EmptyStmt){};
 };
-CASE(BreakStmt){
-  INIT(BreakStmt) {}
-};
+CASE(BreakStmt){INIT(BreakStmt){}};
 CASE(LabelStmt) {
   INIT(LabelStmt) {}
   std::string name;
@@ -214,6 +212,9 @@ CASE(Block) {
   INIT(Block) {}
   std::vector<Stmt> stmts{};
 };
+
+Location GetLocation(const Stmt& p_stmt);
+Location GetLocation(const Expr& p_expr);
 
 #undef ADT
 #undef INIT

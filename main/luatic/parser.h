@@ -27,7 +27,7 @@
 
 #include <optional>
 
-#include "ast.hpp"
+#include "ast.h"
 #include "lexer.h"
 
 class Parser {
