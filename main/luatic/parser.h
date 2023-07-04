@@ -56,6 +56,19 @@ private:
     ParseStatement(TokenPointer& p_cur) noexcept;
 
   [[nodiscard]] std::optional<Expr> ParseExpr(TokenPointer& p_cur) noexcept;
+  [[nodiscard]] std::optional<Expr>
+    ParseExpr10(TokenPointer& p_cur) noexcept; // unary
+  [[nodiscard]] std::optional<Expr>
+    ParseExpr11(TokenPointer& p_cur) noexcept; // ^
+  [[nodiscard]] std::optional<Expr>
+    ParseExpr12(TokenPointer& p_cur) noexcept; // lit/fun/table/...
+
+  [[nodiscard]] std::optional<Expr> MakeUnary(std::optional<Expr>&& p_expr,
+                                              const Position& p_begin,
+                                              UnaryOperator uop);
+  [[nodiscard]] std::optional<Expr> MakeBinary(std::optional<Expr>&& p_lhs,
+                                               std::optional<Expr>&& p_rhs,
+                                               BinaryOperator bop);
 
   [[nodiscard]] TokenPointer Skip(TokenPointer p_cur) const noexcept;
 

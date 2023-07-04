@@ -102,6 +102,56 @@ std::optional<Stmt> Parser::ParseStatement(TokenPointer& p_cur) noexcept {
 }
 
 std::optional<Expr> Parser::ParseExpr(TokenPointer& p_cur) noexcept {
+  return ParseExpr10(p_cur);
+}
+
+std::optional<Expr> Parser::ParseExpr10(TokenPointer& p_cur) noexcept {
+  p_cur = Skip(p_cur);
+  const auto loc = p_cur->location;
+  CASE_KEY(p_cur) {
+    GET_KEY(p_cur, kw);
+    if (kw == Keyword::KW_NOT) {
+      p_cur = Skip(p_cur + 1);
+      auto exp = ParseExpr11(p_cur);
+      return MakeUnary(std::move(exp), loc.begin, UnaryOperator::OP_NOT);
+    }
+  }
+  CASE_PUNC(p_cur) {
+    GET_PUNC(p_cur, punc);
+    if (punc == Punctuation::PUN_MINUS) {
+      p_cur = Skip(p_cur + 1);
+      auto exp = ParseExpr11(p_cur);
+      return MakeUnary(std::move(exp), loc.begin, UnaryOperator::OP_NEG);
+    } else if (punc == Punctuation::PUN_LEN) {
+      p_cur = Skip(p_cur + 1);
+      auto exp = ParseExpr11(p_cur);
+      return MakeUnary(std::move(exp), loc.begin, UnaryOperator::OP_LEN);
+    } else if (punc == Punctuation::PUN_XOR) {
+      p_cur = Skip(p_cur + 1);
+      auto exp = ParseExpr11(p_cur);
+      return MakeUnary(std::move(exp), loc.begin, UnaryOperator::OP_BIN_NOT);
+    }
+  }
+
+  return ParseExpr11(p_cur);
+}
+
+std::optional<Expr> Parser::ParseExpr11(TokenPointer& p_cur) noexcept {
+  p_cur = Skip(p_cur);
+  auto lhs = ParseExpr12(p_cur);
+  CASE_PUNC(p_cur) {
+    GET_PUNC(p_cur, punc);
+    if (punc == Punctuation::PUN_POW) {
+      p_cur = Skip(p_cur + 1);
+      auto rhs = ParseExpr10(p_cur);
+      return MakeBinary(std::move(lhs), std::move(rhs), BinaryOperator::OP_POW);
+    }
+  }
+
+  return lhs;
+}
+
+std::optional<Expr> Parser::ParseExpr12(TokenPointer& p_cur) noexcept {
   CASE_KEY(p_cur) {
     GET_KEY(p_cur, kw);
     if (kw == Keyword::KW_NIL) {
@@ -140,11 +190,52 @@ std::optional<Expr> Parser::ParseExpr(TokenPointer& p_cur) noexcept {
       auto res = VarArgExpr{p_cur->location.begin};
       res.loc.end = p_cur->location.end;
       return Expr{res};
+    } else if (punc == Punctuation::PUN_LEFT_PAR) {
+      p_cur = Skip(p_cur);
+      auto res = ParseExpr(p_cur);
+      p_cur = Skip(p_cur);
+      CASE_PUNC(p_cur) {
+        GET_PUNC(p_cur, punc);
+        if (punc == Punctuation::PUN_RIGHT_PAR) {
+          return res;
+        } else {
+          return RaiseError<Expr>(p_cur->location, "expect ')'.");
+        }
+      }
     }
   }
 
   return RaiseError<Expr>(p_cur->location,
                           "wrong expression."); // TODO: improve
+}
+
+std::optional<Expr> Parser::MakeUnary(std::optional<Expr>&& p_expr,
+                                      const Position& p_begin,
+                                      UnaryOperator uop) {
+  if (p_expr.has_value()) {
+    auto res = UnaryExpr{p_begin};
+    res.expr = std::make_shared<Expr>(p_expr.value());
+    res.op = uop;
+    res.loc.end = GetLocation(p_expr.value()).end;
+    return Expr{res};
+  }
+
+  return std::nullopt;
+}
+
+std::optional<Expr> Parser::MakeBinary(std::optional<Expr>&& p_lhs,
+                                       std::optional<Expr>&& p_rhs,
+                                       BinaryOperator bop) {
+  if (p_lhs.has_value() && p_rhs.has_value()) {
+    auto res = BinaryExpr{GetLocation(p_lhs.value()).begin};
+    res.lhs = std::make_shared<Expr>(p_lhs.value());
+    res.rhs = std::make_shared<Expr>(p_rhs.value());
+    res.op = bop;
+    res.loc.end = GetLocation(p_rhs.value()).end;
+    return Expr{res};
+  }
+
+  return std::nullopt;
 }
 
 Parser::TokenPointer Parser::Skip(TokenPointer p_cur) const noexcept {
