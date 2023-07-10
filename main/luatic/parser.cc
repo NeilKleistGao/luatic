@@ -52,10 +52,14 @@ std::variant<Block, Parser::DiagnosticList> Parser::Parse() noexcept {
   }
 }
 
-#define CASE_KEY(__CUR__) if (__CUR__->token.index() == 0)
-#define CASE_IDENT(__CUR__) if (__CUR__->token.index() == 1)
-#define CASE_LIT(__CUR__) if (__CUR__->token.index() == 2)
-#define CASE_PUNC(__CUR__) if (__CUR__->token.index() == 3)
+#define CASE_KEY(__CUR__)                                                      \
+if (__CUR__ != this->m_ending && __CUR__->token.index() == 0)
+#define CASE_IDENT(__CUR__)                                                    \
+if (__CUR__ != this->m_ending && __CUR__->token.index() == 1)
+#define CASE_LIT(__CUR__)                                                      \
+if (__CUR__ != this->m_ending && __CUR__->token.index() == 2)
+#define CASE_PUNC(__CUR__)                                                     \
+if (__CUR__ != this->m_ending && __CUR__->token.index() == 3)
 
 #define GET_KEY(__CUR__, __RES__)                                              \
 const auto __RES__ = std::get<Keyword>(__CUR__->token)
