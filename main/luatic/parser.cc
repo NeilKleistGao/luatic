@@ -101,48 +101,218 @@ std::optional<Stmt> Parser::ParseStatement(TokenPointer& p_cur) noexcept {
   return RaiseError<Stmt>(p_cur->location, "unexpected literal symbol.");
 }
 
-std::optional<Expr> Parser::ParseExpr(TokenPointer& p_cur) noexcept {
-  return ParseExpr0(p_cur);
-}
-
 std::optional<Expr> Parser::ParseExpr0(TokenPointer& p_cur) noexcept {
-  return ParseExpr1(p_cur); // TODO
+  p_cur = Skip(p_cur);
+  auto lhs = ParseExpr1(p_cur);
+  CASE_KEY(p_cur) {
+    GET_KEY(p_cur, kw);
+    if (kw == Keyword::KW_OR) {
+      p_cur = Skip(p_cur + 1);
+      auto rhs = ParseExpr1(p_cur);
+      return MakeBinary(std::move(lhs), std::move(rhs), BinaryOperator::OP_OR);
+    }
+  }
+
+  return lhs;
 }
 
 std::optional<Expr> Parser::ParseExpr1(TokenPointer& p_cur) noexcept {
-  return ParseExpr2(p_cur); // TODO
+  p_cur = Skip(p_cur);
+  auto lhs = ParseExpr2(p_cur);
+  CASE_KEY(p_cur) {
+    GET_KEY(p_cur, kw);
+    if (kw == Keyword::KW_AND) {
+      p_cur = Skip(p_cur + 1);
+      auto rhs = ParseExpr2(p_cur);
+      return MakeBinary(std::move(lhs), std::move(rhs), BinaryOperator::OP_AND);
+    }
+  }
+
+  return lhs;
 }
 
 std::optional<Expr> Parser::ParseExpr2(TokenPointer& p_cur) noexcept {
-  return ParseExpr3(p_cur); // TODO
+  p_cur = Skip(p_cur);
+  auto lhs = ParseExpr3(p_cur);
+  CASE_PUNC(p_cur) {
+    GET_PUNC(p_cur, punc);
+    if (punc == Punctuation::PUN_LESS || punc == Punctuation::PUN_LE ||
+        punc == Punctuation::PUN_GREAT || punc == Punctuation::PUN_GE ||
+        punc == Punctuation::PUN_EQ || punc == Punctuation::PUN_NE) {
+      p_cur = Skip(p_cur + 1);
+      auto rhs = ParseExpr3(p_cur);
+      if (punc == Punctuation::PUN_LESS) {
+        return MakeBinary(std::move(lhs),
+                          std::move(rhs),
+                          BinaryOperator::OP_LESS);
+      } else if (punc == Punctuation::PUN_LE) {
+        return MakeBinary(std::move(lhs),
+                          std::move(rhs),
+                          BinaryOperator::OP_LE);
+      } else if (punc == Punctuation::PUN_GREAT) {
+        return MakeBinary(std::move(lhs),
+                          std::move(rhs),
+                          BinaryOperator::OP_GREAT);
+      } else if (punc == Punctuation::PUN_GE) {
+        return MakeBinary(std::move(lhs),
+                          std::move(rhs),
+                          BinaryOperator::OP_GE);
+      } else if (punc == Punctuation::PUN_EQ) {
+        return MakeBinary(std::move(lhs),
+                          std::move(rhs),
+                          BinaryOperator::OP_EQ);
+      } else {
+        return MakeBinary(std::move(lhs),
+                          std::move(rhs),
+                          BinaryOperator::OP_NE);
+      }
+    }
+  }
+
+  return lhs;
 }
 
 std::optional<Expr> Parser::ParseExpr3(TokenPointer& p_cur) noexcept {
-  return ParseExpr4(p_cur); // TODO
+  p_cur = Skip(p_cur);
+  auto lhs = ParseExpr4(p_cur);
+  CASE_PUNC(p_cur) {
+    GET_PUNC(p_cur, punc);
+    if (punc == Punctuation::PUN_OR) {
+      p_cur = Skip(p_cur + 1);
+      auto rhs = ParseExpr4(p_cur);
+      return MakeBinary(std::move(lhs),
+                        std::move(rhs),
+                        BinaryOperator::OP_BIN_OR);
+    }
+  }
+
+  return lhs;
 }
 
 std::optional<Expr> Parser::ParseExpr4(TokenPointer& p_cur) noexcept {
-  return ParseExpr5(p_cur); // TODO
+  p_cur = Skip(p_cur);
+  auto lhs = ParseExpr5(p_cur);
+  CASE_PUNC(p_cur) {
+    GET_PUNC(p_cur, punc);
+    if (punc == Punctuation::PUN_XOR) {
+      p_cur = Skip(p_cur + 1);
+      auto rhs = ParseExpr5(p_cur);
+      return MakeBinary(std::move(lhs), std::move(rhs), BinaryOperator::OP_XOR);
+    }
+  }
+
+  return lhs;
 }
 
 std::optional<Expr> Parser::ParseExpr5(TokenPointer& p_cur) noexcept {
-  return ParseExpr6(p_cur); // TODO
+  p_cur = Skip(p_cur);
+  auto lhs = ParseExpr6(p_cur);
+  CASE_PUNC(p_cur) {
+    GET_PUNC(p_cur, punc);
+    if (punc == Punctuation::PUN_AND) {
+      p_cur = Skip(p_cur + 1);
+      auto rhs = ParseExpr6(p_cur);
+      return MakeBinary(std::move(lhs),
+                        std::move(rhs),
+                        BinaryOperator::OP_BIN_AND);
+    }
+  }
+
+  return lhs;
 }
 
 std::optional<Expr> Parser::ParseExpr6(TokenPointer& p_cur) noexcept {
-  return ParseExpr7(p_cur); // TODO
+  p_cur = Skip(p_cur);
+  auto lhs = ParseExpr7(p_cur);
+  CASE_PUNC(p_cur) {
+    GET_PUNC(p_cur, punc);
+    if (punc == Punctuation::PUN_LEFT_SHIFT ||
+        punc == Punctuation::PUN_RIGHT_SHIFT) {
+      p_cur = Skip(p_cur + 1);
+      auto rhs = ParseExpr7(p_cur);
+      if (punc == Punctuation::PUN_LEFT_SHIFT) {
+        return MakeBinary(std::move(lhs),
+                          std::move(rhs),
+                          BinaryOperator::OP_LEFT_SHIFT);
+      } else {
+        return MakeBinary(std::move(lhs),
+                          std::move(rhs),
+                          BinaryOperator::OP_RIGHT_SHIFT);
+      }
+    }
+  }
+
+  return lhs;
 }
 
 std::optional<Expr> Parser::ParseExpr7(TokenPointer& p_cur) noexcept {
-  return ParseExpr8(p_cur); // TODO
+  p_cur = Skip(p_cur);
+  auto lhs = ParseExpr8(p_cur);
+  CASE_PUNC(p_cur) {
+    GET_PUNC(p_cur, punc);
+    if (punc == Punctuation::PUN_DOT2) {
+      p_cur = Skip(p_cur + 1);
+      auto rhs = ParseExpr8(p_cur);
+      return MakeBinary(std::move(lhs), std::move(rhs), BinaryOperator::OP_CAT);
+    }
+  }
+
+  return lhs;
 }
 
 std::optional<Expr> Parser::ParseExpr8(TokenPointer& p_cur) noexcept {
-  return ParseExpr9(p_cur); // TODO
+  p_cur = Skip(p_cur);
+  auto lhs = ParseExpr9(p_cur);
+  CASE_PUNC(p_cur) {
+    GET_PUNC(p_cur, punc);
+    if (punc == Punctuation::PUN_PLUS || punc == Punctuation::PUN_MINUS) {
+      p_cur = Skip(p_cur + 1);
+      auto rhs = ParseExpr9(p_cur);
+      if (punc == Punctuation::PUN_PLUS) {
+        return MakeBinary(std::move(lhs),
+                          std::move(rhs),
+                          BinaryOperator::OP_ADD);
+      } else {
+        return MakeBinary(std::move(lhs),
+                          std::move(rhs),
+                          BinaryOperator::OP_SUB);
+      }
+    }
+  }
+
+  return lhs;
 }
 
 std::optional<Expr> Parser::ParseExpr9(TokenPointer& p_cur) noexcept {
-  return ParseExpr10(p_cur); // TODO
+  p_cur = Skip(p_cur);
+  auto lhs = ParseExpr10(p_cur);
+  CASE_PUNC(p_cur) {
+    GET_PUNC(p_cur, punc);
+    if (punc == Punctuation::PUN_MUL || punc == Punctuation::PUN_DIV ||
+        punc == Punctuation::PUN_FD || punc == Punctuation::PUN_MOD) {
+      p_cur = Skip(p_cur + 1);
+      auto rhs = ParseExpr10(p_cur);
+      if (punc == Punctuation::PUN_MUL) {
+        return MakeBinary(std::move(lhs),
+                          std::move(rhs),
+                          BinaryOperator::OP_MUL);
+      } else if (punc == Punctuation::PUN_DIV) {
+        return MakeBinary(std::move(lhs),
+                          std::move(rhs),
+                          BinaryOperator::OP_DIV);
+      } else if (punc == Punctuation::PUN_FD) {
+        return MakeBinary(std::move(lhs),
+                          std::move(rhs),
+                          BinaryOperator::OP_FD);
+      } else {
+        return MakeBinary(std::move(lhs),
+                          std::move(rhs),
+                          BinaryOperator::OP_MOD);
+      }
+    }
+  }
+
+  return lhs;
 }
 
 std::optional<Expr> Parser::ParseExpr10(TokenPointer& p_cur) noexcept {
