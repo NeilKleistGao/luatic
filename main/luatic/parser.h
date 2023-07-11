@@ -99,6 +99,11 @@ private:
   [[nodiscard]] std::optional<GotoStmt> ParseGoto(TokenPointer& p_cur) noexcept;
   [[nodiscard]] std::optional<DoStmt> ParseDo(TokenPointer& p_cur) noexcept;
 
+  [[nodiscard]] std::optional<Block> ParseBlock(TokenPointer& p_cur) noexcept;
+
+  [[nodiscard]] std::optional<FunParams>
+    ParseParamsList(TokenPointer& p_cur) noexcept;
+
   template<typename T>
   [[nodiscard]] inline std::optional<T>
     RaiseError(Location p_loc, std::string p_info) noexcept {

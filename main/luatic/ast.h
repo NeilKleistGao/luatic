@@ -34,6 +34,7 @@
 
 #include "diagnostic.hpp"
 #include "operators.hpp"
+#include "tokens.h"
 
 #define CASE(__NAME__) struct __NAME__: public ASTNode
 #define INIT(__NAME__)                                                         \
@@ -59,6 +60,15 @@ struct ASTNode {
 
 struct Block;
 struct Expr;
+
+struct FunParams {
+  std::vector<Identifier> list;
+  bool is_var;
+
+  FunParams(): list{}, is_var(false) {}
+  FunParams(std::vector<Identifier>&& p_list, bool p_var):
+    list(std::move(p_list)), is_var(p_var) {}
+};
 
 CASE(NilExpr){INIT(NilExpr){}};
 CASE(BoolExpr) {
@@ -100,8 +110,7 @@ CASE(TableCtorExpr) {
 };
 CASE(FunctionExpr) {
   INIT(FunctionExpr) {}
-  std::vector<Ptr<Expr>> params;
-  bool is_var = false;
+  FunParams params;
   Ptr<Block> body;
 };
 CASE(AccessExpr) {

@@ -32,21 +32,11 @@ Parser::Parser(std::optional<std::string> p_filename,
   m_stream(std::move(p_tokens)), m_ending(m_stream.cend()) {}
 
 std::variant<Block, Parser::DiagnosticList> Parser::Parse() noexcept {
-  Block block{Location::Begin()};
+  auto p = m_stream.begin();
+  const auto block = ParseBlock(p);
 
-  for (auto p = m_stream.cbegin(); p != m_ending; ++p) {
-    auto res = ParseStatement(p);
-    if (res.has_value()) {
-      block.stmts.push_back(res.value());
-    }
-  }
-
-  if (!m_stream.empty()) {
-    block.loc.end = m_stream.back().location.end;
-  }
-
-  if (m_diags.empty()) {
-    return block;
+  if (block.has_value()) {
+    return block.value();
   } else {
     return m_diags;
   }
@@ -69,6 +59,10 @@ const auto __RES__ = std::get<Identifier>(__CUR__->token)
 const auto __RES__ = std::get<Literal>(__CUR__->token)
 #define GET_PUNC(__CUR__, __RES__)                                             \
 const auto __RES__ = std::get<Punctuation>(__CUR__->token)
+
+#define CHECK_EOF(__CUR__, __TYPE__, __INFO__)                                 \
+if (__CUR__ == m_ending)                                                       \
+return RaiseError<__TYPE__>((__CUR__ - 1)->location, __INFO__)
 
 std::optional<Stmt> Parser::ParseStatement(TokenPointer& p_cur) noexcept {
   CASE_KEY(p_cur) {
@@ -377,6 +371,18 @@ std::optional<Expr> Parser::ParseExpr12(TokenPointer& p_cur) noexcept {
       expr.loc.end = p_cur->location.end;
       expr.value = kw == Keyword::KW_TRUE;
       return Expr{expr};
+    } else if (kw == Keyword::KW_FUN) {
+      auto expr = FunctionExpr{p_cur->location.begin};
+      p_cur = Skip(p_cur);
+      auto params = ParseParamsList(p_cur);
+      auto block = ParseBlock(p_cur);
+      if (params.has_value() && block.has_value()) {
+        expr.params = params.value();
+        expr.body = std::make_shared<Block>(block.value());
+        expr.loc.end = p_cur->location.end;
+      } else {
+        return std::nullopt;
+      }
     }
   }
   CASE_LIT(p_cur) {
@@ -468,10 +474,78 @@ Parser::TokenPointer Parser::Skip(TokenPointer p_cur) const noexcept {
   return p_cur;
 }
 
-std::optional<GotoStmt> Parser::ParseGoto(TokenPointer& p_cur) noexcept {
-  if (p_cur == m_ending) {
-    return RaiseError<GotoStmt>(p_cur->location, "goto label is missing.");
+std::optional<FunParams> Parser::ParseParamsList(TokenPointer& p_cur) noexcept {
+  CHECK_EOF(p_cur, FunParams, "parameter list expected.");
+
+  p_cur = Skip(p_cur);
+  CASE_PUNC(p_cur) {
+    GET_PUNC(p_cur, punc);
+    if (punc == Punctuation::PUN_LEFT_PAR) {
+      p_cur = Skip(p_cur + 1);
+
+      CASE_PUNC(p_cur) {
+        GET_PUNC(p_cur, punc);
+        if (punc == Punctuation::PUN_RIGHT_PAR) {
+          ++p_cur;
+          return FunParams{};
+        }
+      }
+
+      std::vector<Identifier> list;
+      bool is_var = false;
+
+      while (p_cur != m_ending) {
+        CASE_IDENT(p_cur) {
+          GET_IDENT(p_cur, id);
+          list.push_back(id);
+
+          p_cur = Skip(p_cur + 1);
+          CASE_PUNC(p_cur) {
+            GET_PUNC(p_cur, punc);
+            if (punc == Punctuation::PUN_COMMA) {
+              p_cur = Skip(p_cur + 1);
+            } else if (punc == Punctuation::PUN_RIGHT_PAR) {
+              ++p_cur;
+              break;
+            }
+          }
+        }
+
+        CASE_PUNC(p_cur) {
+          GET_PUNC(p_cur, punc);
+          if (punc == Punctuation::PUN_DOT3) {
+            p_cur = Skip(p_cur + 1);
+            CASE_PUNC(p_cur) {
+              GET_PUNC(p_cur, punc);
+              if (punc == Punctuation::PUN_RIGHT_PAR) {
+                if (!is_var) {
+                  is_var = true;
+                } else {
+                  return RaiseError<FunParams>(p_cur->location,
+                                               "multiple `...` notations.");
+                }
+                ++p_cur;
+                break;
+              }
+            }
+          }
+        }
+
+        return RaiseError<FunParams>(p_cur->location,
+                                     "expect parameter name or `...`.");
+      }
+
+      return FunParams{std::move(list), is_var};
+    }
+
+    return RaiseError<FunParams>(p_cur->location, "parameter list expected.");
   }
+
+  return RaiseError<FunParams>(p_cur->location, "parameter list expected.");
+}
+
+std::optional<GotoStmt> Parser::ParseGoto(TokenPointer& p_cur) noexcept {
+  CHECK_EOF(p_cur, GotoStmt, "goto label is missing.");
 
   auto stmt = GotoStmt{p_cur->location.begin};
   p_cur = Skip(p_cur);
@@ -487,9 +561,8 @@ std::optional<GotoStmt> Parser::ParseGoto(TokenPointer& p_cur) noexcept {
 }
 
 std::optional<DoStmt> Parser::ParseDo(TokenPointer& p_cur) noexcept {
-  if (p_cur == m_ending) {
-    return RaiseError<DoStmt>(p_cur->location, "unexpected keyword do.");
-  }
+  CHECK_EOF(p_cur, DoStmt, "unexpected keyword do.");
+
   auto stmt = DoStmt{p_cur->location.begin};
   p_cur = Skip(p_cur);
   stmt.block = std::make_shared<Block>(p_cur->location.begin);
@@ -518,6 +591,34 @@ std::optional<DoStmt> Parser::ParseDo(TokenPointer& p_cur) noexcept {
   return RaiseError<DoStmt>(p_cur->location, "the do block is not finished.");
 }
 
+std::optional<Block> Parser::ParseBlock(TokenPointer& p_cur) noexcept {
+  Block block{p_cur->location.begin};
+  bool err = false;
+
+  while (p_cur != m_ending) {
+    p_cur = Skip(p_cur + 1);
+    auto res = ParseStatement(p_cur);
+    if (res.has_value()) {
+      block.stmts.push_back(res.value());
+    } else {
+      err = true;
+    }
+  }
+
+  if (p_cur == m_ending) {
+    block.loc.end = m_stream.back().location.end;
+  } else {
+    block.loc.end = p_cur->location.end;
+  }
+
+  if (err) {
+    return std::nullopt;
+  } else {
+    return block;
+  }
+}
+
+#undef CHECK_EOF
 #undef GET_KEY
 #undef GET_IDENT
 #undef GET_LIT
