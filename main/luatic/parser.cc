@@ -78,6 +78,24 @@ std::optional<Stmt> Parser::ParseStatement(TokenPointer& p_cur) noexcept {
     } else if (kw == Keyword::KW_IF) {
     } else if (kw == Keyword::KW_FOR) {
     } else if (kw == Keyword::KW_FUN) {
+      auto func = FuncStmt{p_cur->location.begin};
+      p_cur = Skip(p_cur);
+      CASE_IDENT(p_cur) {
+        GET_IDENT(p_cur, f_name);
+        func.name = f_name.name;
+        p_cur = Skip(p_cur);
+        auto p_start = p_cur->location.begin;
+        const auto body = ParseFuncExpression(p_cur, std::move(p_start));
+        if (body.has_value()) {
+          func.func = std::make_shared<FunctionExpr>(body.value());
+          func.loc.end = func.func->loc.end;
+          return Stmt{func};
+        } else {
+          return std::nullopt;
+        }
+      }
+
+      return RaiseError<Stmt>(p_cur->location, "expect function name.");
     } else if (kw == Keyword::KW_LOCAL) {
     }
     return RaiseError<Stmt>(p_cur->location,
@@ -372,14 +390,11 @@ std::optional<Expr> Parser::ParseExpr12(TokenPointer& p_cur) noexcept {
       expr.value = kw == Keyword::KW_TRUE;
       return Expr{expr};
     } else if (kw == Keyword::KW_FUN) {
-      auto expr = FunctionExpr{p_cur->location.begin};
+      auto p_start = p_cur->location.begin;
       p_cur = Skip(p_cur);
-      auto params = ParseParamsList(p_cur);
-      auto block = ParseBlock(p_cur);
-      if (params.has_value() && block.has_value()) {
-        expr.params = params.value();
-        expr.body = std::make_shared<Block>(block.value());
-        expr.loc.end = p_cur->location.end;
+      const auto res = ParseFuncExpression(p_cur, std::move(p_start));
+      if (res.has_value()) {
+        return Expr{res.value()};
       } else {
         return std::nullopt;
       }
@@ -427,6 +442,23 @@ std::optional<Expr> Parser::ParseExpr12(TokenPointer& p_cur) noexcept {
 
   return RaiseError<Expr>(p_cur->location,
                           "wrong expression."); // TODO: improve
+}
+
+std::optional<FunctionExpr>
+  Parser::ParseFuncExpression(TokenPointer& p_cur,
+                              Position&& p_start) noexcept {
+  auto expr = FunctionExpr{std::move(p_start)};
+  auto params = ParseParamsList(p_cur);
+  auto block = ParseBlock(p_cur);
+  if (params.has_value() && block.has_value()) {
+    expr.params = params.value();
+    expr.body = std::make_shared<Block>(block.value());
+    expr.loc.end = p_cur->location.end;
+
+    return expr;
+  }
+
+  return std::nullopt;
 }
 
 std::optional<Expr> Parser::MakeUnary(std::optional<Expr>&& p_expr,
