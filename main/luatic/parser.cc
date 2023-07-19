@@ -371,6 +371,9 @@ std::optional<Expr> Parser::ParseExpr11(TokenPointer& p_cur) noexcept {
       p_cur = Skip(p_cur + 1);
       auto rhs = ParseExpr10(p_cur);
       return MakeBinary(std::move(lhs), std::move(rhs), BinaryOperator::OP_POW);
+    } else if (lhs.has_value()) {
+      auto temp = lhs.value();
+      return TryToParseAccess(p_cur, std::move(temp));
     }
   }
 
@@ -440,8 +443,72 @@ std::optional<Expr> Parser::ParseExpr12(TokenPointer& p_cur) noexcept {
     }
   }
 
+  CASE_IDENT(p_cur) {
+    GET_IDENT(p_cur, id);
+    auto var = VarExpr{p_cur->location.begin};
+    var.name = id.name;
+    var.loc.end = p_cur->location.end;
+    return Expr{var};
+  }
+
   return RaiseError<Expr>(p_cur->location,
                           "wrong expression."); // TODO: improve
+}
+
+std::optional<Expr> Parser::TryToParseAccess(TokenPointer& p_cur,
+                                             Expr&& p_prev) noexcept {
+  CASE_PUNC(p_cur) {
+    GET_PUNC(p_cur, punc);
+    if (punc == Punctuation::PUN_DOT || punc == Punctuation::PUN_COLON ||
+        punc == Punctuation::PUN_LEFT_SQR) {
+      auto lhs = std::make_shared<Expr>(std::move(p_prev));
+      auto acc = AccessExpr{GetLocation(*lhs).begin};
+
+      if (punc == Punctuation::PUN_LEFT_SQR) {
+        acc.type = AccessExpr::AccessType::ACC_IDX;
+        p_cur = Skip(p_cur + 1);
+
+        auto expr = ParseExpr(p_cur);
+        if (expr.has_value()) {
+          acc.rhs = std::make_shared<Expr>(expr.value());
+          CASE_PUNC(p_cur) {
+            GET_PUNC(p_cur, end);
+            if (end == Punctuation::PUN_RIGHT_SQR) {
+              acc.loc.end = p_cur->location.end;
+              ++p_cur;
+              return TryToParseAccess(p_cur, Expr{acc});
+            }
+          }
+
+          return RaiseError<Expr>(p_cur->location, "expect ']'.");
+        } else {
+          return std::nullopt;
+        }
+      } else {
+        if (punc == Punctuation::PUN_DOT) {
+          acc.type = AccessExpr::AccessType::ACC_DOT;
+        } else {
+          acc.type = AccessExpr::AccessType::ACC_COL;
+        }
+
+        ++p_cur;
+        CASE_IDENT(p_cur) {
+          GET_IDENT(p_cur, field);
+          auto var = VarExpr{p_cur->location.begin};
+          var.loc.end = p_cur->location.end;
+          var.name = field.name;
+          acc.rhs = std::make_shared<Expr>(std::move(var));
+          return TryToParseAccess(p_cur, Expr{acc});
+        }
+
+        return RaiseError<Expr>(p_cur->location,
+                                "expect field name after " +
+                                  std::to_string(punc) + ".");
+      }
+    }
+  }
+
+  return std::move(p_prev);
 }
 
 std::optional<FunctionExpr>

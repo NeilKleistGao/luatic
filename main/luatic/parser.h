@@ -107,6 +107,9 @@ private:
   [[nodiscard]] std::optional<FunctionExpr>
     ParseFuncExpression(TokenPointer& p_cur, Position&& p_start) noexcept;
 
+  [[nodiscard]] std::optional<Expr> TryToParseAccess(TokenPointer& p_cur,
+                                                     Expr&& p_prev) noexcept;
+
   template<typename T>
   [[nodiscard]] inline std::optional<T>
     RaiseError(Location p_loc, std::string p_info) noexcept {
