@@ -50,7 +50,6 @@ struct Location {
 enum class DiagnosticType {
   DIAG_LEX,
   DIAG_PARSE,
-  DIAG_TYPING,
   DIAG_CODEGEN
 };
 

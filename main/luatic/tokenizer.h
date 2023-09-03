@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef LUATIC_LEXER_H
-#define LUATIC_LEXER_H
+#ifndef LUATIC_TOKENIZER_H
+#define LUATIC_TOKENIZER_H
 
 #include <sstream>
 #include <unordered_map>
@@ -32,32 +32,30 @@
 #include "diagnostic.hpp"
 #include "tokens.h"
 
-class Lexer {
+class Tokenizer {
 public:
   using TokenStream = std::vector<Token>;
   using DiagnosticList = std::vector<Diagnostic>;
 
-  Lexer(std::optional<std::string> p_filename, std::string p_code);
-  [[nodiscard]] std::variant<TokenStream, DiagnosticList>
-    Parse() const noexcept;
+  Tokenizer(std::optional<std::string> p_filename, std::string p_code);
+  [[nodiscard]] std::variant<TokenStream, DiagnosticList> Parse() noexcept;
 
-  ~Lexer() = default;
-  Lexer(const Lexer&) = delete;
-  Lexer& operator=(const Lexer&) = delete;
-  Lexer(Lexer&&) = delete;
-  Lexer& operator=(Lexer&&) = delete;
+  ~Tokenizer() = default;
+  Tokenizer(const Tokenizer&) = delete;
+  Tokenizer& operator=(const Tokenizer&) = delete;
+  Tokenizer(Tokenizer&&) = delete;
+  Tokenizer& operator=(Tokenizer&&) = delete;
 
 private:
   static const std::unordered_map<std::string, Keyword> m_keywords;
-  static const std::unordered_map<std::string, Punctuation> m_punctuations;
+  static const std::unordered_map<char, Punctuation> m_punctuations;
   const std::optional<std::string> m_filename;
   const std::string m_code;
   const size_t m_length;
+  int m_pos, m_line, m_current_line_start;
 
-  std::variant<Token, Diagnostic>
-    Parse(int& p_pos, int& p_line, int& p_line_start) const noexcept;
-  std::variant<Literal, Diagnostic>
-    ParseNumber(const int& p_line_start, int& p_pos, int p_line) const noexcept;
+  std::variant<Token, Diagnostic> ParseOne() noexcept;
+  std::variant<Literal, Diagnostic> ParseNumber() noexcept;
 
   [[nodiscard]] inline Location
     Locate(int p_line1, int p_col1, int p_line2, int p_col2) const {
@@ -84,14 +82,6 @@ private:
                             this->m_filename);
   }
 
-  std::variant<std::string, Diagnostic>
-    ParseMultipleLineBlock(int& p_pos,
-                           int& p_line,
-                           int& p_line_start) const noexcept;
-
-  std::variant<Token, Diagnostic>
-    ParseComment(int& p_pos, int& p_line, int& p_line_start) const noexcept;
-
   template<typename T>
   static T String2(const std::string& p_str) {
     T res;
@@ -103,4 +93,4 @@ private:
   }
 };
 
-#endif //LUATIC_LEXER_H
+#endif //LUATIC_TOKENIZER_H

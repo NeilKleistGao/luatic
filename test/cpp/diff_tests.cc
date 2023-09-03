@@ -30,8 +30,7 @@
 #include <regex>
 
 #include "lua/lua_vm.h"
-#include "luatic/lexer.h"
-#include "luatic/parser.h"
+#include "luatic/tokenizer.h"
 #include "pretty_printer.h"
 
 static std::string ReadFile(const std::string& p_filename) {
@@ -71,20 +70,24 @@ TEST(LuaticDiffTests, LuaVM) {
   LuaVM::Halt();
 }
 
-TEST(LuaticDiffTests, LuaticCompiler) {
+TEST(LuaticDiffTests, LuaticInterpreter) {
   namespace fs = std::filesystem;
   const auto path = fs::path{"./test/ltc"};
   const auto reg = std::regex{R"((.*)\.ltc)"};
   const auto vm = LuaVM::StartVM();
+  const auto backup = std::cout.rdbuf();
 
-  bool success = true;
   for (const auto& fp : fs::directory_iterator(path)) {
     const auto filename = fp.path().string();
     if (std::regex_match(filename, reg)) {
-      const auto lex = Lexer(filename, ReadFile(filename));
-      const auto lex_res = lex.Parse();
+      std::cout << "> test " << fp.path().filename().string() << "..."
+                << std::endl;
+      std::ofstream log{filename.substr(0, filename.find(".ltc")) + ".check"};
+      std::cout.rdbuf(log.rdbuf());
+
+      auto tokenizer = Tokenizer(filename, ReadFile(filename));
+      const auto lex_res = tokenizer.Parse();
       if (lex_res.index() != 0) {
-        success = false;
         const auto diags = std::get<1>(lex_res);
         for (const auto& diag : diags) {
           PrintDiagnostic(diag);
@@ -93,54 +96,10 @@ TEST(LuaticDiffTests, LuaticCompiler) {
         continue;
       }
 
-      auto parser = Parser(filename, std::get<0>(lex_res));
-      const auto parse_res = parser.Parse();
-      if (parse_res.index() != 0) { // TODO:
-        //        success = false;
-        //        const auto diags = std::get<1>(parse_res);
-        //        for (const auto& diag : diags) {
-        //          PrintDiagnostic(diag);
-        //        }
-      }
+      // TODO:
     }
   }
 
+  std::cout.rdbuf(backup);
   LuaVM::Halt();
-  ASSERT_TRUE(success);
 }
-
-TEST(LuaticDiffTests, LuaticLexError) {
-  namespace fs = std::filesystem;
-  const auto path = fs::path{"./test/error"};
-  const auto reg = std::regex{R"(.*lex([0-9]+)\.ltc)"};
-  const auto vm = LuaVM::StartVM();
-
-  bool success = true;
-  for (const auto& fp : fs::directory_iterator(path)) {
-    const auto filename = fp.path().string();
-    if (std::regex_match(filename, reg)) {
-      const auto lex = Lexer(filename, ReadFile(filename));
-      const auto lex_res = lex.Parse();
-      if (lex_res.index() != 0) {
-        const auto diags = std::get<1>(lex_res);
-        const auto backup = std::cerr.rdbuf();
-        std::ofstream log{filename.substr(0, filename.find(".ltc")) + ".log"};
-        std::cerr.rdbuf(log.rdbuf());
-        for (const auto& diag : diags) {
-          PrintDiagnostic(diag);
-        }
-
-        std::cerr.rdbuf(backup);
-        log.close();
-      } else {
-        success = false;
-      }
-    }
-  }
-
-  LuaVM::Halt();
-  ASSERT_TRUE(success);
-}
-
-// TODO: more error test
-// TODO: module test

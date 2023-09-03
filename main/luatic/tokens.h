@@ -34,28 +34,7 @@
 #include "diagnostic.hpp"
 
 enum class Keyword {
-  KW_AND,
-  KW_BREAK,
-  KW_DO,
-  KW_ELSE,
-  KW_ELSEIF,
-  KW_END,
-  KW_FALSE,
-  KW_FOR,
-  KW_FUN,
-  KW_GOTO,
-  KW_IF,
-  KW_IN,
-  KW_LOCAL,
-  KW_NIL,
-  KW_NOT,
-  KW_OR,
-  KW_REPEAT,
-  KW_RETURN,
-  KW_THEN,
-  KW_TRUE,
-  KW_UNTIL,
-  KW_WHILE
+  // TODO:
 };
 
 struct Identifier {
@@ -66,41 +45,7 @@ struct Identifier {
 
 using Literal = std::variant<std::string, long long, double>;
 
-enum class Punctuation {
-  PUN_PLUS,
-  PUN_MINUS,
-  PUN_MUL,
-  PUN_DIV,
-  PUN_MOD,
-  PUN_POW,
-  PUN_LEN,
-  PUN_AND,
-  PUN_XOR,
-  PUN_OR,
-  PUN_LEFT_SHIFT,
-  PUN_RIGHT_SHIFT,
-  PUN_FD,
-  PUN_EQ,
-  PUN_NE,
-  PUN_LE,
-  PUN_GE,
-  PUN_LESS,
-  PUN_GREAT,
-  PUN_ASSIGN,
-  PUN_LEFT_PAR,
-  PUN_RIGHT_PAR,
-  PUN_LEFT_BRA,
-  PUN_RIGHT_BRA,
-  PUN_LEFT_SQR,
-  PUN_RIGHT_SQR,
-  PUN_SEMI,
-  PUN_COLON,
-  PUN_COMMA,
-  PUN_DOT,
-  PUN_DOT2,
-  PUN_DOT3,
-  PUN_SPACE
-};
+enum class Punctuation { PUN_LEFT_PAR, PUN_RIGHT_PAR, PUN_SPACE };
 
 struct Token {
   std::variant<Keyword, Identifier, Literal, Punctuation> token;

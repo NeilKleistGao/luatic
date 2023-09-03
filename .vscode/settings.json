@@ -3,7 +3,7 @@
     "**/target": true
   },
   "files.associations": {
-    "*.ltc": "lua",
+    "*.ltc": "commonLisp",
     "any": "cpp",
     "array": "cpp",
     "atomic": "cpp",
@@ -65,6 +65,21 @@
     "thread": "cpp",
     "cinttypes": "cpp",
     "typeinfo": "cpp",
-    "variant": "cpp"
+    "variant": "cpp",
+    "hash_map": "cpp",
+    "charconv": "cpp",
+    "compare": "cpp",
+    "concepts": "cpp",
+    "forward_list": "cpp",
+    "list": "cpp",
+    "source_location": "cpp",
+    "format": "cpp",
+    "future": "cpp",
+    "numbers": "cpp",
+    "semaphore": "cpp",
+    "span": "cpp",
+    "stdfloat": "cpp",
+    "stop_token": "cpp",
+    "cfenv": "cpp"
   },
 }

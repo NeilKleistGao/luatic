@@ -33,8 +33,6 @@ namespace std {
         return string{"lexer"};
       case DiagnosticType::DIAG_PARSE:
         return string{"parser"};
-      case DiagnosticType::DIAG_TYPING:
-        return string{"typing"};
       case DiagnosticType::DIAG_CODEGEN:
         return string{"codegen"};
     }
@@ -42,22 +40,22 @@ namespace std {
 } // namespace std
 
 static void PrintLocation(const Location& p_loc) {
-  std::cerr << "line " << p_loc.begin.line << ", " << p_loc.begin.column
+  std::cout << "line " << p_loc.begin.line << ", " << p_loc.begin.column
             << " .. "
             << "line " << p_loc.end.line << ", " << p_loc.end.column;
 }
 
 void PrintDiagnostic(const Diagnostic& p_diag) {
-  std::cerr << "[" << std::to_string(p_diag.type) << " error]:" << std::endl;
-  std::cerr << "  " << p_diag.info << std::endl;
+  std::cout << "[" << std::to_string(p_diag.type) << " error]:" << std::endl;
+  std::cout << "  " << p_diag.info << std::endl;
 
   const auto& loc = p_diag.location;
   if (p_diag.filename.has_value()) {
-    std::cerr << "  at " << p_diag.filename.value() << ", ";
+    std::cout << "  at " << p_diag.filename.value() << ", ";
   } else {
-    std::cerr << "  at ";
+    std::cout << "  at ";
   }
 
   PrintLocation(loc);
-  std::cerr << std::endl;
+  std::cout << std::endl;
 }
