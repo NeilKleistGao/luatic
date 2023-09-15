@@ -31,7 +31,7 @@
 #include <memory>
 
 #include "diagnostic.hpp"
-#include "data_types.hpp"
+#include "datatypes.hpp"
 
 class Token: public Location {
 public:
@@ -42,11 +42,11 @@ public:
 
 class LeftParenthesisToken: public Token {
 public:
-  bool IsLeftParenthesis() const noexcept {
+  bool IsLeftParenthesis() const noexcept final {
     return true;
   }
 
-  bool IsRightParenthesis() const noexcept {
+  bool IsRightParenthesis() const noexcept final {
     return false;
   }
 
@@ -55,11 +55,11 @@ public:
 
 class RightParenthesisToken: public Token {
 public:
-  bool IsLeftParenthesis() const noexcept {
+  bool IsLeftParenthesis() const noexcept final {
     return false;
   }
 
-  bool IsRightParenthesis() const noexcept {
+  bool IsRightParenthesis() const noexcept final {
     return true;
   }
 
@@ -70,12 +70,16 @@ class SymbolToken: public Token {
 private:
   std::string m_name;
 public:
-  bool IsLeftParenthesis() const noexcept {
+  bool IsLeftParenthesis() const noexcept final {
     return false;
   }
 
-  bool IsRightParenthesis() const noexcept {
+  bool IsRightParenthesis() const noexcept final {
     return false;
+  }
+
+  inline std::string Name() const noexcept {
+    return m_name;
   }
 
   SymbolToken(std::string&& p_name, Position p_begin, Position p_end): Token(std::move(p_begin), std::move(p_end)), m_name{p_name} {}
@@ -85,11 +89,11 @@ class LiteralToken: public Token {
 private:
   std::variant<LuaInt, LuaNum, LuaStr> m_value;
 public:
-  bool IsLeftParenthesis() const noexcept {
+  bool IsLeftParenthesis() const noexcept final {
     return false;
   }
 
-  bool IsRightParenthesis() const noexcept {
+  bool IsRightParenthesis() const noexcept final {
     return false;
   }
 
