@@ -6,6 +6,7 @@ set(EXECUTABLE_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/bin")
 set(LIBRARY_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/bin/lib")
 
 option(BUILD_TEST "build test modules" ON)
+# add_compile_definitions(DEBUGGING)
 
 if (BUILD_TEST)
   find_package(GTest REQUIRED)
@@ -20,8 +21,7 @@ include(backends/CMakeLists.txt)
 
 list(APPEND luatic_source
         main/lua/lua_vm.cc
-        main/luatic/tokenizer.cc
-        main/luatic/tokens.cc)
+        main/luatic/tokenizer.cc)
 
 add_executable(luatic main/main.cc ${luatic_source})
 target_link_libraries(luatic ${CMAKE_SOURCE_DIR}/bin/lib/libbackend.a ${CMAKE_DL_LIBS})

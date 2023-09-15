@@ -22,49 +22,33 @@
  * SOFTWARE.
  */
 
-#ifndef LUATIC_TOKENS_H
-#define LUATIC_TOKENS_H
+#ifndef LUATIC_HELPER_H
+#define LUATIC_HELPER_H
 
-#include <functional>
-#include <optional>
 #include <string>
-#include <utility>
-#include <variant>
+#include <sstream>
 
-#include "diagnostic.hpp"
+#ifdef DEBUGGING
+#include <iostream>
+#endif
 
-enum class Keyword {
-  // TODO:
-};
-
-struct Identifier {
-  std::string name;
-
-  explicit Identifier(std::string p_n): name(std::move(p_n)) {}
-};
-
-using Literal = std::variant<std::string, long long, double>;
-
-enum class Punctuation { PUN_LEFT_PAR, PUN_RIGHT_PAR, PUN_SPACE };
-
-struct Token {
-  std::variant<Keyword, Identifier, Literal, Punctuation> token;
-  Location location;
-
-  Token(std::variant<Keyword, Identifier, Literal, Punctuation> p_tok,
-        Location p_loc):
-    token(std::move(p_tok)),
-    location(p_loc) {}
-};
-
-namespace std {
-  std::string to_string(Keyword p_kw);
-  std::string to_string(Punctuation p_punc);
-  std::string to_string(const Literal& p_lit);
-
-  inline std::string to_string(const Identifier& p_id) {
-    return "symbol " + p_id.name;
+namespace helper {
+  template<typename T>
+  static T String2(const std::string& p_str) {
+    T res;
+    std::stringstream stream;
+    stream << p_str;
+    stream >> res;
+    stream.clear();
+    return res;
   }
-} // namespace std
 
-#endif //LUATIC_TOKENS_H
+  static void Log(const std::string& p_msg) {
+#ifdef DEBUGGING
+    std::cerr << p_msg << std::endl; // std::cout is used for diff tests
+#endif
+  }
+} // helper
+
+#endif // LUATIC_HELPER_H
+

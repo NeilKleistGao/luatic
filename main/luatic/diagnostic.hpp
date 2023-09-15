@@ -34,13 +34,13 @@ struct Position {
   int line{};
   int column{};
 
-  Position(int p_l, int p_c): line(p_l), column(p_c) {}
+  Position(int p_l, int p_c): line{p_l}, column{p_c} {}
 };
 
 struct Location {
   Position begin, end;
 
-  Location(Position p_begin, Position p_end): begin(p_begin), end(p_end) {}
+  Location(Position p_begin, Position p_end): begin{p_begin}, end{p_end} {}
 
   static Position Begin() {
     return Position{1, 0};
@@ -60,7 +60,7 @@ struct Diagnostic {
   std::optional<std::string> filename;
 
   Diagnostic(DiagnosticType p_t, Location p_loc, std::string p_info, std::optional<std::string> p_filename):
-    type(p_t), location(p_loc), info(std::move(p_info)), filename(std::move(p_filename)) {}
+    type{p_t}, location{p_loc}, info{std::move(p_info)}, filename{std::move(p_filename)} {}
 };
 
 inline Diagnostic RaiseErrorByType(DiagnosticType p_type, Location p_loc, std::string p_info, std::optional<std::string> p_filename) {

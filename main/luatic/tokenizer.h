@@ -25,16 +25,16 @@
 #ifndef LUATIC_TOKENIZER_H
 #define LUATIC_TOKENIZER_H
 
-#include <sstream>
+#include <memory>
 #include <unordered_map>
 #include <vector>
 
 #include "diagnostic.hpp"
-#include "tokens.h"
+#include "tokens.hpp"
 
 class Tokenizer {
 public:
-  using TokenStream = std::vector<Token>;
+  using TokenStream = std::vector<std::shared_ptr<Token>>;
   using DiagnosticList = std::vector<Diagnostic>;
 
   Tokenizer(std::optional<std::string> p_filename, std::string p_code);
@@ -47,49 +47,23 @@ public:
   Tokenizer& operator=(Tokenizer&&) = delete;
 
 private:
-  static const std::unordered_map<std::string, Keyword> m_keywords;
-  static const std::unordered_map<char, Punctuation> m_punctuations;
   const std::optional<std::string> m_filename;
   const std::string m_code;
   const size_t m_length;
   int m_pos, m_line, m_current_line_start;
 
-  std::variant<Token, Diagnostic> ParseOne() noexcept;
-  std::variant<Literal, Diagnostic> ParseNumber() noexcept;
+  TokenStream m_tokens{};
+  DiagnosticList m_diags{};
 
-  [[nodiscard]] inline Location
-    Locate(int p_line1, int p_col1, int p_line2, int p_col2) const {
-    return Location{
-      Position{p_line1, p_col1},
-      Position{p_line2, p_col2},
-    };
-  }
+  void ParseOne() noexcept;
+  void ParseNumber() noexcept;
 
-  [[nodiscard]] inline Location
-    Locate(int p_line1, int p_col1, int p_col2) const {
-    return Locate(p_line1, p_col1, p_line1, p_col2);
-  }
-
-  [[nodiscard]] inline Location Locate(int p_line1, int p_col1) const {
-    return Locate(p_line1, p_col1, p_line1, p_col1 + 1);
-  }
-
-  [[nodiscard]] inline Diagnostic
-    RaiseError(Location p_loc, std::string p_info) const noexcept {
-    return RaiseErrorByType(DiagnosticType::DIAG_LEX,
-                            p_loc,
-                            std::move(p_info),
-                            this->m_filename);
-  }
-
-  template<typename T>
-  static T String2(const std::string& p_str) {
-    T res;
-    std::stringstream stream;
-    stream << p_str;
-    stream >> res;
-    stream.clear();
-    return res;
+  inline void
+    RaiseError(Position p_begin, Position p_end, std::string p_info) noexcept {
+    m_diags.emplace_back(DiagnosticType::DIAG_LEX,
+                         Location{std::move(p_begin), std::move(p_end)},
+                         std::move(p_info),
+                         this->m_filename);
   }
 };
 

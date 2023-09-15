@@ -27,44 +27,26 @@
 #include <cctype>
 #include <utility>
 
-const std::unordered_map<std::string, Keyword> Tokenizer::m_keywords = {
-  // TODO:
-};
-
-const std::unordered_map<char, Punctuation> Tokenizer::m_punctuations = {
-  {'(',  Punctuation::PUN_LEFT_PAR},
-  {')', Punctuation::PUN_RIGHT_PAR},
-};
+#include "helper.hpp"
 
 Tokenizer::Tokenizer(std::optional<std::string> p_filename, std::string p_code):
-  m_filename(std::move(p_filename)), m_code(std::move(p_code)),
-  m_length(m_code.length()) {}
+  m_filename{std::move(p_filename)}, m_code{std::move(p_code)},
+  m_length{m_code.length()}, m_pos{0}, m_line{1}, m_current_line_start{0} {}
 
 std::variant<Tokenizer::TokenStream, Tokenizer::DiagnosticList>
   Tokenizer::Parse() noexcept {
-  TokenStream tokens{};
-  DiagnosticList diags{};
-
-  m_pos = 0;
-  m_line = 1;
-  m_current_line_start = 0;
   while (m_pos < m_length) {
-    auto res = ParseOne();
-    if (res.index() == 0 && diags.empty()) {
-      tokens.push_back(std::move(std::get<Token>(res)));
-    } else if (res.index() == 1) {
-      diags.push_back(std::move(std::get<Diagnostic>(res)));
-    }
+    ParseOne();
   }
 
-  if (diags.empty()) {
-    return tokens;
+  if (m_diags.empty()) {
+    return m_tokens;
   } else {
-    return diags;
+    return m_diags;
   }
 }
 
-std::variant<Token, Diagnostic> Tokenizer::ParseOne() noexcept {
+void Tokenizer::ParseOne() noexcept {
   const char head = m_code[m_pos];
   if (std::isspace(head)) {
     const int line = m_line;
@@ -72,20 +54,17 @@ std::variant<Token, Diagnostic> Tokenizer::ParseOne() noexcept {
       ++m_line;
       m_current_line_start = m_pos + 1;
     }
-    return Token(Punctuation::PUN_SPACE, Locate(line, m_pos++));
+    ++m_pos;
+  } else if (head == '(') {
+    m_tokens.push_back(
+      std::make_shared<LeftParenthesisToken>(Position{m_line, m_pos++}));
+  } else if (head == ')') {
+    m_tokens.push_back(
+      std::make_shared<RightParenthesisToken>(Position{m_line, m_pos++}));
   } else if (std::isdigit(head) ||
-             (head == '.' && m_pos + 1 < m_length &&
-              std::isdigit(m_code[m_pos + 1]))) {
-    const int start = m_pos;
-    auto res = ParseNumber();
-    if (res.index() == 0) {
-      return Token(std::get<Literal>(res),
-                   Locate(m_line,
-                          start - m_current_line_start,
-                          m_pos - m_current_line_start));
-    } else {
-      return std::get<Diagnostic>(res);
-    }
+             ((head == '.' || head == '+' || head == '-') &&
+              m_pos + 1 < m_length && std::isdigit(m_code[m_pos + 1]))) {
+    ParseNumber();
   } else if (head == '"') {
     const int start = m_pos++;
     while (m_pos < m_length && m_code[m_pos] != '"') {
@@ -93,56 +72,35 @@ std::variant<Token, Diagnostic> Tokenizer::ParseOne() noexcept {
     }
 
     if (m_pos == m_length) {
-      return RaiseError(Locate(m_line,
-                               start - m_current_line_start,
-                               m_pos - m_current_line_start),
-                        "unexpected end of string.");
+      RaiseError(Position{m_line, start - m_current_line_start},
+                 Position{m_line, m_pos - m_current_line_start},
+                 "unexpected end of string.");
+    } else {
+      ++m_pos;
+      m_tokens.push_back(std::make_shared<LiteralToken>(
+        m_code.substr(start, m_pos - start),
+        Position{m_line, start - m_current_line_start},
+        Position{m_line, m_pos - m_current_line_start}));
     }
-
-    ++m_pos;
-    return Token(Literal(m_code.substr(start, m_pos - start)),
-                 Locate(m_line,
-                        start - m_current_line_start,
-                        m_pos - m_current_line_start));
-  } else if (m_punctuations.find(head) != m_punctuations.end()) {
-    return Token(m_punctuations.at(head), Locate(m_line, m_pos++));
   } else if (head == ';') {
-    const int start = m_pos++;
     while (m_pos < m_length && m_code[m_pos] != '\n') {
       ++m_pos;
     }
-
-    return Token(Punctuation::PUN_SPACE, Locate(m_line, start));
   } else {
     int start = m_pos++;
     while (m_pos < m_length && m_code[m_pos] != ';' &&
-           !std::isspace(m_code[m_pos]) &&
-           m_punctuations.find(m_code[m_pos]) == m_punctuations.end()) {
+           !std::isspace(m_code[m_pos])) {
       ++m_pos;
     }
 
-    if (m_pos != m_length) {
-      ++m_pos;
-    }
-
-    const auto id = m_code.substr(start, m_pos - start);
-    if (m_keywords.find(id) == m_keywords.end()) {
-      return Token(Identifier(id),
-                   Locate(m_line,
-                          start - m_current_line_start,
-                          m_pos - m_current_line_start));
-    } else {
-      return Token(Keyword(m_keywords.at(id)),
-                   Locate(m_line,
-                          start - m_current_line_start,
-                          m_pos - m_current_line_start));
-    }
+    m_tokens.push_back(std::make_shared<SymbolToken>(
+      m_code.substr(start, m_pos - start),
+      Position{m_line, start - m_current_line_start},
+      Position{m_line, m_pos - m_current_line_start}));
   }
-
-  return RaiseError(Locate(0, 0), std::string{"unexpected error."});
 }
 
-std::variant<Literal, Diagnostic> Tokenizer::ParseNumber() noexcept {
+void Tokenizer::ParseNumber() noexcept {
   bool science = false, hex = false, point = false;
 
   const int start = m_pos;
@@ -171,22 +129,28 @@ std::variant<Literal, Diagnostic> Tokenizer::ParseNumber() noexcept {
     } else if ((c == '-' || c == '+') &&
                (prev == 'e' || prev == 'E' || prev == 'p' || prev == 'P')) {
       ++m_pos;
-    } else if (std::isspace(c) || c == ';' ||
-               (m_punctuations.find(c) != m_punctuations.end() && c != '.')) {
+    } else if (std::isspace(c) || c == ';' || c == '(' || c == ')') {
       break;
     } else {
       ++m_pos;
-      return RaiseError(Locate(m_line, m_pos - m_current_line_start - 1),
-                        std::string{"unexpected character "} + c +
-                          " in number literal.");
+      RaiseError(Position{m_line, m_pos - m_current_line_start - 1},
+                 Position{m_line, m_pos - m_current_line_start},
+                 std::string{"unexpected character "} + c +
+                   " in number literal.");
     }
 
     prev = c;
   }
 
   if (science || point) {
-    return Literal(String2<double>(m_code.substr(start, m_pos - start)));
+    m_tokens.push_back(std::make_shared<LiteralToken>(
+      helper::String2<LuaNum>(m_code.substr(start, m_pos - start)),
+      Position{m_line, start},
+      Position{m_line, m_pos}));
   } else {
-    return Literal(String2<long long>(m_code.substr(start, m_pos - start)));
+    m_tokens.push_back(std::make_shared<LiteralToken>(
+      helper::String2<LuaInt>(m_code.substr(start, m_pos - start)),
+      Position{m_line, start},
+      Position{m_line, m_pos}));
   }
 }

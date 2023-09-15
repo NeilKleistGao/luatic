@@ -28,14 +28,13 @@
 
 namespace std {
   string to_string(DiagnosticType p_type) {
-    switch (p_type) {
-      case DiagnosticType::DIAG_LEX:
-        return string{"lexer"};
-      case DiagnosticType::DIAG_PARSE:
-        return string{"parser"};
-      case DiagnosticType::DIAG_CODEGEN:
-        return string{"codegen"};
+    if (p_type == DiagnosticType::DIAG_LEX) {
+      return string{"lex"};
     }
+    if (p_type == DiagnosticType::DIAG_PARSE) {
+      return string{"parser"};
+    }
+    return string{"codegen"};
   }
 } // namespace std
 
