@@ -23,3 +23,17 @@
  */
 
 #include "parser.h"
+
+Parser::Parser(std::optional<std::string> p_filename, TokenStream&& p_tokens):
+  m_filename{p_filename}, m_tokens{std::move(p_tokens)} {}
+
+[[nodiscard]] std::variant<Program, Parser::DiagnosticList>
+  Parser::Parse() noexcept {
+  // TODO: parse
+
+  if (m_diags.empty()) {
+    return m_prgm;
+  } else {
+    return m_diags;
+  }
+}

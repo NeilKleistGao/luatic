@@ -25,4 +25,28 @@
 #ifndef LUATIC_PARSER_H
 #define LUATIC_PARSER_H
 
+#include "codegen.h"
+#include "tokenizer.h"
+
+class Parser {
+public:
+  using TokenStream = Tokenizer::TokenStream;
+  using DiagnosticList = Tokenizer::DiagnosticList;
+
+  Parser(std::optional<std::string> p_filename, TokenStream&& p_tokens);
+  [[nodiscard]] std::variant<Program, DiagnosticList> Parse() noexcept;
+
+  ~Parser() = default;
+  Parser(const Parser&) = delete;
+  Parser(Parser&&) = delete;
+  Parser& operator=(const Parser&) = delete;
+  Parser& operator=(Parser&&) = delete;
+
+private:
+  const std::optional<std::string> m_filename;
+  TokenStream m_tokens;
+  Program m_prgm{};
+  DiagnosticList m_diags{};
+};
+
 #endif // LUATIC_PARSER_H

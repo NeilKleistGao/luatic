@@ -30,6 +30,7 @@
 #include <regex>
 
 #include "lua/lua_vm.h"
+#include "luatic/parser.h"
 #include "luatic/tokenizer.h"
 #include "pretty_printer.h"
 
@@ -85,10 +86,22 @@ TEST(LuaticDiffTests, LuaticInterpreter) {
       std::ofstream log{filename.substr(0, filename.find(".ltc")) + ".check"};
       std::cout.rdbuf(log.rdbuf());
 
-      auto tokenizer = Tokenizer(filename, ReadFile(filename));
+      auto tokenizer = Tokenizer{filename, ReadFile(filename)};
       const auto lex_res = tokenizer.Parse();
       if (lex_res.index() != 0) {
-        const auto diags = std::get<1>(lex_res);
+        const auto diags = std::get<Tokenizer::DiagnosticList>(lex_res);
+        for (const auto& diag : diags) {
+          PrintDiagnostic(diag);
+        }
+
+        continue;
+      }
+
+      auto tokens = std::get<Parser::TokenStream>(lex_res);
+      auto parser = Parser{filename, std::move(tokens)};
+      const auto parse_res = parser.Parse();
+      if (parse_res.index() != 0) {
+        const auto diags = std::get<Parser::DiagnosticList>(lex_res);
         for (const auto& diag : diags) {
           PrintDiagnostic(diag);
         }
