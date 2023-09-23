@@ -20,7 +20,7 @@ jobs:
         with:
           submodules: recursive
       - name: install clang-format
-        run: sudo apt install clang-format-13
+        run: sudo apt install clang-format-16
       - name: run format test
         run: bash ./clang_format.sh
       - name: check no change

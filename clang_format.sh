@@ -11,7 +11,7 @@ if [ $? -eq 0 ]; then
 else
   git ls-files -- '*.cc' '*.h' ':!:*/libraries/*' |
   while read -r f; do
-    clang-format-13 -style=file --Wno-error=unknown -i "$f" # clang-format-13 is used in CI
+    clang-format-16 -style=file --Wno-error=unknown -i "$f" # clang-format-16 is used in CI
   done
 fi
 
