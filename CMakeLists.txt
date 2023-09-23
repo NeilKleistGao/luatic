@@ -21,6 +21,7 @@ include(backends/CMakeLists.txt)
 
 list(APPEND luatic_source
         main/lua/lua_vm.cc
+        main/luatic/context.cc
         main/luatic/tokenizer.cc
         main/luatic/parser.cc
         main/luatic/codegen.cc)

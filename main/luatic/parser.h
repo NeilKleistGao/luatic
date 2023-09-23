@@ -43,10 +43,27 @@ public:
   Parser& operator=(Parser&&) = delete;
 
 private:
+  using Iterator = TokenStream::iterator;
+
   const std::optional<std::string> m_filename;
   TokenStream m_tokens;
+  Iterator m_cur;
   Program m_prgm{};
   DiagnosticList m_diags{};
+
+  std::shared_ptr<Expression> ParseExpression() noexcept;
+  std::shared_ptr<Call> ParseCall() noexcept;
+  std::shared_ptr<Definition> ParseDefinition() noexcept;
+
+  inline bool End() const noexcept { return m_cur == m_tokens.end(); }
+
+  inline void
+    RaiseError(Position p_begin, Position p_end, std::string p_info) noexcept {
+    m_diags.emplace_back(DiagnosticType::DIAG_PARSE,
+                         Location{std::move(p_begin), std::move(p_end)},
+                         std::move(p_info),
+                         this->m_filename);
+  }
 };
 
 #endif // LUATIC_PARSER_H

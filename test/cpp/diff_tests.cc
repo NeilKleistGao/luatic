@@ -98,6 +98,7 @@ TEST(LuaticDiffTests, LuaticInterpreter) {
       }
 
       auto tokens = std::get<Parser::TokenStream>(lex_res);
+
       auto parser = Parser{filename, std::move(tokens)};
       const auto parse_res = parser.Parse();
       if (parse_res.index() != 0) {
@@ -109,6 +110,7 @@ TEST(LuaticDiffTests, LuaticInterpreter) {
         continue;
       }
 
+      auto prgm = std::get<Program>(parse_res);
       // TODO:
     }
   }

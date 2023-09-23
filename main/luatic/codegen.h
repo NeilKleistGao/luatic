@@ -44,7 +44,8 @@ private:
 public:
   bool IsUnit() const noexcept final { return false; }
 
-  explicit Variable(const std::shared_ptr<SymbolToken> p_sym): m_name{p_sym} {}
+  explicit Variable(std::shared_ptr<SymbolToken>&& p_sym):
+    m_name{std::move(p_sym)} {}
 };
 
 class Literal: public Expression {
@@ -54,8 +55,8 @@ private:
 public:
   bool IsUnit() const noexcept final { return false; }
 
-  explicit Literal(const std::shared_ptr<LiteralToken> p_value):
-    m_value{p_value} {}
+  explicit Literal(std::shared_ptr<LiteralToken>&& p_value):
+    m_value{std::move(p_value)} {}
 };
 
 class Definition: public Expression {
@@ -66,10 +67,10 @@ private:
 public:
   bool IsUnit() const noexcept final { return true; }
 
-  Definition(const std::shared_ptr<SymbolToken> p_sym,
-             const std::shared_ptr<Expression> p_value):
-    m_name{p_sym},
-    m_value{p_value} {}
+  Definition(std::shared_ptr<SymbolToken>&& p_sym,
+             std::shared_ptr<Expression>&& p_value):
+    m_name{std::move(p_sym)},
+    m_value{std::move(p_value)} {}
 };
 
 class Call: public Expression {
@@ -80,8 +81,8 @@ private:
 public:
   bool IsUnit() const noexcept final { return false; }
 
-  explicit Call(const std::shared_ptr<Expression> p_callee):
-    m_callee{p_callee} {}
+  explicit Call(std::shared_ptr<Expression>&& p_callee):
+    m_callee{std::move(p_callee)} {}
 
   inline void Push(std::shared_ptr<Expression> p_arg) noexcept {
     m_args.push_back(p_arg);

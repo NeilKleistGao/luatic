@@ -36,32 +36,20 @@
 class Token: public Location {
 public:
   Token(Position p_begin, Position p_end): Location(std::move(p_begin), std::move(p_begin)) {}
-  virtual bool IsLeftParenthesis() const noexcept = 0;
-  virtual bool IsRightParenthesis() const noexcept = 0;
+  virtual std::string ToString() const noexcept = 0;
+  virtual bool IsSymbol(const std::string& p_name) const noexcept { return false; }
 };
 
 class LeftParenthesisToken: public Token {
 public:
-  bool IsLeftParenthesis() const noexcept final {
-    return true;
-  }
-
-  bool IsRightParenthesis() const noexcept final {
-    return false;
-  }
+  std::string ToString() const noexcept final { return "("; }
 
   explicit LeftParenthesisToken(const Position& p_pos): Token(p_pos, Position{p_pos.line, p_pos.column + 1}) {}
 };
 
 class RightParenthesisToken: public Token {
 public:
-  bool IsLeftParenthesis() const noexcept final {
-    return false;
-  }
-
-  bool IsRightParenthesis() const noexcept final {
-    return true;
-  }
+  std::string ToString() const noexcept final { return ")"; }
 
   explicit RightParenthesisToken(const Position& p_pos): Token(p_pos, Position{p_pos.line, p_pos.column + 1}) {}
 };
@@ -70,16 +58,14 @@ class SymbolToken: public Token {
 private:
   std::string m_name;
 public:
-  bool IsLeftParenthesis() const noexcept final {
-    return false;
-  }
-
-  bool IsRightParenthesis() const noexcept final {
-    return false;
-  }
-
   inline std::string Name() const noexcept {
     return m_name;
+  }
+
+  std::string ToString() const noexcept final { return m_name; }
+
+  bool IsSymbol(const std::string& p_name) const noexcept {
+    return p_name == m_name;
   }
 
   SymbolToken(std::string&& p_name, Position p_begin, Position p_end): Token(std::move(p_begin), std::move(p_end)), m_name{p_name} {}
@@ -89,12 +75,10 @@ class LiteralToken: public Token {
 private:
   std::variant<LuaInt, LuaNum, LuaStr> m_value;
 public:
-  bool IsLeftParenthesis() const noexcept final {
-    return false;
-  }
-
-  bool IsRightParenthesis() const noexcept final {
-    return false;
+  std::string ToString() const noexcept final {
+    if (m_value.index() == 0) { return std::to_string(std::get<LuaInt>(m_value)); }
+    else if (m_value.index() == 1) { return std::to_string(std::get<LuaNum>(m_value)); }
+    return std::get<LuaStr>(m_value);
   }
 
   LiteralToken(LuaInt p_value, Position p_begin, Position p_end): Token(std::move(p_begin), std::move(p_end)), m_value{std::move(p_value)} {}

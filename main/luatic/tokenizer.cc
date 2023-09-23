@@ -88,8 +88,8 @@ void Tokenizer::ParseOne() noexcept {
     }
   } else {
     int start = m_pos++;
-    while (m_pos < m_length && m_code[m_pos] != ';' &&
-           !std::isspace(m_code[m_pos])) {
+    while (m_pos < m_length && m_code[m_pos] != ';' && m_code[m_pos] != ')' &&
+           m_code[m_pos] != '(' && !std::isspace(m_code[m_pos])) {
       ++m_pos;
     }
 
