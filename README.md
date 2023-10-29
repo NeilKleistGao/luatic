@@ -11,5 +11,3 @@
 A lua dialect with some interesting ideas.
 
 ## Dependencies
-- [cxxopts 3.1.1](https://github.com/jarro2783/cxxopts)
-- [lua5.4.4](https://www.lua.org/)
