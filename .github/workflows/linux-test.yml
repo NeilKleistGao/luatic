@@ -15,36 +15,18 @@ on:
       - .gitattributes
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: recursive
-      - name: setup lua
-        shell: bash
-        run: ./get_backend.sh
-      - name: build project
-        shell: bash
-        run: mkdir bin && cmake -DBUILD_TEST=OFF . && cmake --build . --target backend -j 12 && cmake --build . --target luatic -j 12
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
-      - name: install google test
-        shell: bash
-        run: sudo apt-get install libgtest-dev && cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make
-      - name: setup lua
-        shell: bash
-        run: ./get_backend.sh
-      - name: build diff tests
-        shell: bash
-        run: mkdir bin && cmake . && cmake --build . --target backend -j 12 && cmake --build . --target tests -j 12
-      - name: execute diff tests
-        shell: bash
-        run: ./bin/tests
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - run: cargo test
       - name: check no change
         shell: bash
         run: git diff-files -p --exit-code --diff-filter=ADMR -w

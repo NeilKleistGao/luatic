@@ -1,5 +1,4 @@
 * eol=lf
-*.h linguist-language=c++
 *.ltc linguist-language=Scheme
 *.luac binary
 *.check linguist-vendored
