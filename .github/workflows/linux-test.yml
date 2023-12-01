@@ -26,7 +26,7 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
-      - run: cargo test
+      - run: cargo test --package luatic --test test -- tests --nocapture
       - name: check no change
         shell: bash
         run: git diff-files -p --exit-code --diff-filter=ADMR -w
