@@ -1,5 +1,6 @@
 #[cfg(test)]
 mod tests {
+  use luatic::luatic::tokenizer::tokenize as tokenize;
   #[test]
   fn diff_tests() {
     match std::env::current_dir() {
@@ -21,7 +22,9 @@ mod tests {
                     println!("test file {:?}", filename);
                     match std::fs::read_to_string(filename) {
                       Err(why) => panic!("{:?}", why),
-                      Ok(code) => println!("{:?}", code) // TODO
+                      Ok(code) => {
+                        let tokens = tokenize(code);
+                      }
                     }
                   }
                 }
