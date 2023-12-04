@@ -1,6 +1,6 @@
-use super::tokens::Token as Token;
+use super::tokens::{Token, TokenPack};
 
-pub fn tokenize(code: String) -> Vec<Token> {
-  let mut tokens: Vec<Token> = Vec::new();
-  tokens
+pub fn tokenize(code: String) -> TokenPack {
+  let mut pack: TokenPack = TokenPack::new(None); // TODO: filename
+  pack
 }
