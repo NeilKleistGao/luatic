@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-  use luatic::luatic::tokenizer::tokenize as tokenize;
+  use luatic::luatic::compiler::{compile, CompileOption};
   #[test]
   fn diff_tests() {
     match std::env::current_dir() {
@@ -20,12 +20,8 @@ mod tests {
                   let ext = filename.extension().unwrap_or_default().to_str().unwrap_or_default();
                   if ext.ends_with("ltc") {
                     println!("test file {:?}", filename);
-                    match std::fs::read_to_string(filename) {
-                      Err(why) => panic!("{:?}", why),
-                      Ok(code) => {
-                        let tokens = tokenize(code);
-                      }
-                    }
+                    let _ = compile(CompileOption::new(filename.to_str().unwrap().to_string()));
+                    // TODO: check errors
                   }
                 }
               }

@@ -16,8 +16,7 @@ pub enum Token {
 
 pub struct TokenPack {
   tokens: Vec<Token>,
-  exceptions: Vec<Exception>,
-  filename: Option<String>
+  exceptions: Vec<Exception>
 }
 
 impl TokenPack {
@@ -38,7 +37,7 @@ impl TokenPack {
     }
   }
 
-  pub fn new(filename: Option<String>) -> TokenPack {
-    TokenPack { tokens: Vec::new(), exceptions: Vec::new(), filename: filename }
+  pub fn new() -> TokenPack {
+    TokenPack { tokens: Vec::new(), exceptions: Vec::new() }
   }
 }
