@@ -9,12 +9,18 @@ pub struct CompileOption {
 
 impl CompileOption {
   pub fn new(filename: String) -> CompileOption {
-    CompileOption { filename: filename, output: "".to_string() } // TODO: figure out output path
+    let output_name = filename.replace(".ltc", ".luac");
+    CompileOption { filename: filename, output: output_name }
   }
 }
 
 fn format_errors(errors: &Vec<Exception>) -> String {
   "".to_string() // TODO
+}
+
+fn write_binary(filename: String, data: Vec<u8>) -> Result<(), String> {
+  let _ = std::fs::write(filename, ""); // TODO
+  Ok(())
 }
 
 pub fn compile(option: CompileOption) -> Result<(), String> {
@@ -28,7 +34,9 @@ pub fn compile(option: CompileOption) -> Result<(), String> {
           return Err(err);
         }
       };
-      Ok(())
+
+      let binary: Vec<u8> = Vec::new(); // TODO: compile
+      write_binary(option.output, binary)
     }
   }
 }
