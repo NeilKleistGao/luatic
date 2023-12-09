@@ -8,7 +8,6 @@ pub enum Literal {
 }
 
 pub enum Token {
-  Keyword{name: String, loc: Location},
   Identifier{name: String, loc: Location},
   LiteralValue{value: Literal, loc: Location},
   Punctuation{p: char, loc: Location}

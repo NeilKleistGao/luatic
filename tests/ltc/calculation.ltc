@@ -1,2 +1,3 @@
-(define r 10)
+(def r 10)
+(def pi 3.14)
 (* pi (* r r))
