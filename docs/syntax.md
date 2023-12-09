@@ -2,7 +2,7 @@
 
 ### Types
 - Basic types: `42: int`, `3.14: num`, `"abcd": string`, `true: bool`, `nil: nil`
-- Table: `{ ("a" 1) (2 2) }`, `{1 2 3 4}`(i.e., `{(1 1) (2 2) (3 3) (4 4)}`)
+- Table: `{ ["a" 1] [2 2] }`, `{1 2 3 4}`(i.e., `{[1 1] [2 2] [3 3] [4 4]}`)
 - Record
 - Protocol
 
@@ -71,9 +71,16 @@ The same as operators in Lua.
 (if true (do ...) (do ...))
 ```
 
+```
+(match
+  (== v 1) ("1")
+  (== v 2) ("2")
+  ("wtf"))
+```
+
 ### Loop
 ```
-(for [(i 0)] (< i 10) (do ...))
+(for [i 0] (< i 10) (+ i 1) (do ...))
 ```
 
 ### Comment
