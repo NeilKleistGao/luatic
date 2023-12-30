@@ -1,10 +1,10 @@
-pub static nil_tag: u8 = 0;
-pub static false_tag: u8 = 1;
-pub static true_tag: u8 = 17;
-pub static num_tag: u8 = 3;
-pub static int_tag: u8 = 19;
-pub static short_str_tag: u8 = 4;
-pub static long_str_tag: u8 = 20;
+static nil_tag: u8 = 0;
+static false_tag: u8 = 1;
+static true_tag: u8 = 17;
+static num_tag: u8 = 3;
+static int_tag: u8 = 19;
+static short_str_tag: u8 = 4;
+static long_str_tag: u8 = 20;
 
 pub enum Literal {
   Nil,
