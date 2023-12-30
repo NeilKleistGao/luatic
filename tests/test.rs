@@ -1,6 +1,7 @@
 #[cfg(test)]
 mod tests {
   use luatic::luatic::compiler::{compile, CompileOption};
+  use luatic::binary::literals::{Literal};
   #[test]
   fn diff_tests() {
     match std::env::current_dir() {

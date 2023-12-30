@@ -1,6 +1,5 @@
 use super::tokenizer::{tokenize};
 use super::exceptions::Exception;
-use super::runtime::Variant;
 
 pub struct CompileOption {
   filename: String,
@@ -47,6 +46,6 @@ pub enum Interpretable {
   ASTNode() // TODO: 
 }
 
-pub fn interpret(content: Interpretable) -> Variant<'static> {
-  Variant::Nil
-}
+// pub fn interpret(content: Interpretable) -> Variant<'static> {
+//   Variant::Nil
+// }
