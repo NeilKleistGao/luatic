@@ -22,12 +22,38 @@ struct Header {
   luac_number: f64
 }
 
+impl Header {
+  pub fn new() -> Header {
+    Header {
+      signature: magic_number,
+      version: version_number,
+      format: format_number,
+      luac_data: luac_data,
+      instruction_size: instruction_size,
+      integer_size: integer_size,
+      number_size: number_size,
+      luac_int: luac_int,
+      luac_number: luac_number
+    }
+  }
+}
+
 pub struct Chunk {
   header: Header,
   up_values_size: u8,
   main_proto: Prototype
 }
 
+impl Chunk {
+  pub fn new(up_value: u8, proto: Prototype) -> Chunk {
+    Chunk { header: Header::new(), up_values_size: up_value, main_proto: proto }
+  }
+}
+
 pub fn read_and_check_chunk() -> Result<Chunk, String> {
+  Err("not implemented".to_string())
+}
+
+pub fn chunk_to_binary(chunk: Chunk) -> Result<Vec<u8>, String> {
   Err("not implemented".to_string())
 }

@@ -35,6 +35,27 @@ pub struct Prototype {
   up_value_names: Vec<String>
 }
 
+impl Prototype {
+  pub fn empty(source: String) -> Prototype { // TODO: check values
+    Prototype {
+      source: source,
+      line_defined: 0,
+      last_line_defined: 0,
+      num_params: 0,
+      is_vararg: 0,
+      max_stack_size: 8,
+      code: Vec::new(),
+      constants: Vec::new(),
+      up_values: Vec::new(),
+      proto: Vec::new(),
+      line_info: Vec::new(),
+      abs_line_info: Vec::new(),
+      local_var: Vec::new(),
+      up_value_names: Vec::new()
+    }
+  }
+}
+
 pub fn read_prototy() -> Result<Prototype, String> {
   Err("not implemented".to_string())
 }

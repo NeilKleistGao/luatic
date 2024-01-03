@@ -1,5 +1,9 @@
-use super::tokenizer::{tokenize};
-use super::exceptions::Exception;
+use crate::binary::chunk;
+use crate::binary::prototype::Prototype;
+
+use super::luatic::tokenizer::{tokenize};
+use super::luatic::exceptions::Exception;
+use super::binary::chunk::*;
 
 pub struct CompileOption {
   filename: String,
@@ -17,9 +21,15 @@ fn format_errors(errors: &Vec<Exception>) -> String {
   "".to_string() // TODO
 }
 
-fn write_binary(filename: String, data: Vec<u8>) -> Result<(), String> {
-  let _ = std::fs::write(filename, ""); // TODO
-  Ok(())
+fn write_binary(filename: String, chunk: Chunk) -> Result<(), String> {
+  let data = chunk_to_binary(chunk);
+  match data {
+    Err(why) => Err(why),
+    Ok(data) => {
+      let _ = std::fs::write(filename, data);
+      Ok(())
+    }
+  }
 }
 
 pub fn compile(option: CompileOption) -> Result<(), String> {
@@ -34,8 +44,8 @@ pub fn compile(option: CompileOption) -> Result<(), String> {
         }
       };
 
-      let binary: Vec<u8> = Vec::new(); // TODO: compile
-      write_binary(option.output, binary)
+      let chunk = Chunk::new(0, Prototype::empty(option.filename)); // TODO: compile
+      write_binary(option.output, chunk)
     }
   }
 }
