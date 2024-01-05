@@ -1,6 +1,7 @@
-use crate::binary::chunk;
-use crate::binary::prototype::Prototype;
+use std::ffi::OsStr;
+use std::path::*;
 
+use super::binary::prototype::Prototype;
 use super::luatic::tokenizer::{tokenize};
 use super::luatic::exceptions::Exception;
 use super::binary::chunk::*;
@@ -44,7 +45,8 @@ pub fn compile(option: CompileOption) -> Result<(), String> {
         }
       };
 
-      let chunk = Chunk::new(1, Prototype::empty(option.filename));
+      let filename = Path::new(&option.filename).file_name().unwrap_or(OsStr::new("a.ltc"));
+      let chunk = Chunk::new(1, Prototype::empty(filename.to_str().unwrap().to_string()));
       write_binary(option.output, chunk)
     }
   }
