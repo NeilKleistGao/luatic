@@ -44,7 +44,7 @@ pub fn compile(option: CompileOption) -> Result<(), String> {
         }
       };
 
-      let chunk = Chunk::new(0, Prototype::empty(option.filename)); // TODO: compile
+      let chunk = Chunk::new(1, Prototype::empty(option.filename));
       write_binary(option.output, chunk)
     }
   }

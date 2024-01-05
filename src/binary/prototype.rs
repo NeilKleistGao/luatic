@@ -59,3 +59,8 @@ impl Prototype {
 pub fn read_prototy() -> Result<Prototype, String> {
   Err("not implemented".to_string())
 }
+
+pub fn prototype_to_binary(proto: Prototype) -> Result<Vec<u8>, String> {
+  let mut res: Vec<u8> = Vec::new();
+  Ok(res)
+}
