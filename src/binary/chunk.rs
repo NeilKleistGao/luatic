@@ -1,4 +1,5 @@
-use super::prototype::{Prototype, prototype_to_binary};
+use super::prototype::{Prototype};
+use super::binary::Binary;
 
 static MAGIC_NUMBER: [u8; 4] = [27, 76, 117, 97]; // TODO: u32?
 static VERSION_NUMBER: u8 = 84;
@@ -38,6 +39,38 @@ impl Header {
   }
 }
 
+impl Binary for Header {
+  fn to_binary(&self, to: &mut Vec<u8>) -> Result<(), String> {
+    match validate_header(&self) {
+      Ok(_) => (),
+      Err(why) => return Err(why)
+    }
+  
+    for b in &self.signature {
+      to.push(*b);
+    }
+    to.push(self.version);
+    to.push(self.format);
+    for b in &self.luac_data {
+      to.push(*b);
+    }
+    to.push(self.instruction_size);
+    to.push(self.integer_size);
+    to.push(self.number_size);
+    let mut luac_int = self.luac_int.to_be_bytes();
+    luac_int.reverse(); // TODO: can we make sure it is little endian?
+    for b in &luac_int {
+      to.push(*b);
+    }
+    let mut luac_num = self.luac_number.to_be_bytes();
+    luac_num.reverse();
+    for b in &luac_num {
+      to.push(*b);
+    }
+    Ok(())
+  }
+}
+
 pub struct Chunk {
   header: Header,
   up_values_size: u8,
@@ -69,42 +102,14 @@ fn validate_header(header: &Header) -> Result<(), String> {
   if flag { Ok(()) } else { Err("broken chunk".to_string()) }
 }
 
-pub fn chunk_to_binary(chunk: Chunk) -> Result<Vec<u8>, String> {
-  let mut res: Vec<u8> = Vec::new();
-  let header = chunk.header;
-  match validate_header(&header) {
-    Ok(_) => (),
-    Err(why) => return Err(why)
-  }
-
-  for b in &header.signature {
-    res.push(*b);
-  }
-  res.push(header.version);
-  res.push(header.format);
-  for b in &header.luac_data {
-    res.push(*b);
-  }
-  res.push(header.instruction_size);
-  res.push(header.integer_size);
-  res.push(header.number_size);
-  let mut luac_int = header.luac_int.to_be_bytes();
-  luac_int.reverse(); // TODO: can we make sure it is little endian?
-  for b in &luac_int {
-    res.push(*b);
-  }
-  let mut luac_num = header.luac_number.to_be_bytes();
-  luac_num.reverse();
-  for b in &luac_num {
-    res.push(*b);
-  }
-  res.push(chunk.up_values_size);
-  match prototype_to_binary(chunk.main_proto) {
-    Ok(data) => for b in &data {
-      res.push(*b);
+impl Binary for Chunk {
+  fn to_binary(&self, to: &mut Vec<u8>) -> Result<(), String> {
+    match self.header.to_binary(to) {
+      Ok(()) => (),
+      Err(why) => return Err(why)
     }
-    Err(why) => return Err(why)
+    to.push(self.up_values_size);
+    self.main_proto.to_binary(to)
+    
   }
-
-  Ok(res)
 }

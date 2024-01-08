@@ -1,6 +1,6 @@
 use std::vec::Vec;
 use super::literals::Literal;
-use super::variant::write_variant;
+use super::binary::Binary;
 
 struct AbsLineInfo {
   pc: i64,
@@ -57,39 +57,29 @@ impl Prototype {
   }
 }
 
-pub fn read_prototy() -> Result<Prototype, String> {
-  Err("not implemented".to_string())
-}
-
-pub fn prototype_to_binary(proto: Prototype) -> Result<Vec<u8>, String> {
-  let mut res: Vec<u8> = Vec::new();
-  match write_variant((proto.source.len() + 1).try_into().unwrap()) { // TODO: a function?
-    Ok(d) => {
-      for b in &d {
-        res.push(*b);
+impl Binary for Prototype {
+  fn to_binary(&self, to: &mut Vec<u8>) -> Result<(), String> {
+    match (self.source.len() + 1).to_binary(to) {
+      Ok(_) => {
+        let vs = (self.source).as_bytes();
+        for c in vs {
+          to.push(*c);
+        }
       }
-      let vs = (proto.source).as_bytes();
-      for c in vs {
-        res.push(*c);
-      }
+      Err(why) => return Err(why)
     }
-    Err(why) => return Err(why)
-  }
-  match write_variant(proto.line_defined) {
-    Ok(d) => for b in &d {
-      res.push(*b);
+    match self.line_defined.to_binary(to) {
+      Ok(_) => (),
+      Err(why) => return Err(why)
     }
-    Err(why) => return Err(why)
-  }
-  match write_variant(proto.last_line_defined) {
-    Ok(d) => for b in &d {
-      res.push(*b);
+    match self.last_line_defined.to_binary(to) {
+      Ok(_) => (),
+      Err(why) => return Err(why)
     }
-    Err(why) => return Err(why)
+    to.push(self.num_params);
+    to.push(self.is_vararg);
+    to.push(self.max_stack_size);
+    // TODO
+    Ok(())
   }
-  res.push(proto.num_params);
-  res.push(proto.is_vararg);
-  res.push(proto.max_stack_size);
-  // TODO
-  Ok(res)
 }

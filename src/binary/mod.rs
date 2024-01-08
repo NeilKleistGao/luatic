@@ -1,4 +1,4 @@
 pub mod chunk;
 pub mod prototype;
 pub mod literals;
-pub mod variant;
+pub mod binary;
