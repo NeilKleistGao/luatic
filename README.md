@@ -1,6 +1,6 @@
 # luatic
 
-![](luatic.png)
+![lua_.png](https://s2.loli.net/2024/01/11/7KjEuMxwdVH3g26.png)
 
 [![Luatic Linux Tests](https://github.com/NeilKleistGao/luatic/actions/workflows/linux-test.yml/badge.svg)](https://github.com/NeilKleistGao/luatic/actions/workflows/linux-test.yml)
 
