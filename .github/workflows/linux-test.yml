@@ -26,6 +26,7 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
+      - uses: leafo/gh-actions-lua@v10
       - run: cargo test --package luatic --test test -- tests --nocapture
       - run: ./tests/scripts/run.sh
       - name: check no change
