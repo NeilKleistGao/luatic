@@ -1,3 +1,5 @@
+use super::binary::Binary;
+
 static nil_tag: u8 = 0;
 static false_tag: u8 = 1;
 static true_tag: u8 = 17;
@@ -14,6 +16,8 @@ pub enum Literal {
   Str(String)
 }
 
-pub fn read_literal() -> Result<Literal, String> {
-  Err("not implemented yet.".to_string())
+impl Binary for Literal {
+  fn to_binary(&self, to: &mut Vec<u8>) -> Result<(), String> {
+    Ok(()) // TODO
+  }
 }

@@ -1,3 +1,5 @@
+use crate::to_binary;
+
 use super::prototype::{Prototype};
 use super::binary::Binary;
 
@@ -104,10 +106,7 @@ fn validate_header(header: &Header) -> Result<(), String> {
 
 impl Binary for Chunk {
   fn to_binary(&self, to: &mut Vec<u8>) -> Result<(), String> {
-    match self.header.to_binary(to) {
-      Ok(()) => (),
-      Err(why) => return Err(why)
-    }
+    to_binary!(self.header, to);
     to.push(self.up_values_size);
     self.main_proto.to_binary(to)
     

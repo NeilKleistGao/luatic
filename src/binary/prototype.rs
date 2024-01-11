@@ -1,10 +1,19 @@
 use std::vec::Vec;
+use crate::to_binary;
+
 use super::literals::Literal;
 use super::binary::Binary;
+use super::instructions::Instruction;
 
 struct AbsLineInfo {
   pc: i64,
   line: i64
+}
+
+impl Binary for AbsLineInfo {
+  fn to_binary(&self, to: &mut Vec<u8>) -> Result<(), String> {
+    Ok(()) // TODO
+  }
 }
 
 struct UpValue {
@@ -13,10 +22,31 @@ struct UpValue {
   kind: u8
 }
 
+impl UpValue {
+  pub fn empty() -> UpValue {
+    UpValue { in_stack: 1, index: 0, kind: 0 }
+  }
+}
+
+impl Binary for UpValue {
+  fn to_binary(&self, to: &mut Vec<u8>) -> Result<(), String> {
+    to.push(self.in_stack);
+    to.push(self.index);
+    to.push(self.kind);
+    Ok(())
+  }
+}
+
 struct LocalVar {
   var_name: String,
   start_pc: i64,
   end_pc: i64
+}
+
+impl Binary for LocalVar {
+  fn to_binary(&self, to: &mut Vec<u8>) -> Result<(), String> {
+    Ok(()) // TODO
+  }
 }
 
 pub struct Prototype {
@@ -26,7 +56,7 @@ pub struct Prototype {
   num_params: u8,
   is_vararg: u8,
   max_stack_size: u8,
-  code: Vec<u32>,
+  code: Vec<Instruction>,
   constants: Vec<Literal>,
   up_values: Vec<UpValue>,
   proto: Vec<Prototype>,
@@ -37,7 +67,7 @@ pub struct Prototype {
 }
 
 impl Prototype {
-  pub fn empty(source: String) -> Prototype { // TODO: check values
+  pub fn empty(source: String) -> Prototype {
     Prototype {
       source: String::from("@") + &source,
       line_defined: 0,
@@ -45,41 +75,40 @@ impl Prototype {
       num_params: 0,
       is_vararg: 1,
       max_stack_size: 2,
-      code: Vec::new(),
+      code: vec![
+        Instruction::var_arg_prep(),
+        Instruction::ret(),
+      ],
       constants: Vec::new(),
-      up_values: Vec::new(),
+      up_values: vec![UpValue::empty()],
       proto: Vec::new(),
-      line_info: Vec::new(),
+      line_info: vec![1, 0],
       abs_line_info: Vec::new(),
       local_var: Vec::new(),
-      up_value_names: Vec::new()
+      up_value_names: vec!["_ENV".to_string()]
     }
   }
 }
 
 impl Binary for Prototype {
   fn to_binary(&self, to: &mut Vec<u8>) -> Result<(), String> {
-    match (self.source.len() + 1).to_binary(to) {
-      Ok(_) => {
-        let vs = (self.source).as_bytes();
-        for c in vs {
-          to.push(*c);
-        }
-      }
-      Err(why) => return Err(why)
-    }
-    match self.line_defined.to_binary(to) {
-      Ok(_) => (),
-      Err(why) => return Err(why)
-    }
-    match self.last_line_defined.to_binary(to) {
-      Ok(_) => (),
-      Err(why) => return Err(why)
-    }
+    to_binary!(self.source, to);
+    to_binary!(self.line_defined, to);
+    to_binary!(self.last_line_defined, to);
+
     to.push(self.num_params);
     to.push(self.is_vararg);
     to.push(self.max_stack_size);
-    // TODO
+
+    to_binary!(self.code, to);
+    to_binary!(self.constants, to);
+    to_binary!(self.up_values, to);
+    to_binary!(self.proto, to);
+    to_binary!(self.line_info, to);
+    to_binary!(self.abs_line_info, to);
+    to_binary!(self.local_var, to);
+    to_binary!(self.up_value_names, to);
+
     Ok(())
   }
 }
