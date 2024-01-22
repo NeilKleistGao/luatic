@@ -1,4 +1,94 @@
+use num_enum::TryFromPrimitive;
+
 use super::binary::Binary;
+
+#[derive(TryFromPrimitive)]
+#[repr(u8)]
+enum InstructionIndex {
+  Move = 0,
+  LoadI,
+  LoadF,
+  LoadK,
+  LoadKx,
+  LoadFalse, 
+  FalseSkip, 
+  LoadTrue,
+  LoadNil,
+  GetUpValue,
+  SetUpValue,
+  GetTableUp,
+  GetTable,
+  GetI,
+  GetField,
+  SetTableUp,
+  SetTable,
+  SetI,
+  SetField,
+  NewTable,
+  ISelf,
+  AddI,
+  AddK,
+  SubK,
+  MulK,
+  ModK,
+  PowK,
+  DivK,
+  IDivK,
+  BitAndK,
+  BitOrK,
+  BitXorK,
+  ShiftRightI,
+  ShiftLeftI,
+  Add,
+  Sub,
+  Mul,
+  Mod,
+  Pow,
+  Div,
+  IDiv,
+  BitAnd,
+  BitOr,
+  BitXor,
+  ShiftLeft,
+  ShiftRight,
+  MMBin,
+  MMBinI,
+  MMBinK,
+  UNM,
+  BitNot,
+  Not,
+  Len,
+  Concat,
+  Close,
+  TBC,
+  Jump,
+  Equal,
+  LessThan,
+  LessEqual,
+  EqualK,
+  EqualI,
+  LessThanI,
+  LessEqualI,
+  GreaterThanI,
+  GreaterEqualI,
+  Test,
+  TestSet,
+  Call,
+  TailCall,
+  Return,
+  Return0,
+  Return1,
+  ForLoop,
+  ForPrepare,
+  TForPrepare,
+  TForCall,
+  TForLoop,
+  SetList,
+  Closure,
+  VarArguments,
+  VarArgumentsPrepare,
+  ExtraArguments
+}
 
 pub enum InstFormat {
   ABC{ a: u8, b: u8, c: u8 },
@@ -40,12 +130,18 @@ impl Instruction {
   }
 
   pub fn unapply(&self) -> InstFormat {
-    let op = self.op();
-    match op { // TODO: replace number with constants
-      1 | 2 => InstFormat::ASBX { a: self.a(), sbx: self.sbx() },
-      57 => InstFormat::SJ { sj: self.sj() },
-      3 | 4 | 73 | 74 | 75 | 77 | 79 => InstFormat::ABX { a: self.a(), bx: self.bx() },
-      82 => InstFormat::AX { ax: self.ax() },
+    let op = match InstructionIndex::try_from(self.op()) {
+      Ok(inst) => inst,
+      Err(_) => panic!("invalid insruction.")
+    };
+    match op {
+      InstructionIndex::LoadI | InstructionIndex::LoadF => InstFormat::ASBX { a: self.a(), sbx: self.sbx() },
+      InstructionIndex::Jump => InstFormat::SJ { sj: self.sj() },
+      InstructionIndex::LoadK | InstructionIndex::LoadKx
+        | InstructionIndex::ForLoop | InstructionIndex::ForPrepare
+        | InstructionIndex::TForPrepare | InstructionIndex::TForLoop
+        | InstructionIndex::Closure => InstFormat::ABX { a: self.a(), bx: self.bx() },
+      InstructionIndex::ExtraArguments => InstFormat::AX { ax: self.ax() },
       _ => InstFormat::ABC { a: self.a(), b: self.b(), c: self.c() }
     }
   }
