@@ -1,17 +1,11 @@
+use crate::binary::literals::Literal;
+
 pub trait ExpressionLike {
   
 }
 
 pub trait StatementLike {
   
-}
-
-pub enum Literal {
-  NilLit,
-  BoolLit(bool),
-  NumLit(f64),
-  IntLit(i64),
-  StrLit(String)
 }
 
 impl ExpressionLike for Literal {

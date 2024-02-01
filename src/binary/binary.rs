@@ -56,6 +56,17 @@ impl Binary for i64 {
   }
 }
 
+impl Binary for f64 {
+  fn to_binary(&self, to: &mut Vec<u8>) -> Result<(), String> {
+    let mut luac_num = self.to_be_bytes();
+    luac_num.reverse();
+    for b in &luac_num {
+      to.push(*b);
+    }
+    Ok(())
+  }
+}
+
 impl Binary for usize {
   fn to_binary(&self, to: &mut Vec<u8>) -> Result<(), String> {
     let res: Result<i64, _> = (*self).try_into();

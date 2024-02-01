@@ -1,11 +1,11 @@
 use std::ffi::OsStr;
 use std::path::*;
 
-use super::binary::prototype::Prototype;
-use super::luatic::tokenizer::{tokenize};
-use super::luatic::exceptions::Exception;
-use super::binary::chunk::*;
-use super::binary::binary::*;
+use crate::binary::prototype::Prototype;
+use crate::luatic::tokenizer::{tokenize};
+use crate::luatic::exceptions::Exception;
+use crate::binary::chunk::*;
+use crate::binary::binary::*;
 
 pub struct CompileOption {
   filename: String,

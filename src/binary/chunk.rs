@@ -64,12 +64,7 @@ impl Binary for Header {
     for b in &luac_int {
       to.push(*b);
     }
-    let mut luac_num = self.luac_number.to_be_bytes();
-    luac_num.reverse();
-    for b in &luac_num {
-      to.push(*b);
-    }
-    Ok(())
+    self.luac_number.to_binary(to)
   }
 }
 
