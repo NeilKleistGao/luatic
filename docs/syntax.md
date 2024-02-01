@@ -2,7 +2,7 @@
 
 ### Types
 - Basic types: `42: int`, `3.14: num`, `"abcd": string`, `true: bool`, `nil: nil`
-- Table: `{ ["a" 1] [2 2] }`, `{1 2 3 4}`(i.e., `{[1 1] [2 2] [3 3] [4 4]}`)
+- Table: `{ ("a" . 1) (2 . 2)] }`, `{1 2 3 4}`(i.e., `{(1 . 1) (2 . 2) (3 . 3) (4 . 4)}`)
 - Record
 - Protocol
 
@@ -14,7 +14,7 @@ Define a global variable:
 
 Define a local variable:
 ```
-(let [(a 42)] (+ a 1))
+(let [a 42] (+ a 1))
 ```
 
 ### Function
@@ -45,6 +45,7 @@ The same as operators in Lua.
   (def id 114514)
   (defn drink-tea [self tea] (...)))
 (def s (Student "T" 24))
+(def b (Student? s)) ; res = true: bool
 ```
 
 ### Protocol
@@ -94,4 +95,7 @@ The same as operators in Lua.
 ```
 
 ### Metaprogramming
+TODO
+
+### Coroutine
 TODO
