@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::binary::literals::Literal;
 
 pub trait ExpressionLike {
@@ -16,12 +18,22 @@ impl StatementLike for Literal {
   
 }
 
+pub struct FuncInfo {
+  pub constants: HashMap<Literal, u32>
+}
+
+impl FuncInfo {
+  pub fn new(csts: HashMap<Literal, u32>) -> FuncInfo {
+    FuncInfo { constants: csts }
+  }
+}
+
 pub struct Program {
-  instructions: Vec<Box<dyn StatementLike>>
+  pub main: FuncInfo
 }
 
 impl Program {
-  pub fn new(ins: Vec<Box<dyn StatementLike>>) -> Program {
-    Program {instructions: ins}
+  pub fn new(info: FuncInfo) -> Program {
+    Program { main: info }
   }
 }

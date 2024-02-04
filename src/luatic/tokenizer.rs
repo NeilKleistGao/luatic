@@ -1,5 +1,6 @@
-use super::tokens::{Token, TokenPack, Literal};
+use super::tokens::{Token, TokenPack};
 use super::exceptions::{Position, Location};
+use crate::binary::literals::Literal;
 
 static mut LOC_ROW: usize = 1;
 static mut LOC_COL: usize = 1;
@@ -84,7 +85,7 @@ fn parse_string(cur: &mut std::str::Chars<'_>) -> Result<Token, (String, Locatio
   }
 
   let len = s.len();
-  Ok(Token::LiteralValue { value: Literal::StrLit(s), loc: start_pos + len})
+  Ok(Token::LiteralValue { value: Literal::Str(s), loc: start_pos + len})
 }
 
 fn parse_num(cur: &mut std::str::Chars<'_>, first: char) -> Result<Token, (String, Location)>{
@@ -101,9 +102,9 @@ fn parse_num(cur: &mut std::str::Chars<'_>, first: char) -> Result<Token, (Strin
 
   let len = s.len();
   match s.parse::<i64>() {
-    Ok(num) => Ok(Token::LiteralValue { value: Literal::IntLit(num), loc: start_pos + len }),
+    Ok(num) => Ok(Token::LiteralValue { value: Literal::Int(num), loc: start_pos + len }),
     Err(_) => match s.parse::<f64>() {
-      Ok(num) => Ok(Token::LiteralValue { value: Literal::NumLit(num), loc: start_pos + len }),
+      Ok(num) => Ok(Token::LiteralValue { value: Literal::Number(num), loc: start_pos + len }),
       Err(_) => Err(("wrong number format.".to_string(), start_pos + len))
     }
   }

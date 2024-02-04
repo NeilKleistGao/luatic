@@ -1,11 +1,5 @@
 use super::exceptions::{Location, Exception};
-
-pub enum Literal {
-  StrLit(String),
-  IntLit(i64),
-  NumLit(f64),
-  BoolLit(bool)
-}
+use crate::binary::literals::Literal;
 
 pub enum Token {
   Identifier{name: String, loc: Location},

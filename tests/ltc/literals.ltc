@@ -1,5 +1,9 @@
 nil
+true
+false
+114514
 114514
 3.14159265
 "I am a robot"
 ; TODO: UTF-8 strings
+; TODO: Scientific notation
