@@ -53,8 +53,8 @@ impl Binary for LocalVar {
 
 pub struct Prototype {
   source: String,
-  line_defined: i64,
-  last_line_defined: i64,
+  line_defined: usize,
+  last_line_defined: usize,
   num_params: u8,
   is_vararg: u8,
   max_stack_size: u8,

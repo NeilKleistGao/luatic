@@ -11,7 +11,7 @@ static LONG_STR_TAG: u8 = 20;
 
 static LONG_STR_LEN: usize = 40;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum Literal {
   Nil,
   Boolean(bool),

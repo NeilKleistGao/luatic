@@ -33,6 +33,28 @@ impl Binary for u8 {
 
 impl Binary for i64 {
   fn to_binary(&self, to: &mut Vec<u8>) -> Result<(), String> {
+    let mut luac_int = self.to_be_bytes();
+    luac_int.reverse();
+    for b in &luac_int {
+      to.push(*b);
+    }
+    Ok(())
+  }
+}
+
+impl Binary for f64 {
+  fn to_binary(&self, to: &mut Vec<u8>) -> Result<(), String> {
+    let mut luac_num = self.to_be_bytes();
+    luac_num.reverse();
+    for b in &luac_num {
+      to.push(*b);
+    }
+    Ok(())
+  }
+}
+
+impl Binary for usize {
+  fn to_binary(&self, to: &mut Vec<u8>) -> Result<(), String> {
     let mut res: Vec<u8> = Vec::new();
     let mut prefix: u8 = 0b10000000;
     let mut n = *self;
@@ -53,27 +75,6 @@ impl Binary for i64 {
       to.push(*b);
     }
     Ok(())
-  }
-}
-
-impl Binary for f64 {
-  fn to_binary(&self, to: &mut Vec<u8>) -> Result<(), String> {
-    let mut luac_num = self.to_be_bytes();
-    luac_num.reverse();
-    for b in &luac_num {
-      to.push(*b);
-    }
-    Ok(())
-  }
-}
-
-impl Binary for usize {
-  fn to_binary(&self, to: &mut Vec<u8>) -> Result<(), String> {
-    let res: Result<i64, _> = (*self).try_into();
-    match res {
-      Ok(i) => i.to_binary(to),
-      Err(why) => Err(why.to_string())
-    }
   }
 }
 
