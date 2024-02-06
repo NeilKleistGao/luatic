@@ -14,7 +14,10 @@ fn parse_function(tokens: &Vec<Token>) -> FuncInfo {
 
   for tok in tokens {
     match tok {
-      Token::LiteralValue { value, loc } => {
+      Token::LiteralValue { value, loc: _ } => {
+        if !constants.contains_key(value) {
+          constants.insert(value.clone(), u32::try_from(constants.len()).unwrap());
+        }
       }
       _ => () // TODO
     }

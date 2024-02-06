@@ -7,5 +7,5 @@ pub fn gen_chunk(prgm: Program, filename: String) -> Chunk {
 }
 
 fn gen_main_proto(info: FuncInfo, filename: String) -> Prototype {
-  Prototype::empty(filename)
+  Prototype::new(filename, info)
 }

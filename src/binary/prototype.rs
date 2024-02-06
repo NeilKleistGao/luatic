@@ -1,4 +1,6 @@
+use std::collections::HashMap;
 use std::vec::Vec;
+use crate::luatic::ast::FuncInfo;
 use crate::to_binary;
 
 use super::literals::Literal;
@@ -67,9 +69,9 @@ pub struct Prototype {
 }
 
 impl Prototype {
-  pub fn empty(source: String) -> Prototype {
+  pub fn new(source: String, info: FuncInfo) -> Prototype {
     Prototype {
-      source: String::from("@") + &source,
+      source: String::from("@") + &source, // TODO: ignore if it is sub prototype
       line_defined: 0,
       last_line_defined: 0,
       num_params: 0,
@@ -79,7 +81,7 @@ impl Prototype {
         Instruction::var_arg_prep(),
         Instruction::ret(),
       ],
-      constants: Vec::new(),
+      constants: write_constant_table(info.constants),
       up_values: vec![UpValue::empty()],
       proto: Vec::new(),
       line_info: vec![1, 0],
@@ -111,4 +113,10 @@ impl Binary for Prototype {
 
     Ok(())
   }
+}
+
+fn write_constant_table(table: HashMap<Literal, u32>) -> Vec<Literal> {
+  let mut temp: Vec<(&Literal, &u32)> = table.iter().collect();
+  temp.sort_by(|x, y| x.1.cmp(y.1));
+  temp.iter().map(|x| x.0.clone()).collect()
 }
