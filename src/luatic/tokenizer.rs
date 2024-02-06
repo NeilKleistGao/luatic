@@ -123,7 +123,18 @@ fn parse_ident(cur: &mut std::str::Chars<'_>, first: char) -> Token {
   }
 
   let len = s.len();
-  Token::Identifier { name: s, loc: start_pos + len}
+  if s == "nil" {
+    Token::LiteralValue { value: Literal::Nil, loc: start_pos + len }
+  }
+  else if s == "true" {
+    Token::LiteralValue { value: Literal::Boolean(true), loc: start_pos + len }
+  }
+  else if s == "false" {
+    Token::LiteralValue { value: Literal::Boolean(false), loc: start_pos + len }
+  }
+  else {
+    Token::Identifier { name: s, loc: start_pos + len}
+  }
 }
 
 pub fn tokenize(code: String) -> TokenPack {
