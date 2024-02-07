@@ -7,6 +7,14 @@ impl Position {
   pub fn new(r: usize, c: usize) -> Position {
     Position { row: r, col: c }
   }
+
+  pub fn to_string(&self) -> String {
+    let mut s = "Ln ".to_string();
+    s.push_str(self.row.to_string().as_str());
+    s.push_str(", Col ");
+    s.push_str(self.col.to_string().as_str());
+    s
+  }
 }
 
 impl std::ops::Add<usize> for Position {
@@ -19,8 +27,8 @@ impl std::ops::Add<usize> for Position {
 }
 
 pub struct Location {
-  begin: Position,
-  end: Position
+  pub begin: Position,
+  pub end: Position
 }
 
 impl Location {

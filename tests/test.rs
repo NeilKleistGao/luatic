@@ -21,8 +21,15 @@ mod tests {
                   let ext = filename.extension().unwrap_or_default().to_str().unwrap_or_default();
                   if ext.ends_with("ltc") {
                     println!("test file {:?}", filename);
-                    let _ = compile(CompileOption::new(filename.to_str().unwrap().to_string()));
-                    // TODO: check errors
+                    let res = compile(CompileOption::new(filename.to_str().unwrap().to_string()));
+                    match res {
+                      Ok(_) => (),
+                      Err(msg) => {
+                        let mut err_file = filename;
+                        err_file.set_extension("report");
+                        let _ = std::fs::write(err_file, msg);
+                      }
+                    }
                   }
                 }
               }

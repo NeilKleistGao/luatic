@@ -1,12 +1,10 @@
 use std::ffi::OsStr;
 use std::path::*;
 
-use crate::binary::prototype::Prototype;
 use crate::luatic::codegen::gen_chunk;
 use crate::luatic::parser::parse;
 use crate::luatic::tokenizer::tokenize;
 use crate::luatic::exceptions::Exception;
-use crate::binary::chunk::*;
 use crate::binary::binary::*;
 
 pub struct CompileOption {
@@ -22,7 +20,26 @@ impl CompileOption {
 }
 
 fn format_errors(errors: &Vec<Exception>) -> String {
-  "".to_string() // TODO
+  let mut res = "".to_string();
+  for err in errors {
+    let (msg, loc) = match err {
+      Exception::ParsingException { msg, loc } => {
+        res.push_str("[Parse Exception] ");
+        (msg, loc)
+      }
+      Exception::CodeGenException { msg, loc } => {
+        res.push_str("[Parse Exception] ");
+        (msg, loc)
+      }
+    };
+
+    res.push_str(msg.as_str());
+    res.push_str(" at [");
+    res.push_str(&loc.begin.to_string().as_str());
+    res.push_str("]\n");
+  }
+
+  res
 }
 
 pub fn compile(option: CompileOption) -> Result<(), String> {
