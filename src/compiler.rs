@@ -39,7 +39,13 @@ pub fn compile(option: CompileOption) -> Result<(), String> {
       };
       let program = parse(tokens);
       let filename = Path::new(&option.filename).file_name().unwrap_or(OsStr::new(""));
-      let chunk = gen_chunk(program, filename.to_str().unwrap().to_string());
+      let chunk = match program {
+        Ok(prgm) => gen_chunk(prgm, filename.to_str().unwrap().to_string()),
+        Err(msgs) => {
+          let err = format_errors(&msgs);
+          return Err(err)
+        }
+      };
       match write_binary(option.output, chunk) {
         Ok(_) => Ok(()),
         Err(why) => Err(why.to_string())
