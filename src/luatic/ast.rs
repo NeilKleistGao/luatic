@@ -18,6 +18,14 @@ impl StatementLike for Literal {
   
 }
 
+pub struct Definition {
+  pub name: String
+  // TODO: expression
+}
+
+impl StatementLike for Definition {
+}
+
 pub struct FuncInfo {
   pub constants: HashMap<Literal, u32>
 }
