@@ -7,6 +7,24 @@ pub enum Token {
   Punctuation{p: char, loc: Location}
 }
 
+impl Token {
+  pub fn describe(&self) -> String {
+    match self {
+      Token::Identifier { .. } => "identifier".to_string(),
+      Token::LiteralValue { .. } => "literal value".to_string(),
+      Token::Punctuation { .. } => "punctuation".to_string()
+    }
+  }
+
+  pub fn get_pos(&self) -> &Location {
+    match self {
+      Token::Identifier { name: _, loc } => loc,
+      Token::LiteralValue { value: _, loc } => loc,
+      Token::Punctuation { p: _, loc } => loc
+    }
+  }
+}
+
 pub struct TokenPack {
   tokens: Vec<Token>,
   exceptions: Vec<Exception>

@@ -1,3 +1,4 @@
+#[derive(Clone, Debug)]
 pub struct Position {
   row: usize,
   col: usize
@@ -26,6 +27,7 @@ impl std::ops::Add<usize> for Position {
   }
 }
 
+#[derive(Clone, Debug)]
 pub struct Location {
   pub begin: Position,
   pub end: Position

@@ -36,6 +36,8 @@ fn format_errors(errors: &Vec<Exception>) -> String {
     res.push_str(msg.as_str());
     res.push_str(" at [");
     res.push_str(&loc.begin.to_string().as_str());
+    res.push_str("] ~ [");
+    res.push_str(&loc.end.to_string().as_str());
     res.push_str("]\n");
   }
 
