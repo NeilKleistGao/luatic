@@ -4,3 +4,4 @@ pub mod exceptions;
 pub mod parser;
 pub mod ast;
 pub mod codegen;
+mod scanner;

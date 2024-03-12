@@ -5,5 +5,7 @@ false
 114514
 3.14159265
 "I am a robot"
+1e6
+1e-6
 ; TODO: UTF-8 strings
-; TODO: Scientific notation
+; TODO: hex

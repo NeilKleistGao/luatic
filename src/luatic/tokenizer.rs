@@ -1,86 +1,118 @@
 use super::tokens::{Token, TokenPack};
 use super::exceptions::{Position, Location};
+use super::scanner::Scanner;
 use crate::binary::literals::Literal;
 
-static mut LOC_ROW: usize = 1;
-static mut LOC_COL: usize = 1;
+struct Source {
+  code: Vec<char>,
+  row: usize,
+  col: usize,
+  loc: usize,
+  len: usize
+}
 
-fn new_line() {
-  unsafe {
-    LOC_ROW = LOC_ROW + 1;
-    LOC_COL = 1;
+impl Source {
+  pub fn new(code: String) -> Source {
+    Source { code: code.chars().collect(), row: 1, col: 1, loc: 0, len: code.len() }
   }
 }
 
-fn step() {
-  unsafe {
-    LOC_COL = LOC_COL + 1;
+impl Scanner<char> for Source {
+  fn consume(&mut self) {
+    match self.cur() {
+      Some('\n') => {
+        self.row += 1;
+        self.col = 1;
+        self.loc += 1;
+      },
+      Some(_) => {
+        self.col += 1;
+        self.loc += 1;
+      }
+      None => {}
+    }
   }
-}
 
-fn reset_location() {
-  unsafe {
-    LOC_ROW = 1;
-    LOC_COL = 1;
+  fn cur(&self) -> Option<char> {
+    if self.loc < self.len {
+      Some(self.code[self.loc])
+    }
+    else {
+      None
+    }
   }
-}
 
-fn get_position() -> Position {
-  unsafe {
-    Position::new(LOC_ROW, LOC_COL)
-  }
-}
-
-fn next(cur: &mut std::str::Chars<'_>) -> Option<char> {
-  loop {
-    match cur.next() {
-      res @ Some(c) => {
-        if c == '\n' {
-          new_line();
+  fn consume_until(&mut self, predicate: fn(char) -> bool) {
+    loop {
+      match self.cur() {
+        Some(c) => if !predicate(c) {
+          self.consume();
         }
         else {
-          step();
+          break;
         }
-
-        return res
+        _ => break
       }
-      res => return res
     }
+  }
+
+  fn look_ahead(&self, step: usize) -> Option<char> {
+    if self.loc + step < self.len {
+      Some(self.code[self.loc + step])
+    }
+    else {
+      None
+    }
+  }
+
+  fn get_position(&self) -> Position {
+    Position::new(self.row, self.col)
   }
 }
 
-fn swallow_line(cur: &mut std::str::Chars<'_>) {
-  loop {
-    match next(cur) {
-      Some('\n') => {
-        new_line();
-        break
-      }
-      Some(_) => continue,
-      None => break
-    }
-  }
+fn swallow_line(source: &mut Source) {
+  source.consume_until(|c: char| c == '\n');
+  source.consume();
 }
 
-fn parse_string(cur: &mut std::str::Chars<'_>) -> Result<Token, (String, Location)> {
+fn parse_string(source: &mut Source) -> Result<Token, (String, Location)> {
   let mut s = String::new();
-  let start_pos = get_position();
+  let start_pos = source.get_position();
+  source.consume();
+
   loop {
-    match next(cur) {
-      Some('"') => break,
-      Some('\\') => match next(cur) {
-        Some('n') => s.push('\n'),
-        Some('t') => s.push('\t'),
-        Some('r') => s.push('\r'),
-        _ => {
-          swallow_line(cur);
-          return Err(("unexpected escape.".to_string(), get_position() + 1))
+    match source.cur() {
+      Some('"') => {
+        source.consume();
+        break;
+      },
+      Some('\\') => {
+        let pos = source.get_position();
+        source.consume();
+        match source.cur() {
+          Some('n') => s.push('\n'),
+          Some('t') => s.push('\t'),
+          Some('r') => s.push('\r'),
+          Some('"') => s.push('"'),
+          Some('\\') => s.push('\\'),
+          _ => {
+            source.consume_until(|c: char| c == '"');
+            source.consume();
+            return Err(("unexpected escape.".to_string(), pos + 2))
+          }
         }
-      }
-      Some('\n') => return Err(("unexpected line feed.".to_string(), get_position() + 1)),
-      Some(c) => s.push(c),
+      },
+      Some('\n') => {
+        let pos = source.get_position();
+        source.consume();
+        return Err(("unexpected line feed.".to_string(), pos - 1));
+      },
+      Some(c) => {
+        source.consume();
+        s.push(c);
+      },
       None =>
-        return Err(("expect ending of string.".to_string(), get_position() + 1))
+        return Err(("expect ending of string.".to_string(), source.get_position() + 1))
     }
   }
 
@@ -88,14 +120,17 @@ fn parse_string(cur: &mut std::str::Chars<'_>) -> Result<Token, (String, Locatio
   Ok(Token::LiteralValue { value: Literal::Str(s), loc: start_pos + len})
 }
 
-fn parse_num(cur: &mut std::str::Chars<'_>, first: char) -> Result<Token, (String, Location)>{
-  let mut s = first.to_string();
-  let start_pos = get_position();
+fn parse_num(source: &mut Source) -> Result<Token, (String, Location)>{
+  let mut s = String::new();
+  let start_pos = source.get_position();
 
   loop {
-    match next(cur) {
-      Some(c) if c.is_whitespace() || c.is_ascii_control() || (c.is_ascii_punctuation() && c != '.') => break,
-      Some(c) => s.push(c),
+    match source.cur() {
+      Some(c) if c.is_whitespace() || c.is_ascii_control() || (c.is_ascii_punctuation() && c != '.' && c != '-') => break,
+      Some(c) => {
+        source.consume();
+        s.push(c);
+      },
       None => break
     }
   }
@@ -110,14 +145,17 @@ fn parse_num(cur: &mut std::str::Chars<'_>, first: char) -> Result<Token, (Strin
   }
 }
 
-fn parse_ident(cur: &mut std::str::Chars<'_>, first: char) -> Token {
-  let mut s = first.to_string();
-  let start_pos = get_position();
+fn parse_ident(source: &mut Source) -> Token {
+  let mut s = String::new();
+  let start_pos = source.get_position();
 
   loop {
-    match next(cur) {
+    match source.cur() {
       Some(c) if c.is_whitespace() || c.is_ascii_control() => break,
-      Some(c) => s.push(c),
+      Some(c) => {
+        source.consume();
+        s.push(c);
+      },
       None => break
     }
   }
@@ -138,25 +176,36 @@ fn parse_ident(cur: &mut std::str::Chars<'_>, first: char) -> Token {
 }
 
 pub fn tokenize(code: String) -> TokenPack {
-  reset_location();
   let mut pack = TokenPack::new();
-  let mut cur = code.chars();
+  let mut source = Source::new(code);
 
   loop {
-    match next(&mut cur) {
+    match source.cur() {
       Some(c) => match c {
-        ';' => swallow_line(&mut cur),
-        '"' => match parse_string(&mut cur) {
+        ';' => { // * Comment
+          swallow_line(&mut source);
+        },
+        '"' => match parse_string(&mut source) { // * String
           Ok(res) => pack.add(res),
           Err((msg, loc)) => pack.throw(msg, loc)
         }
-        '(' | ')' | ',' | '[' | ']' | '{' | '}' => pack.add(Token::Punctuation { p: c, loc: get_position() + 1 }),
-        c if c.is_numeric() => match parse_num(&mut cur, c) {
+        '(' | ')' | ',' | '[' | ']' | '{' | '}' => {
+          source.consume();
+          pack.add(Token::Punctuation { p: c, loc: source.get_position() - 1 });
+        },
+        c if c.is_numeric() => match parse_num(&mut source) {
           Ok(res) => pack.add(res),
           Err((msg, loc)) => pack.throw(msg, loc)
         }
-        c if c.is_whitespace() || c.is_ascii_control() => continue,
-        c => pack.add(parse_ident(&mut cur, c))
+        c if c.is_whitespace() => {
+          source.consume();
+          continue;
+        },
+        c if c.is_ascii_control() => {
+          source.consume();
+          pack.throw("unexpected character.".to_string(), source.get_position() - 1);
+        },
+        _c => pack.add(parse_ident(&mut source))
       }
       None => break
     }

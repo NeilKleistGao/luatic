@@ -27,6 +27,15 @@ impl std::ops::Add<usize> for Position {
   }
 }
 
+impl std::ops::Sub<usize> for Position {
+  type Output = Location;
+  fn sub(self, rhs: usize) -> Self::Output {
+    let row = self.row;
+    let col = self.col;
+    Location::new(Position { row: row, col: col - rhs }, self)
+  }
+}
+
 #[derive(Clone, Debug)]
 pub struct Location {
   pub begin: Position,
