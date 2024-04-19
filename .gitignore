@@ -1,3 +1,7 @@
 /target
 *.luac
 *.tags
+/.antlr
+*.jar
+*.tokens
+*.interp

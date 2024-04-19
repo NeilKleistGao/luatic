@@ -1,4 +1,5 @@
 * eol=lf
-*.ltc linguist-language=Scheme
+*.ltc linguist-language=Lua
 *.luac binary
 *.check linguist-vendored
+src/frontend/*.rs linguist-vendored

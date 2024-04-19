@@ -1,0 +1,2 @@
+global x = true;
+global not_x = false;

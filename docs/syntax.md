@@ -28,13 +28,13 @@
 ### Variables
 Define a global variable:
 ```lua
-global x = 42
+global x = 42;
 ```
 
 Define a local variable:
 ```lua
-local a = 42
-local b = 42 in ...
+local a = 42;
+local b = 42 in ...;
 local c = 42 in {
   ...
 }
@@ -44,7 +44,7 @@ local c = 42 in {
 Define a function:
 ```lua
 function f(x) {
-  return x + 1
+  return x + 1;
 }
 
 function(x) {
@@ -70,7 +70,7 @@ else {
 
 ```lua
 match ... {
-  ... => ...,
+  ... => ...;
   ... => {}
   _ => ...
 }
@@ -78,7 +78,7 @@ match ... {
 
 ### Loop
 ```lua
-for (..., ..., ...) {
+for (...; ...; ...) {
   ...
 }
 ```
@@ -107,7 +107,7 @@ hello comment!
     ...
   }
   [name]: "...${--[[ must return a string ]]--}..."
-  ${ goto another label }
+  ${ goto another label; }
 }
 
 <<pure code block>> ${
