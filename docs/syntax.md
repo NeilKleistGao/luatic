@@ -1,101 +1,152 @@
 ## Syntax Doc
 
+### Keywords
+- number
+- string
+- bool
+- true
+- false
+- void
+- global
+- local
+- in
+- if
+- match
+- else
+- function
+- return
+- for
+- while
+- goto
+- yield
+
 ### Types
-- Basic types: `42: int`, `3.14: num`, `"abcd": string`, `true: bool`, `nil: nil`
-- Table: `{ ("a" . 1) (2 . 2)] }`, `{1 2 3 4}`(i.e., `{(1 . 1) (2 . 2) (3 . 3) (4 . 4)}`)
-- Record
-- Protocol
+- Basic types: `3.14: number`, `"abcd": string`, `true: bool`, and `void`
+- Table: `{ ["abc"] = 42 }: { ["abc"]: number }`. keys can only be string/number/bool.
+- Function `(number, string) -> number`
 
 ### Variables
 Define a global variable:
-```
-(def a 42)
+```lua
+global x = 42
 ```
 
 Define a local variable:
-```
-(let [a 42] (+ a 1))
+```lua
+local a = 42
+local b = 42 in ...
+local c = 42 in {
+  ...
+}
 ```
 
 ### Function
 Define a function:
-```
-(defn inc [x] (+ x 1))
-```
+```lua
+function f(x) {
+  return x + 1
+}
 
-Define an anonymous function:
-```
-(fn [x] (+ x 1))
-```
-
-### Block
-```
-(do
-  (...)
-  (...))
+function(x) {
+  ...
+}
 ```
 
 ### Operators
 The same as operators in Lua.
 
-### Record
-```
-(record Student [name age]
-  (extend Human)
-  (def id 114514)
-  (defn drink-tea [self tea] (...)))
-(def s (Student "T" 24))
-(def b (Student? s)) ; res = true: bool
-```
-
-### Protocol
-```
-(protocol Foo [x]
-  (def a 42)
-  (defn f [self] (:a self))
-  (undef g)
-  (override h [self] (+ (:b super) 1)))
-(record Bar [x]
-  (with (Foo nil))
-  (def g 0)
-  (defn h))
-```
-
-### Mutation
-```
-(let [a {1 2 3 4 5}] (do
-  (set! (:1 a) 0)))
-```
-
 ### Condition
-```
-(if true (do ...) (do ...))
+```lua
+if (...) {
+  ...
+}
+else if (...) {
+  ...
+}
+else {
+  ...
+}
 ```
 
-```
-(match
-  (== v 1) ("1")
-  (== v 2) ("2")
-  ("wtf"))
+```lua
+match ... {
+  ... => ...,
+  ... => {}
+  _ => ...
+}
 ```
 
 ### Loop
+```lua
+for (..., ..., ...) {
+  ...
+}
 ```
-(for [i 0] (< i 10) (+ i 1) (do ...))
+
+```lua
+while (...) {
+  ...
+}
 ```
 
 ### Comment
-```
-; hello comment!
-```
-
-### Import
-```
-(import "another.ltc")
+```lua
+-- hello comment!
+--[[
+hello comment!
+--
 ```
 
-### Metaprogramming
-TODO
+### Dialog
+```
+<<label name>> {
+  [name]: ""
+  [name(status)]: ""
+  ${--[[ execute code here. dialog scope. ]]--}
+  [name]: {
+    ...
+  }
+  [name]: "...${--[[ must return a string ]]--}..."
+  ${ goto another label }
+}
+
+<<pure code block>> ${
+  ...
+}
+```
+
+### Selection
+```
+<<label name>> {
+  select {
+    "..." => ${ ... },
+    "..." => ${ ... }
+  }
+}
+```
+
+### Language Tags
+```
+-- lang: zh-CN
+-- single line
+-- must appear at the beginning of the file!
+```
+
+```
+-- 1!5!
+-- has highlight
+-- but does nothing
+```
 
 ### Coroutine
-TODO
+```lua
+function f(x) {
+  local t = x
+  while (true) {
+    t = t + 1
+    yield t
+  }
+
+  return 0 -- or it would be typed to void.
+}
+```

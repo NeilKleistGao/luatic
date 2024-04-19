@@ -1,3 +1,0 @@
-(def a 10)
-(def b "abc")
-(def a-name-invalid-in-lua 114514)

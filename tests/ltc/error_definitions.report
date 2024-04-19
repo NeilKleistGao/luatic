@@ -1,3 +1,0 @@
-[Parse Exception] duplicated variable name a. at [Ln 2, Col 6] ~ [Ln 2, Col 7]
-[Parse Exception] a variable name is expected, but literal value is found. at [Ln 3, Col 6] ~ [Ln 3, Col 9]
-[Parse Exception] a variable name is expected, but EOF is found. at [Ln 4, Col 2] ~ [Ln 4, Col 5]

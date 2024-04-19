@@ -1,11 +1,14 @@
 use std::collections::HashMap;
 use std::vec::Vec;
-use crate::luatic::ast::FuncInfo;
 use crate::to_binary;
 
 use super::literals::Literal;
 use super::binary::Binary;
 use super::instructions::Instruction;
+
+struct FuncInfo {
+  pub constants: HashMap<Literal, u32>
+}
 
 struct AbsLineInfo {
   pc: i64,
