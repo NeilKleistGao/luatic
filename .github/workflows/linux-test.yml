@@ -28,7 +28,7 @@ jobs:
           override: true
       - uses: leafo/gh-actions-lua@v10
       - run: cargo test --package luatic --test test -- tests --nocapture
-      - run: ./tests/scripts/run.sh
+      - run: ./scripts/run.sh
       - name: check no change
         shell: bash
         run: git diff-files -p --exit-code --diff-filter=ADMR -w

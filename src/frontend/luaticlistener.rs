@@ -34,6 +34,26 @@ fn enter_global_stat(&mut self, _ctx: &Global_statContext<'input>) { }
  * @param ctx the parse tree
  */
 fn exit_global_stat(&mut self, _ctx: &Global_statContext<'input>) { }
+/**
+ * Enter a parse tree produced by {@link luaticParser#number}.
+ * @param ctx the parse tree
+ */
+fn enter_number(&mut self, _ctx: &NumberContext<'input>) { }
+/**
+ * Exit a parse tree produced by {@link luaticParser#number}.
+ * @param ctx the parse tree
+ */
+fn exit_number(&mut self, _ctx: &NumberContext<'input>) { }
+/**
+ * Enter a parse tree produced by {@link luaticParser#string}.
+ * @param ctx the parse tree
+ */
+fn enter_string(&mut self, _ctx: &StringContext<'input>) { }
+/**
+ * Exit a parse tree produced by {@link luaticParser#string}.
+ * @param ctx the parse tree
+ */
+fn exit_string(&mut self, _ctx: &StringContext<'input>) { }
 
 }
 
