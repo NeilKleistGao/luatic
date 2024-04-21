@@ -1,4 +1,4 @@
-// Generated from luatic.g4 by ANTLR 4.8
+// Generated from Luatic.g4 by ANTLR 4.8
 #![allow(dead_code)]
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
@@ -25,6 +25,8 @@ use antlr_rust::int_stream::EOF;
 use antlr_rust::vocabulary::{Vocabulary,VocabularyImpl};
 use antlr_rust::token_factory::{CommonTokenFactory,TokenFactory, TokenAware};
 use super::luaticlistener::*;
+use super::luaticvisitor::*;
+
 use antlr_rust::lazy_static;
 use antlr_rust::{TidAble,TidExt};
 
@@ -86,16 +88,16 @@ use std::any::{Any,TypeId};
 
 
 type BaseParserType<'input, I> =
-	BaseParser<'input,luaticParserExt<'input>, I, luaticParserContextType , dyn luaticListener<'input> + 'input >;
+	BaseParser<'input,LuaticParserExt<'input>, I, LuaticParserContextType , dyn LuaticListener<'input> + 'input >;
 
 type TokenType<'input> = <LocalTokenFactory<'input> as TokenFactory<'input>>::Tok;
 pub type LocalTokenFactory<'input> = CommonTokenFactory;
 
-pub type luaticTreeWalker<'input,'a> =
-	ParseTreeWalker<'input, 'a, luaticParserContextType , dyn luaticListener<'input> + 'a>;
+pub type LuaticTreeWalker<'input,'a> =
+	ParseTreeWalker<'input, 'a, LuaticParserContextType , dyn LuaticListener<'input> + 'a>;
 
-/// Parser for luatic grammar
-pub struct luaticParser<'input,I,H>
+/// Parser for Luatic grammar
+pub struct LuaticParser<'input,I,H>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
     H: ErrorStrategy<'input,BaseParserType<'input,I>>
@@ -106,7 +108,7 @@ where
     pub err_handler: H,
 }
 
-impl<'input, I, H> luaticParser<'input, I, H>
+impl<'input, I, H> LuaticParser<'input, I, H>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
     H: ErrorStrategy<'input,BaseParserType<'input,I>>
@@ -128,7 +130,7 @@ where
 			base: BaseParser::new_base_parser(
 				input,
 				Arc::clone(&interpreter),
-				luaticParserExt{
+				LuaticParserExt{
 					_pd: Default::default(),
 				}
 			),
@@ -142,7 +144,7 @@ where
 
 type DynStrategy<'input,I> = Box<dyn ErrorStrategy<'input,BaseParserType<'input,I>> + 'input>;
 
-impl<'input, I> luaticParser<'input, I, DynStrategy<'input,I>>
+impl<'input, I> LuaticParser<'input, I, DynStrategy<'input,I>>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
 {
@@ -151,7 +153,7 @@ where
     }
 }
 
-impl<'input, I> luaticParser<'input, I, DefaultErrorStrategy<'input,luaticParserContextType>>
+impl<'input, I> LuaticParser<'input, I, DefaultErrorStrategy<'input,LuaticParserContextType>>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
 {
@@ -160,30 +162,40 @@ where
     }
 }
 
-/// Trait for monomorphized trait object that corresponds to the nodes of parse tree generated for luaticParser
-pub trait luaticParserContext<'input>:
-	for<'x> Listenable<dyn luaticListener<'input> + 'x > + 
-	ParserRuleContext<'input, TF=LocalTokenFactory<'input>, Ctx=luaticParserContextType>
+/// Trait for monomorphized trait object that corresponds to the nodes of parse tree generated for LuaticParser
+pub trait LuaticParserContext<'input>:
+	for<'x> Listenable<dyn LuaticListener<'input> + 'x > + 
+	for<'x> Visitable<dyn LuaticVisitor<'input> + 'x > + 
+	ParserRuleContext<'input, TF=LocalTokenFactory<'input>, Ctx=LuaticParserContextType>
 {}
 
-antlr_rust::coerce_from!{ 'input : luaticParserContext<'input> }
+antlr_rust::coerce_from!{ 'input : LuaticParserContext<'input> }
 
-impl<'input> luaticParserContext<'input> for TerminalNode<'input,luaticParserContextType> {}
-impl<'input> luaticParserContext<'input> for ErrorNode<'input,luaticParserContextType> {}
-
-antlr_rust::tid! { impl<'input> TidAble<'input> for dyn luaticParserContext<'input> + 'input }
-
-antlr_rust::tid! { impl<'input> TidAble<'input> for dyn luaticListener<'input> + 'input }
-
-pub struct luaticParserContextType;
-antlr_rust::tid!{luaticParserContextType}
-
-impl<'input> ParserNodeType<'input> for luaticParserContextType{
-	type TF = LocalTokenFactory<'input>;
-	type Type = dyn luaticParserContext<'input> + 'input;
+impl<'input, 'x, T> VisitableDyn<T> for dyn LuaticParserContext<'input> + 'input
+where
+    T: LuaticVisitor<'input> + 'x,
+{
+    fn accept_dyn(&self, visitor: &mut T) {
+        self.accept(visitor as &mut (dyn LuaticVisitor<'input> + 'x))
+    }
 }
 
-impl<'input, I, H> Deref for luaticParser<'input, I, H>
+impl<'input> LuaticParserContext<'input> for TerminalNode<'input,LuaticParserContextType> {}
+impl<'input> LuaticParserContext<'input> for ErrorNode<'input,LuaticParserContextType> {}
+
+antlr_rust::tid! { impl<'input> TidAble<'input> for dyn LuaticParserContext<'input> + 'input }
+
+antlr_rust::tid! { impl<'input> TidAble<'input> for dyn LuaticListener<'input> + 'input }
+
+pub struct LuaticParserContextType;
+antlr_rust::tid!{LuaticParserContextType}
+
+impl<'input> ParserNodeType<'input> for LuaticParserContextType{
+	type TF = LocalTokenFactory<'input>;
+	type Type = dyn LuaticParserContext<'input> + 'input;
+}
+
+impl<'input, I, H> Deref for LuaticParser<'input, I, H>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
     H: ErrorStrategy<'input,BaseParserType<'input,I>>
@@ -195,7 +207,7 @@ where
     }
 }
 
-impl<'input, I, H> DerefMut for luaticParser<'input, I, H>
+impl<'input, I, H> DerefMut for LuaticParser<'input, I, H>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
     H: ErrorStrategy<'input,BaseParserType<'input,I>>
@@ -205,22 +217,22 @@ where
     }
 }
 
-pub struct luaticParserExt<'input>{
+pub struct LuaticParserExt<'input>{
 	_pd: PhantomData<&'input str>,
 }
 
-impl<'input> luaticParserExt<'input>{
+impl<'input> LuaticParserExt<'input>{
 }
-antlr_rust::tid! { luaticParserExt<'a> }
+antlr_rust::tid! { LuaticParserExt<'a> }
 
-impl<'input> TokenAware<'input> for luaticParserExt<'input>{
+impl<'input> TokenAware<'input> for LuaticParserExt<'input>{
 	type TF = LocalTokenFactory<'input>;
 }
 
-impl<'input,I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>> ParserRecog<'input, BaseParserType<'input,I>> for luaticParserExt<'input>{}
+impl<'input,I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>> ParserRecog<'input, BaseParserType<'input,I>> for LuaticParserExt<'input>{}
 
-impl<'input,I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>> Actions<'input, BaseParserType<'input,I>> for luaticParserExt<'input>{
-	fn get_grammar_file_name(&self) -> & str{ "luatic.g4"}
+impl<'input,I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>> Actions<'input, BaseParserType<'input,I>> for LuaticParserExt<'input>{
+	fn get_grammar_file_name(&self) -> & str{ "Luatic.g4"}
 
    	fn get_rule_names(&self) -> &[& str] {&ruleNames}
 
@@ -237,28 +249,35 @@ pub struct ExprContextExt<'input>{
 ph:PhantomData<&'input str>
 }
 
-impl<'input> luaticParserContext<'input> for ExprContext<'input>{}
+impl<'input> LuaticParserContext<'input> for ExprContext<'input>{}
 
-impl<'input,'a> Listenable<dyn luaticListener<'input> + 'a> for ExprContext<'input>{
-		fn enter(&self,listener: &mut (dyn luaticListener<'input> + 'a)) {
+impl<'input,'a> Listenable<dyn LuaticListener<'input> + 'a> for ExprContext<'input>{
+		fn enter(&self,listener: &mut (dyn LuaticListener<'input> + 'a)) {
 			listener.enter_every_rule(self);
 			listener.enter_expr(self);
-		}fn exit(&self,listener: &mut (dyn luaticListener<'input> + 'a)) {
+		}
+		fn exit(&self,listener: &mut (dyn LuaticListener<'input> + 'a)) {
 			listener.exit_expr(self);
 			listener.exit_every_rule(self);
 		}
 }
 
+impl<'input,'a> Visitable<dyn LuaticVisitor<'input> + 'a> for ExprContext<'input>{
+	fn accept(&self,visitor: &mut (dyn LuaticVisitor<'input> + 'a)) {
+		visitor.visit_expr(self);
+	}
+}
+
 impl<'input> CustomRuleContext<'input> for ExprContextExt<'input>{
 	type TF = LocalTokenFactory<'input>;
-	type Ctx = luaticParserContextType;
+	type Ctx = LuaticParserContextType;
 	fn get_rule_index(&self) -> usize { RULE_expr }
 	//fn type_rule_index() -> usize where Self: Sized { RULE_expr }
 }
 antlr_rust::tid!{ExprContextExt<'a>}
 
 impl<'input> ExprContextExt<'input>{
-	fn new(parent: Option<Rc<dyn luaticParserContext<'input> + 'input > >, invoking_state: isize) -> Rc<ExprContextAll<'input>> {
+	fn new(parent: Option<Rc<dyn LuaticParserContext<'input> + 'input > >, invoking_state: isize) -> Rc<ExprContextAll<'input>> {
 		Rc::new(
 			BaseParserRuleContext::new_parser_ctx(parent, invoking_state,ExprContextExt{
 				ph:PhantomData
@@ -267,16 +286,16 @@ impl<'input> ExprContextExt<'input>{
 	}
 }
 
-pub trait ExprContextAttrs<'input>: luaticParserContext<'input> + BorrowMut<ExprContextExt<'input>>{
+pub trait ExprContextAttrs<'input>: LuaticParserContext<'input> + BorrowMut<ExprContextExt<'input>>{
 
 /// Retrieves first TerminalNode corresponding to token KW_TRUE
 /// Returns `None` if there is no child corresponding to token KW_TRUE
-fn KW_TRUE(&self) -> Option<Rc<TerminalNode<'input,luaticParserContextType>>> where Self:Sized{
+fn KW_TRUE(&self) -> Option<Rc<TerminalNode<'input,LuaticParserContextType>>> where Self:Sized{
 	self.get_token(KW_TRUE, 0)
 }
 /// Retrieves first TerminalNode corresponding to token KW_FALSE
 /// Returns `None` if there is no child corresponding to token KW_FALSE
-fn KW_FALSE(&self) -> Option<Rc<TerminalNode<'input,luaticParserContextType>>> where Self:Sized{
+fn KW_FALSE(&self) -> Option<Rc<TerminalNode<'input,LuaticParserContextType>>> where Self:Sized{
 	self.get_token(KW_FALSE, 0)
 }
 
@@ -284,7 +303,7 @@ fn KW_FALSE(&self) -> Option<Rc<TerminalNode<'input,luaticParserContextType>>> w
 
 impl<'input> ExprContextAttrs<'input> for ExprContext<'input>{}
 
-impl<'input, I, H> luaticParser<'input, I, H>
+impl<'input, I, H> LuaticParser<'input, I, H>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
     H: ErrorStrategy<'input,BaseParserType<'input,I>>
@@ -341,28 +360,35 @@ pub struct StatContextExt<'input>{
 ph:PhantomData<&'input str>
 }
 
-impl<'input> luaticParserContext<'input> for StatContext<'input>{}
+impl<'input> LuaticParserContext<'input> for StatContext<'input>{}
 
-impl<'input,'a> Listenable<dyn luaticListener<'input> + 'a> for StatContext<'input>{
-		fn enter(&self,listener: &mut (dyn luaticListener<'input> + 'a)) {
+impl<'input,'a> Listenable<dyn LuaticListener<'input> + 'a> for StatContext<'input>{
+		fn enter(&self,listener: &mut (dyn LuaticListener<'input> + 'a)) {
 			listener.enter_every_rule(self);
 			listener.enter_stat(self);
-		}fn exit(&self,listener: &mut (dyn luaticListener<'input> + 'a)) {
+		}
+		fn exit(&self,listener: &mut (dyn LuaticListener<'input> + 'a)) {
 			listener.exit_stat(self);
 			listener.exit_every_rule(self);
 		}
 }
 
+impl<'input,'a> Visitable<dyn LuaticVisitor<'input> + 'a> for StatContext<'input>{
+	fn accept(&self,visitor: &mut (dyn LuaticVisitor<'input> + 'a)) {
+		visitor.visit_stat(self);
+	}
+}
+
 impl<'input> CustomRuleContext<'input> for StatContextExt<'input>{
 	type TF = LocalTokenFactory<'input>;
-	type Ctx = luaticParserContextType;
+	type Ctx = LuaticParserContextType;
 	fn get_rule_index(&self) -> usize { RULE_stat }
 	//fn type_rule_index() -> usize where Self: Sized { RULE_stat }
 }
 antlr_rust::tid!{StatContextExt<'a>}
 
 impl<'input> StatContextExt<'input>{
-	fn new(parent: Option<Rc<dyn luaticParserContext<'input> + 'input > >, invoking_state: isize) -> Rc<StatContextAll<'input>> {
+	fn new(parent: Option<Rc<dyn LuaticParserContext<'input> + 'input > >, invoking_state: isize) -> Rc<StatContextAll<'input>> {
 		Rc::new(
 			BaseParserRuleContext::new_parser_ctx(parent, invoking_state,StatContextExt{
 				ph:PhantomData
@@ -371,11 +397,11 @@ impl<'input> StatContextExt<'input>{
 	}
 }
 
-pub trait StatContextAttrs<'input>: luaticParserContext<'input> + BorrowMut<StatContextExt<'input>>{
+pub trait StatContextAttrs<'input>: LuaticParserContext<'input> + BorrowMut<StatContextExt<'input>>{
 
 /// Retrieves first TerminalNode corresponding to token PT_SEMI
 /// Returns `None` if there is no child corresponding to token PT_SEMI
-fn PT_SEMI(&self) -> Option<Rc<TerminalNode<'input,luaticParserContextType>>> where Self:Sized{
+fn PT_SEMI(&self) -> Option<Rc<TerminalNode<'input,LuaticParserContextType>>> where Self:Sized{
 	self.get_token(PT_SEMI, 0)
 }
 fn global_stat(&self) -> Option<Rc<Global_statContextAll<'input>>> where Self:Sized{
@@ -386,7 +412,7 @@ fn global_stat(&self) -> Option<Rc<Global_statContextAll<'input>>> where Self:Si
 
 impl<'input> StatContextAttrs<'input> for StatContext<'input>{}
 
-impl<'input, I, H> luaticParser<'input, I, H>
+impl<'input, I, H> LuaticParser<'input, I, H>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
     H: ErrorStrategy<'input,BaseParserType<'input,I>>
@@ -455,28 +481,35 @@ pub struct Global_statContextExt<'input>{
 ph:PhantomData<&'input str>
 }
 
-impl<'input> luaticParserContext<'input> for Global_statContext<'input>{}
+impl<'input> LuaticParserContext<'input> for Global_statContext<'input>{}
 
-impl<'input,'a> Listenable<dyn luaticListener<'input> + 'a> for Global_statContext<'input>{
-		fn enter(&self,listener: &mut (dyn luaticListener<'input> + 'a)) {
+impl<'input,'a> Listenable<dyn LuaticListener<'input> + 'a> for Global_statContext<'input>{
+		fn enter(&self,listener: &mut (dyn LuaticListener<'input> + 'a)) {
 			listener.enter_every_rule(self);
 			listener.enter_global_stat(self);
-		}fn exit(&self,listener: &mut (dyn luaticListener<'input> + 'a)) {
+		}
+		fn exit(&self,listener: &mut (dyn LuaticListener<'input> + 'a)) {
 			listener.exit_global_stat(self);
 			listener.exit_every_rule(self);
 		}
 }
 
+impl<'input,'a> Visitable<dyn LuaticVisitor<'input> + 'a> for Global_statContext<'input>{
+	fn accept(&self,visitor: &mut (dyn LuaticVisitor<'input> + 'a)) {
+		visitor.visit_global_stat(self);
+	}
+}
+
 impl<'input> CustomRuleContext<'input> for Global_statContextExt<'input>{
 	type TF = LocalTokenFactory<'input>;
-	type Ctx = luaticParserContextType;
+	type Ctx = LuaticParserContextType;
 	fn get_rule_index(&self) -> usize { RULE_global_stat }
 	//fn type_rule_index() -> usize where Self: Sized { RULE_global_stat }
 }
 antlr_rust::tid!{Global_statContextExt<'a>}
 
 impl<'input> Global_statContextExt<'input>{
-	fn new(parent: Option<Rc<dyn luaticParserContext<'input> + 'input > >, invoking_state: isize) -> Rc<Global_statContextAll<'input>> {
+	fn new(parent: Option<Rc<dyn LuaticParserContext<'input> + 'input > >, invoking_state: isize) -> Rc<Global_statContextAll<'input>> {
 		Rc::new(
 			BaseParserRuleContext::new_parser_ctx(parent, invoking_state,Global_statContextExt{
 				ph:PhantomData
@@ -485,21 +518,21 @@ impl<'input> Global_statContextExt<'input>{
 	}
 }
 
-pub trait Global_statContextAttrs<'input>: luaticParserContext<'input> + BorrowMut<Global_statContextExt<'input>>{
+pub trait Global_statContextAttrs<'input>: LuaticParserContext<'input> + BorrowMut<Global_statContextExt<'input>>{
 
 /// Retrieves first TerminalNode corresponding to token KW_GLOBAL
 /// Returns `None` if there is no child corresponding to token KW_GLOBAL
-fn KW_GLOBAL(&self) -> Option<Rc<TerminalNode<'input,luaticParserContextType>>> where Self:Sized{
+fn KW_GLOBAL(&self) -> Option<Rc<TerminalNode<'input,LuaticParserContextType>>> where Self:Sized{
 	self.get_token(KW_GLOBAL, 0)
 }
 /// Retrieves first TerminalNode corresponding to token IDENT
 /// Returns `None` if there is no child corresponding to token IDENT
-fn IDENT(&self) -> Option<Rc<TerminalNode<'input,luaticParserContextType>>> where Self:Sized{
+fn IDENT(&self) -> Option<Rc<TerminalNode<'input,LuaticParserContextType>>> where Self:Sized{
 	self.get_token(IDENT, 0)
 }
 /// Retrieves first TerminalNode corresponding to token PT_EQL
 /// Returns `None` if there is no child corresponding to token PT_EQL
-fn PT_EQL(&self) -> Option<Rc<TerminalNode<'input,luaticParserContextType>>> where Self:Sized{
+fn PT_EQL(&self) -> Option<Rc<TerminalNode<'input,LuaticParserContextType>>> where Self:Sized{
 	self.get_token(PT_EQL, 0)
 }
 fn expr(&self) -> Option<Rc<ExprContextAll<'input>>> where Self:Sized{
@@ -510,7 +543,7 @@ fn expr(&self) -> Option<Rc<ExprContextAll<'input>>> where Self:Sized{
 
 impl<'input> Global_statContextAttrs<'input> for Global_statContext<'input>{}
 
-impl<'input, I, H> luaticParser<'input, I, H>
+impl<'input, I, H> LuaticParser<'input, I, H>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
     H: ErrorStrategy<'input,BaseParserType<'input,I>>
@@ -568,28 +601,35 @@ pub struct NumberContextExt<'input>{
 ph:PhantomData<&'input str>
 }
 
-impl<'input> luaticParserContext<'input> for NumberContext<'input>{}
+impl<'input> LuaticParserContext<'input> for NumberContext<'input>{}
 
-impl<'input,'a> Listenable<dyn luaticListener<'input> + 'a> for NumberContext<'input>{
-		fn enter(&self,listener: &mut (dyn luaticListener<'input> + 'a)) {
+impl<'input,'a> Listenable<dyn LuaticListener<'input> + 'a> for NumberContext<'input>{
+		fn enter(&self,listener: &mut (dyn LuaticListener<'input> + 'a)) {
 			listener.enter_every_rule(self);
 			listener.enter_number(self);
-		}fn exit(&self,listener: &mut (dyn luaticListener<'input> + 'a)) {
+		}
+		fn exit(&self,listener: &mut (dyn LuaticListener<'input> + 'a)) {
 			listener.exit_number(self);
 			listener.exit_every_rule(self);
 		}
 }
 
+impl<'input,'a> Visitable<dyn LuaticVisitor<'input> + 'a> for NumberContext<'input>{
+	fn accept(&self,visitor: &mut (dyn LuaticVisitor<'input> + 'a)) {
+		visitor.visit_number(self);
+	}
+}
+
 impl<'input> CustomRuleContext<'input> for NumberContextExt<'input>{
 	type TF = LocalTokenFactory<'input>;
-	type Ctx = luaticParserContextType;
+	type Ctx = LuaticParserContextType;
 	fn get_rule_index(&self) -> usize { RULE_number }
 	//fn type_rule_index() -> usize where Self: Sized { RULE_number }
 }
 antlr_rust::tid!{NumberContextExt<'a>}
 
 impl<'input> NumberContextExt<'input>{
-	fn new(parent: Option<Rc<dyn luaticParserContext<'input> + 'input > >, invoking_state: isize) -> Rc<NumberContextAll<'input>> {
+	fn new(parent: Option<Rc<dyn LuaticParserContext<'input> + 'input > >, invoking_state: isize) -> Rc<NumberContextAll<'input>> {
 		Rc::new(
 			BaseParserRuleContext::new_parser_ctx(parent, invoking_state,NumberContextExt{
 				ph:PhantomData
@@ -598,26 +638,26 @@ impl<'input> NumberContextExt<'input>{
 	}
 }
 
-pub trait NumberContextAttrs<'input>: luaticParserContext<'input> + BorrowMut<NumberContextExt<'input>>{
+pub trait NumberContextAttrs<'input>: LuaticParserContext<'input> + BorrowMut<NumberContextExt<'input>>{
 
 /// Retrieves first TerminalNode corresponding to token INT
 /// Returns `None` if there is no child corresponding to token INT
-fn INT(&self) -> Option<Rc<TerminalNode<'input,luaticParserContextType>>> where Self:Sized{
+fn INT(&self) -> Option<Rc<TerminalNode<'input,LuaticParserContextType>>> where Self:Sized{
 	self.get_token(INT, 0)
 }
 /// Retrieves first TerminalNode corresponding to token HEX
 /// Returns `None` if there is no child corresponding to token HEX
-fn HEX(&self) -> Option<Rc<TerminalNode<'input,luaticParserContextType>>> where Self:Sized{
+fn HEX(&self) -> Option<Rc<TerminalNode<'input,LuaticParserContextType>>> where Self:Sized{
 	self.get_token(HEX, 0)
 }
 /// Retrieves first TerminalNode corresponding to token FLOAT
 /// Returns `None` if there is no child corresponding to token FLOAT
-fn FLOAT(&self) -> Option<Rc<TerminalNode<'input,luaticParserContextType>>> where Self:Sized{
+fn FLOAT(&self) -> Option<Rc<TerminalNode<'input,LuaticParserContextType>>> where Self:Sized{
 	self.get_token(FLOAT, 0)
 }
 /// Retrieves first TerminalNode corresponding to token HEX_FLOAT
 /// Returns `None` if there is no child corresponding to token HEX_FLOAT
-fn HEX_FLOAT(&self) -> Option<Rc<TerminalNode<'input,luaticParserContextType>>> where Self:Sized{
+fn HEX_FLOAT(&self) -> Option<Rc<TerminalNode<'input,LuaticParserContextType>>> where Self:Sized{
 	self.get_token(HEX_FLOAT, 0)
 }
 
@@ -625,7 +665,7 @@ fn HEX_FLOAT(&self) -> Option<Rc<TerminalNode<'input,luaticParserContextType>>> 
 
 impl<'input> NumberContextAttrs<'input> for NumberContext<'input>{}
 
-impl<'input, I, H> luaticParser<'input, I, H>
+impl<'input, I, H> LuaticParser<'input, I, H>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
     H: ErrorStrategy<'input,BaseParserType<'input,I>>
@@ -682,28 +722,35 @@ pub struct StringContextExt<'input>{
 ph:PhantomData<&'input str>
 }
 
-impl<'input> luaticParserContext<'input> for StringContext<'input>{}
+impl<'input> LuaticParserContext<'input> for StringContext<'input>{}
 
-impl<'input,'a> Listenable<dyn luaticListener<'input> + 'a> for StringContext<'input>{
-		fn enter(&self,listener: &mut (dyn luaticListener<'input> + 'a)) {
+impl<'input,'a> Listenable<dyn LuaticListener<'input> + 'a> for StringContext<'input>{
+		fn enter(&self,listener: &mut (dyn LuaticListener<'input> + 'a)) {
 			listener.enter_every_rule(self);
 			listener.enter_string(self);
-		}fn exit(&self,listener: &mut (dyn luaticListener<'input> + 'a)) {
+		}
+		fn exit(&self,listener: &mut (dyn LuaticListener<'input> + 'a)) {
 			listener.exit_string(self);
 			listener.exit_every_rule(self);
 		}
 }
 
+impl<'input,'a> Visitable<dyn LuaticVisitor<'input> + 'a> for StringContext<'input>{
+	fn accept(&self,visitor: &mut (dyn LuaticVisitor<'input> + 'a)) {
+		visitor.visit_string(self);
+	}
+}
+
 impl<'input> CustomRuleContext<'input> for StringContextExt<'input>{
 	type TF = LocalTokenFactory<'input>;
-	type Ctx = luaticParserContextType;
+	type Ctx = LuaticParserContextType;
 	fn get_rule_index(&self) -> usize { RULE_string }
 	//fn type_rule_index() -> usize where Self: Sized { RULE_string }
 }
 antlr_rust::tid!{StringContextExt<'a>}
 
 impl<'input> StringContextExt<'input>{
-	fn new(parent: Option<Rc<dyn luaticParserContext<'input> + 'input > >, invoking_state: isize) -> Rc<StringContextAll<'input>> {
+	fn new(parent: Option<Rc<dyn LuaticParserContext<'input> + 'input > >, invoking_state: isize) -> Rc<StringContextAll<'input>> {
 		Rc::new(
 			BaseParserRuleContext::new_parser_ctx(parent, invoking_state,StringContextExt{
 				ph:PhantomData
@@ -712,11 +759,11 @@ impl<'input> StringContextExt<'input>{
 	}
 }
 
-pub trait StringContextAttrs<'input>: luaticParserContext<'input> + BorrowMut<StringContextExt<'input>>{
+pub trait StringContextAttrs<'input>: LuaticParserContext<'input> + BorrowMut<StringContextExt<'input>>{
 
 /// Retrieves first TerminalNode corresponding to token NORMALSTRING
 /// Returns `None` if there is no child corresponding to token NORMALSTRING
-fn NORMALSTRING(&self) -> Option<Rc<TerminalNode<'input,luaticParserContextType>>> where Self:Sized{
+fn NORMALSTRING(&self) -> Option<Rc<TerminalNode<'input,LuaticParserContextType>>> where Self:Sized{
 	self.get_token(NORMALSTRING, 0)
 }
 
@@ -724,7 +771,7 @@ fn NORMALSTRING(&self) -> Option<Rc<TerminalNode<'input,luaticParserContextType>
 
 impl<'input> StringContextAttrs<'input> for StringContext<'input>{}
 
-impl<'input, I, H> luaticParser<'input, I, H>
+impl<'input, I, H> LuaticParser<'input, I, H>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
     H: ErrorStrategy<'input,BaseParserType<'input,I>>

@@ -1,4 +1,4 @@
-grammar luatic;
+grammar Luatic;
 
 expr:
   KW_TRUE

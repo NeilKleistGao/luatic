@@ -1,3 +1,5 @@
-pub mod frontend;
-pub mod binary;
-pub mod luatic;
+mod frontend;
+mod binary;
+mod luatic;
+
+pub mod compiler;

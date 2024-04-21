@@ -1,4 +1,4 @@
-// Generated from luatic.g4 by ANTLR 4.8
+// Generated from Luatic.g4 by ANTLR 4.8
 #![allow(dead_code)]
 #![allow(nonstandard_style)]
 #![allow(unused_imports)]
@@ -89,28 +89,28 @@ pub type LocalTokenFactory<'input> = CommonTokenFactory;
 
 type From<'a> = <LocalTokenFactory<'a> as TokenFactory<'a> >::From;
 
-pub struct luaticLexer<'input, Input:CharStream<From<'input> >> {
-	base: BaseLexer<'input,luaticLexerActions,Input,LocalTokenFactory<'input>>,
+pub struct LuaticLexer<'input, Input:CharStream<From<'input> >> {
+	base: BaseLexer<'input,LuaticLexerActions,Input,LocalTokenFactory<'input>>,
 }
 
-antlr_rust::tid! { impl<'input,Input> TidAble<'input> for luaticLexer<'input,Input> where Input:CharStream<From<'input> > }
+antlr_rust::tid! { impl<'input,Input> TidAble<'input> for LuaticLexer<'input,Input> where Input:CharStream<From<'input> > }
 
-impl<'input, Input:CharStream<From<'input> >> Deref for luaticLexer<'input,Input>{
-	type Target = BaseLexer<'input,luaticLexerActions,Input,LocalTokenFactory<'input>>;
+impl<'input, Input:CharStream<From<'input> >> Deref for LuaticLexer<'input,Input>{
+	type Target = BaseLexer<'input,LuaticLexerActions,Input,LocalTokenFactory<'input>>;
 
 	fn deref(&self) -> &Self::Target {
 		&self.base
 	}
 }
 
-impl<'input, Input:CharStream<From<'input> >> DerefMut for luaticLexer<'input,Input>{
+impl<'input, Input:CharStream<From<'input> >> DerefMut for LuaticLexer<'input,Input>{
 	fn deref_mut(&mut self) -> &mut Self::Target {
 		&mut self.base
 	}
 }
 
 
-impl<'input, Input:CharStream<From<'input> >> luaticLexer<'input,Input>{
+impl<'input, Input:CharStream<From<'input> >> LuaticLexer<'input,Input>{
     fn get_rule_names(&self) -> &'static [&'static str] {
         &ruleNames
     }
@@ -123,7 +123,7 @@ impl<'input, Input:CharStream<From<'input> >> luaticLexer<'input,Input>{
     }
 
     fn get_grammar_file_name(&self) -> &'static str {
-        "luaticLexer.g4"
+        "LuaticLexer.g4"
     }
 
 	pub fn new_with_token_factory(input: Input, tf: &'input LocalTokenFactory<'input>) -> Self {
@@ -136,39 +136,39 @@ impl<'input, Input:CharStream<From<'input> >> luaticLexer<'input,Input>{
 					_decision_to_DFA.clone(),
 					_shared_context_cache.clone(),
 				),
-				luaticLexerActions{},
+				LuaticLexerActions{},
 				tf
 			)
 	    }
 	}
 }
 
-impl<'input, Input:CharStream<From<'input> >> luaticLexer<'input,Input> where &'input LocalTokenFactory<'input>:Default{
+impl<'input, Input:CharStream<From<'input> >> LuaticLexer<'input,Input> where &'input LocalTokenFactory<'input>:Default{
 	pub fn new(input: Input) -> Self{
-		luaticLexer::new_with_token_factory(input, <&LocalTokenFactory<'input> as Default>::default())
+		LuaticLexer::new_with_token_factory(input, <&LocalTokenFactory<'input> as Default>::default())
 	}
 }
 
-pub struct luaticLexerActions {
+pub struct LuaticLexerActions {
 }
 
-impl luaticLexerActions{
+impl LuaticLexerActions{
 }
 
-impl<'input, Input:CharStream<From<'input> >> Actions<'input,BaseLexer<'input,luaticLexerActions,Input,LocalTokenFactory<'input>>> for luaticLexerActions{
+impl<'input, Input:CharStream<From<'input> >> Actions<'input,BaseLexer<'input,LuaticLexerActions,Input,LocalTokenFactory<'input>>> for LuaticLexerActions{
 	}
 
-	impl<'input, Input:CharStream<From<'input> >> luaticLexer<'input,Input>{
+	impl<'input, Input:CharStream<From<'input> >> LuaticLexer<'input,Input>{
 
 }
 
-impl<'input, Input:CharStream<From<'input> >> LexerRecog<'input,BaseLexer<'input,luaticLexerActions,Input,LocalTokenFactory<'input>>> for luaticLexerActions{
+impl<'input, Input:CharStream<From<'input> >> LexerRecog<'input,BaseLexer<'input,LuaticLexerActions,Input,LocalTokenFactory<'input>>> for LuaticLexerActions{
 }
-impl<'input> TokenAware<'input> for luaticLexerActions{
+impl<'input> TokenAware<'input> for LuaticLexerActions{
 	type TF = LocalTokenFactory<'input>;
 }
 
-impl<'input, Input:CharStream<From<'input> >> TokenSource<'input> for luaticLexer<'input,Input>{
+impl<'input, Input:CharStream<From<'input> >> TokenSource<'input> for LuaticLexer<'input,Input>{
 	type TF = LocalTokenFactory<'input>;
 
     fn next_token(&mut self) -> <Self::TF as TokenFactory<'input>>::Tok {

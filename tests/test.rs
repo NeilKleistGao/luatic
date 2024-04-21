@@ -1,5 +1,7 @@
 #[cfg(test)]
 mod tests {
+  use luatic::compiler::compile;
+
   #[test]
   fn diff_tests() {
     let mut cwd = std::env::current_dir().unwrap();
@@ -14,7 +16,10 @@ mod tests {
 
       if ext.ends_with("ltc") {
         println!("test file {:?}", filename);
-        // TODO: do the test.
+        match compile(filename.to_str().unwrap().to_string()) {
+          Ok(_) => (),
+          Err(why) => println!("{:?} failed: {:?}", filename, why)
+        }
       }
     }
   }
