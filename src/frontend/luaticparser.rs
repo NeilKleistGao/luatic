@@ -61,11 +61,15 @@ use std::any::{Any,TypeId};
 		pub const WS:isize=20;
 	pub const RULE_expr:usize = 0; 
 	pub const RULE_stat:usize = 1; 
-	pub const RULE_global_stat:usize = 2; 
-	pub const RULE_number:usize = 3; 
-	pub const RULE_string:usize = 4;
-	pub const ruleNames: [&'static str; 5] =  [
-		"expr", "stat", "global_stat", "number", "string"
+	pub const RULE_prgm:usize = 2; 
+	pub const RULE_global_stat:usize = 3; 
+	pub const RULE_boolean:usize = 4; 
+	pub const RULE_integer:usize = 5; 
+	pub const RULE_number:usize = 6; 
+	pub const RULE_string:usize = 7;
+	pub const ruleNames: [&'static str; 8] =  [
+		"expr", "stat", "prgm", "global_stat", "boolean", "integer", "number", 
+		"string"
 	];
 
 
@@ -288,15 +292,17 @@ impl<'input> ExprContextExt<'input>{
 
 pub trait ExprContextAttrs<'input>: LuaticParserContext<'input> + BorrowMut<ExprContextExt<'input>>{
 
-/// Retrieves first TerminalNode corresponding to token KW_TRUE
-/// Returns `None` if there is no child corresponding to token KW_TRUE
-fn KW_TRUE(&self) -> Option<Rc<TerminalNode<'input,LuaticParserContextType>>> where Self:Sized{
-	self.get_token(KW_TRUE, 0)
+fn boolean(&self) -> Option<Rc<BooleanContextAll<'input>>> where Self:Sized{
+	self.child_of_type(0)
 }
-/// Retrieves first TerminalNode corresponding to token KW_FALSE
-/// Returns `None` if there is no child corresponding to token KW_FALSE
-fn KW_FALSE(&self) -> Option<Rc<TerminalNode<'input,LuaticParserContextType>>> where Self:Sized{
-	self.get_token(KW_FALSE, 0)
+fn integer(&self) -> Option<Rc<IntegerContextAll<'input>>> where Self:Sized{
+	self.child_of_type(0)
+}
+fn number(&self) -> Option<Rc<NumberContextAll<'input>>> where Self:Sized{
+	self.child_of_type(0)
+}
+fn string(&self) -> Option<Rc<StringContextAll<'input>>> where Self:Sized{
+	self.child_of_type(0)
 }
 
 }
@@ -315,23 +321,60 @@ where
 		let mut _localctx = ExprContextExt::new(_parentctx.clone(), recog.base.get_state());
         recog.base.enter_rule(_localctx.clone(), 0, RULE_expr);
         let mut _localctx: Rc<ExprContextAll> = _localctx;
-		let mut _la: isize = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
-			{
-			recog.base.set_state(10);
-			_la = recog.base.input.la(1);
-			if { !(_la==KW_TRUE || _la==KW_FALSE) } {
-				recog.err_handler.recover_inline(&mut recog.base)?;
+			recog.base.set_state(20);
+			recog.err_handler.sync(&mut recog.base)?;
+			match recog.base.input.la(1) {
+			 KW_TRUE | KW_FALSE 
+				=> {
+					//recog.base.enter_outer_alt(_localctx.clone(), 1);
+					recog.base.enter_outer_alt(None, 1);
+					{
+					/*InvokeRule boolean*/
+					recog.base.set_state(16);
+					recog.boolean()?;
 
-			}
-			else {
-				if  recog.base.input.la(1)==TOKEN_EOF { recog.base.matched_eof = true };
-				recog.err_handler.report_match(&mut recog.base);
-				recog.base.consume(&mut recog.err_handler);
-			}
+					}
+				}
+
+			 INT | HEX 
+				=> {
+					//recog.base.enter_outer_alt(_localctx.clone(), 2);
+					recog.base.enter_outer_alt(None, 2);
+					{
+					/*InvokeRule integer*/
+					recog.base.set_state(17);
+					recog.integer()?;
+
+					}
+				}
+
+			 FLOAT | HEX_FLOAT 
+				=> {
+					//recog.base.enter_outer_alt(_localctx.clone(), 3);
+					recog.base.enter_outer_alt(None, 3);
+					{
+					/*InvokeRule number*/
+					recog.base.set_state(18);
+					recog.number()?;
+
+					}
+				}
+
+			 NORMALSTRING 
+				=> {
+					//recog.base.enter_outer_alt(_localctx.clone(), 4);
+					recog.base.enter_outer_alt(None, 4);
+					{
+					/*InvokeRule string*/
+					recog.base.set_state(19);
+					recog.string()?;
+
+					}
+				}
+
+				_ => Err(ANTLRError::NoAltError(NoViableAltError::new(&mut recog.base)))?
 			}
 			Ok(())
 		})();
@@ -426,7 +469,7 @@ where
         let mut _localctx: Rc<StatContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			recog.base.set_state(14);
+			recog.base.set_state(24);
 			recog.err_handler.sync(&mut recog.base)?;
 			match recog.base.input.la(1) {
 			 PT_SEMI 
@@ -434,7 +477,7 @@ where
 					//recog.base.enter_outer_alt(_localctx.clone(), 1);
 					recog.base.enter_outer_alt(None, 1);
 					{
-					recog.base.set_state(12);
+					recog.base.set_state(22);
 					recog.base.match_token(PT_SEMI,&mut recog.err_handler)?;
 
 					}
@@ -446,13 +489,125 @@ where
 					recog.base.enter_outer_alt(None, 2);
 					{
 					/*InvokeRule global_stat*/
-					recog.base.set_state(13);
+					recog.base.set_state(23);
 					recog.global_stat()?;
 
 					}
 				}
 
 				_ => Err(ANTLRError::NoAltError(NoViableAltError::new(&mut recog.base)))?
+			}
+			Ok(())
+		})();
+		match result {
+		Ok(_)=>{},
+        Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
+		Err(ref re) => {
+				//_localctx.exception = re;
+				recog.err_handler.report_error(&mut recog.base, re);
+				recog.err_handler.recover(&mut recog.base, re)?;
+			}
+		}
+		recog.base.exit_rule();
+
+		Ok(_localctx)
+	}
+}
+//------------------- prgm ----------------
+pub type PrgmContextAll<'input> = PrgmContext<'input>;
+
+
+pub type PrgmContext<'input> = BaseParserRuleContext<'input,PrgmContextExt<'input>>;
+
+#[derive(Clone)]
+pub struct PrgmContextExt<'input>{
+ph:PhantomData<&'input str>
+}
+
+impl<'input> LuaticParserContext<'input> for PrgmContext<'input>{}
+
+impl<'input,'a> Listenable<dyn LuaticListener<'input> + 'a> for PrgmContext<'input>{
+		fn enter(&self,listener: &mut (dyn LuaticListener<'input> + 'a)) {
+			listener.enter_every_rule(self);
+			listener.enter_prgm(self);
+		}
+		fn exit(&self,listener: &mut (dyn LuaticListener<'input> + 'a)) {
+			listener.exit_prgm(self);
+			listener.exit_every_rule(self);
+		}
+}
+
+impl<'input,'a> Visitable<dyn LuaticVisitor<'input> + 'a> for PrgmContext<'input>{
+	fn accept(&self,visitor: &mut (dyn LuaticVisitor<'input> + 'a)) {
+		visitor.visit_prgm(self);
+	}
+}
+
+impl<'input> CustomRuleContext<'input> for PrgmContextExt<'input>{
+	type TF = LocalTokenFactory<'input>;
+	type Ctx = LuaticParserContextType;
+	fn get_rule_index(&self) -> usize { RULE_prgm }
+	//fn type_rule_index() -> usize where Self: Sized { RULE_prgm }
+}
+antlr_rust::tid!{PrgmContextExt<'a>}
+
+impl<'input> PrgmContextExt<'input>{
+	fn new(parent: Option<Rc<dyn LuaticParserContext<'input> + 'input > >, invoking_state: isize) -> Rc<PrgmContextAll<'input>> {
+		Rc::new(
+			BaseParserRuleContext::new_parser_ctx(parent, invoking_state,PrgmContextExt{
+				ph:PhantomData
+			}),
+		)
+	}
+}
+
+pub trait PrgmContextAttrs<'input>: LuaticParserContext<'input> + BorrowMut<PrgmContextExt<'input>>{
+
+fn stat_all(&self) ->  Vec<Rc<StatContextAll<'input>>> where Self:Sized{
+	self.children_of_type()
+}
+fn stat(&self, i: usize) -> Option<Rc<StatContextAll<'input>>> where Self:Sized{
+	self.child_of_type(i)
+}
+
+}
+
+impl<'input> PrgmContextAttrs<'input> for PrgmContext<'input>{}
+
+impl<'input, I, H> LuaticParser<'input, I, H>
+where
+    I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
+    H: ErrorStrategy<'input,BaseParserType<'input,I>>
+{
+	pub fn prgm(&mut self,)
+	-> Result<Rc<PrgmContextAll<'input>>,ANTLRError> {
+		let mut recog = self;
+		let _parentctx = recog.ctx.take();
+		let mut _localctx = PrgmContextExt::new(_parentctx.clone(), recog.base.get_state());
+        recog.base.enter_rule(_localctx.clone(), 4, RULE_prgm);
+        let mut _localctx: Rc<PrgmContextAll> = _localctx;
+		let mut _la: isize = -1;
+		let result: Result<(), ANTLRError> = (|| {
+
+			//recog.base.enter_outer_alt(_localctx.clone(), 1);
+			recog.base.enter_outer_alt(None, 1);
+			{
+			recog.base.set_state(29);
+			recog.err_handler.sync(&mut recog.base)?;
+			_la = recog.base.input.la(1);
+			while _la==KW_GLOBAL || _la==PT_SEMI {
+				{
+				{
+				/*InvokeRule stat*/
+				recog.base.set_state(26);
+				recog.stat()?;
+
+				}
+				}
+				recog.base.set_state(31);
+				recog.err_handler.sync(&mut recog.base)?;
+				_la = recog.base.input.la(1);
+			}
 			}
 			Ok(())
 		})();
@@ -538,6 +693,11 @@ fn PT_EQL(&self) -> Option<Rc<TerminalNode<'input,LuaticParserContextType>>> whe
 fn expr(&self) -> Option<Rc<ExprContextAll<'input>>> where Self:Sized{
 	self.child_of_type(0)
 }
+/// Retrieves first TerminalNode corresponding to token PT_SEMI
+/// Returns `None` if there is no child corresponding to token PT_SEMI
+fn PT_SEMI(&self) -> Option<Rc<TerminalNode<'input,LuaticParserContextType>>> where Self:Sized{
+	self.get_token(PT_SEMI, 0)
+}
 
 }
 
@@ -553,26 +713,251 @@ where
 		let mut recog = self;
 		let _parentctx = recog.ctx.take();
 		let mut _localctx = Global_statContextExt::new(_parentctx.clone(), recog.base.get_state());
-        recog.base.enter_rule(_localctx.clone(), 4, RULE_global_stat);
+        recog.base.enter_rule(_localctx.clone(), 6, RULE_global_stat);
         let mut _localctx: Rc<Global_statContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
 			//recog.base.enter_outer_alt(_localctx.clone(), 1);
 			recog.base.enter_outer_alt(None, 1);
 			{
-			recog.base.set_state(16);
+			recog.base.set_state(32);
 			recog.base.match_token(KW_GLOBAL,&mut recog.err_handler)?;
 
-			recog.base.set_state(17);
+			recog.base.set_state(33);
 			recog.base.match_token(IDENT,&mut recog.err_handler)?;
 
-			recog.base.set_state(18);
+			recog.base.set_state(34);
 			recog.base.match_token(PT_EQL,&mut recog.err_handler)?;
 
 			/*InvokeRule expr*/
-			recog.base.set_state(19);
+			recog.base.set_state(35);
 			recog.expr()?;
 
+			recog.base.set_state(36);
+			recog.base.match_token(PT_SEMI,&mut recog.err_handler)?;
+
+			}
+			Ok(())
+		})();
+		match result {
+		Ok(_)=>{},
+        Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
+		Err(ref re) => {
+				//_localctx.exception = re;
+				recog.err_handler.report_error(&mut recog.base, re);
+				recog.err_handler.recover(&mut recog.base, re)?;
+			}
+		}
+		recog.base.exit_rule();
+
+		Ok(_localctx)
+	}
+}
+//------------------- boolean ----------------
+pub type BooleanContextAll<'input> = BooleanContext<'input>;
+
+
+pub type BooleanContext<'input> = BaseParserRuleContext<'input,BooleanContextExt<'input>>;
+
+#[derive(Clone)]
+pub struct BooleanContextExt<'input>{
+ph:PhantomData<&'input str>
+}
+
+impl<'input> LuaticParserContext<'input> for BooleanContext<'input>{}
+
+impl<'input,'a> Listenable<dyn LuaticListener<'input> + 'a> for BooleanContext<'input>{
+		fn enter(&self,listener: &mut (dyn LuaticListener<'input> + 'a)) {
+			listener.enter_every_rule(self);
+			listener.enter_boolean(self);
+		}
+		fn exit(&self,listener: &mut (dyn LuaticListener<'input> + 'a)) {
+			listener.exit_boolean(self);
+			listener.exit_every_rule(self);
+		}
+}
+
+impl<'input,'a> Visitable<dyn LuaticVisitor<'input> + 'a> for BooleanContext<'input>{
+	fn accept(&self,visitor: &mut (dyn LuaticVisitor<'input> + 'a)) {
+		visitor.visit_boolean(self);
+	}
+}
+
+impl<'input> CustomRuleContext<'input> for BooleanContextExt<'input>{
+	type TF = LocalTokenFactory<'input>;
+	type Ctx = LuaticParserContextType;
+	fn get_rule_index(&self) -> usize { RULE_boolean }
+	//fn type_rule_index() -> usize where Self: Sized { RULE_boolean }
+}
+antlr_rust::tid!{BooleanContextExt<'a>}
+
+impl<'input> BooleanContextExt<'input>{
+	fn new(parent: Option<Rc<dyn LuaticParserContext<'input> + 'input > >, invoking_state: isize) -> Rc<BooleanContextAll<'input>> {
+		Rc::new(
+			BaseParserRuleContext::new_parser_ctx(parent, invoking_state,BooleanContextExt{
+				ph:PhantomData
+			}),
+		)
+	}
+}
+
+pub trait BooleanContextAttrs<'input>: LuaticParserContext<'input> + BorrowMut<BooleanContextExt<'input>>{
+
+/// Retrieves first TerminalNode corresponding to token KW_TRUE
+/// Returns `None` if there is no child corresponding to token KW_TRUE
+fn KW_TRUE(&self) -> Option<Rc<TerminalNode<'input,LuaticParserContextType>>> where Self:Sized{
+	self.get_token(KW_TRUE, 0)
+}
+/// Retrieves first TerminalNode corresponding to token KW_FALSE
+/// Returns `None` if there is no child corresponding to token KW_FALSE
+fn KW_FALSE(&self) -> Option<Rc<TerminalNode<'input,LuaticParserContextType>>> where Self:Sized{
+	self.get_token(KW_FALSE, 0)
+}
+
+}
+
+impl<'input> BooleanContextAttrs<'input> for BooleanContext<'input>{}
+
+impl<'input, I, H> LuaticParser<'input, I, H>
+where
+    I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
+    H: ErrorStrategy<'input,BaseParserType<'input,I>>
+{
+	pub fn boolean(&mut self,)
+	-> Result<Rc<BooleanContextAll<'input>>,ANTLRError> {
+		let mut recog = self;
+		let _parentctx = recog.ctx.take();
+		let mut _localctx = BooleanContextExt::new(_parentctx.clone(), recog.base.get_state());
+        recog.base.enter_rule(_localctx.clone(), 8, RULE_boolean);
+        let mut _localctx: Rc<BooleanContextAll> = _localctx;
+		let mut _la: isize = -1;
+		let result: Result<(), ANTLRError> = (|| {
+
+			//recog.base.enter_outer_alt(_localctx.clone(), 1);
+			recog.base.enter_outer_alt(None, 1);
+			{
+			recog.base.set_state(38);
+			_la = recog.base.input.la(1);
+			if { !(_la==KW_TRUE || _la==KW_FALSE) } {
+				recog.err_handler.recover_inline(&mut recog.base)?;
+
+			}
+			else {
+				if  recog.base.input.la(1)==TOKEN_EOF { recog.base.matched_eof = true };
+				recog.err_handler.report_match(&mut recog.base);
+				recog.base.consume(&mut recog.err_handler);
+			}
+			}
+			Ok(())
+		})();
+		match result {
+		Ok(_)=>{},
+        Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
+		Err(ref re) => {
+				//_localctx.exception = re;
+				recog.err_handler.report_error(&mut recog.base, re);
+				recog.err_handler.recover(&mut recog.base, re)?;
+			}
+		}
+		recog.base.exit_rule();
+
+		Ok(_localctx)
+	}
+}
+//------------------- integer ----------------
+pub type IntegerContextAll<'input> = IntegerContext<'input>;
+
+
+pub type IntegerContext<'input> = BaseParserRuleContext<'input,IntegerContextExt<'input>>;
+
+#[derive(Clone)]
+pub struct IntegerContextExt<'input>{
+ph:PhantomData<&'input str>
+}
+
+impl<'input> LuaticParserContext<'input> for IntegerContext<'input>{}
+
+impl<'input,'a> Listenable<dyn LuaticListener<'input> + 'a> for IntegerContext<'input>{
+		fn enter(&self,listener: &mut (dyn LuaticListener<'input> + 'a)) {
+			listener.enter_every_rule(self);
+			listener.enter_integer(self);
+		}
+		fn exit(&self,listener: &mut (dyn LuaticListener<'input> + 'a)) {
+			listener.exit_integer(self);
+			listener.exit_every_rule(self);
+		}
+}
+
+impl<'input,'a> Visitable<dyn LuaticVisitor<'input> + 'a> for IntegerContext<'input>{
+	fn accept(&self,visitor: &mut (dyn LuaticVisitor<'input> + 'a)) {
+		visitor.visit_integer(self);
+	}
+}
+
+impl<'input> CustomRuleContext<'input> for IntegerContextExt<'input>{
+	type TF = LocalTokenFactory<'input>;
+	type Ctx = LuaticParserContextType;
+	fn get_rule_index(&self) -> usize { RULE_integer }
+	//fn type_rule_index() -> usize where Self: Sized { RULE_integer }
+}
+antlr_rust::tid!{IntegerContextExt<'a>}
+
+impl<'input> IntegerContextExt<'input>{
+	fn new(parent: Option<Rc<dyn LuaticParserContext<'input> + 'input > >, invoking_state: isize) -> Rc<IntegerContextAll<'input>> {
+		Rc::new(
+			BaseParserRuleContext::new_parser_ctx(parent, invoking_state,IntegerContextExt{
+				ph:PhantomData
+			}),
+		)
+	}
+}
+
+pub trait IntegerContextAttrs<'input>: LuaticParserContext<'input> + BorrowMut<IntegerContextExt<'input>>{
+
+/// Retrieves first TerminalNode corresponding to token INT
+/// Returns `None` if there is no child corresponding to token INT
+fn INT(&self) -> Option<Rc<TerminalNode<'input,LuaticParserContextType>>> where Self:Sized{
+	self.get_token(INT, 0)
+}
+/// Retrieves first TerminalNode corresponding to token HEX
+/// Returns `None` if there is no child corresponding to token HEX
+fn HEX(&self) -> Option<Rc<TerminalNode<'input,LuaticParserContextType>>> where Self:Sized{
+	self.get_token(HEX, 0)
+}
+
+}
+
+impl<'input> IntegerContextAttrs<'input> for IntegerContext<'input>{}
+
+impl<'input, I, H> LuaticParser<'input, I, H>
+where
+    I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
+    H: ErrorStrategy<'input,BaseParserType<'input,I>>
+{
+	pub fn integer(&mut self,)
+	-> Result<Rc<IntegerContextAll<'input>>,ANTLRError> {
+		let mut recog = self;
+		let _parentctx = recog.ctx.take();
+		let mut _localctx = IntegerContextExt::new(_parentctx.clone(), recog.base.get_state());
+        recog.base.enter_rule(_localctx.clone(), 10, RULE_integer);
+        let mut _localctx: Rc<IntegerContextAll> = _localctx;
+		let mut _la: isize = -1;
+		let result: Result<(), ANTLRError> = (|| {
+
+			//recog.base.enter_outer_alt(_localctx.clone(), 1);
+			recog.base.enter_outer_alt(None, 1);
+			{
+			recog.base.set_state(40);
+			_la = recog.base.input.la(1);
+			if { !(_la==INT || _la==HEX) } {
+				recog.err_handler.recover_inline(&mut recog.base)?;
+
+			}
+			else {
+				if  recog.base.input.la(1)==TOKEN_EOF { recog.base.matched_eof = true };
+				recog.err_handler.report_match(&mut recog.base);
+				recog.base.consume(&mut recog.err_handler);
+			}
 			}
 			Ok(())
 		})();
@@ -640,16 +1025,6 @@ impl<'input> NumberContextExt<'input>{
 
 pub trait NumberContextAttrs<'input>: LuaticParserContext<'input> + BorrowMut<NumberContextExt<'input>>{
 
-/// Retrieves first TerminalNode corresponding to token INT
-/// Returns `None` if there is no child corresponding to token INT
-fn INT(&self) -> Option<Rc<TerminalNode<'input,LuaticParserContextType>>> where Self:Sized{
-	self.get_token(INT, 0)
-}
-/// Retrieves first TerminalNode corresponding to token HEX
-/// Returns `None` if there is no child corresponding to token HEX
-fn HEX(&self) -> Option<Rc<TerminalNode<'input,LuaticParserContextType>>> where Self:Sized{
-	self.get_token(HEX, 0)
-}
 /// Retrieves first TerminalNode corresponding to token FLOAT
 /// Returns `None` if there is no child corresponding to token FLOAT
 fn FLOAT(&self) -> Option<Rc<TerminalNode<'input,LuaticParserContextType>>> where Self:Sized{
@@ -675,7 +1050,7 @@ where
 		let mut recog = self;
 		let _parentctx = recog.ctx.take();
 		let mut _localctx = NumberContextExt::new(_parentctx.clone(), recog.base.get_state());
-        recog.base.enter_rule(_localctx.clone(), 6, RULE_number);
+        recog.base.enter_rule(_localctx.clone(), 12, RULE_number);
         let mut _localctx: Rc<NumberContextAll> = _localctx;
 		let mut _la: isize = -1;
 		let result: Result<(), ANTLRError> = (|| {
@@ -683,9 +1058,9 @@ where
 			//recog.base.enter_outer_alt(_localctx.clone(), 1);
 			recog.base.enter_outer_alt(None, 1);
 			{
-			recog.base.set_state(21);
+			recog.base.set_state(42);
 			_la = recog.base.input.la(1);
-			if { !((((_la) & !0x3f) == 0 && ((1usize << _la) & ((1usize << INT) | (1usize << HEX) | (1usize << FLOAT) | (1usize << HEX_FLOAT))) != 0)) } {
+			if { !(_la==FLOAT || _la==HEX_FLOAT) } {
 				recog.err_handler.recover_inline(&mut recog.base)?;
 
 			}
@@ -781,14 +1156,14 @@ where
 		let mut recog = self;
 		let _parentctx = recog.ctx.take();
 		let mut _localctx = StringContextExt::new(_parentctx.clone(), recog.base.get_state());
-        recog.base.enter_rule(_localctx.clone(), 8, RULE_string);
+        recog.base.enter_rule(_localctx.clone(), 14, RULE_string);
         let mut _localctx: Rc<StringContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
 			//recog.base.enter_outer_alt(_localctx.clone(), 1);
 			recog.base.enter_outer_alt(None, 1);
 			{
-			recog.base.set_state(23);
+			recog.base.set_state(44);
 			recog.base.match_token(NORMALSTRING,&mut recog.err_handler)?;
 
 			}
@@ -830,16 +1205,26 @@ lazy_static! {
 
 const _serializedATN:&'static str =
 	"\x03\u{608b}\u{a72a}\u{8133}\u{b9ed}\u{417c}\u{3be7}\u{7786}\u{5964}\x03\
-	\x16\x1c\x04\x02\x09\x02\x04\x03\x09\x03\x04\x04\x09\x04\x04\x05\x09\x05\
-	\x04\x06\x09\x06\x03\x02\x03\x02\x03\x03\x03\x03\x05\x03\x11\x0a\x03\x03\
-	\x04\x03\x04\x03\x04\x03\x04\x03\x04\x03\x05\x03\x05\x03\x06\x03\x06\x03\
-	\x06\x02\x02\x07\x02\x04\x06\x08\x0a\x02\x04\x03\x02\x04\x05\x03\x02\x12\
-	\x15\x02\x17\x02\x0c\x03\x02\x02\x02\x04\x10\x03\x02\x02\x02\x06\x12\x03\
-	\x02\x02\x02\x08\x17\x03\x02\x02\x02\x0a\x19\x03\x02\x02\x02\x0c\x0d\x09\
-	\x02\x02\x02\x0d\x03\x03\x02\x02\x02\x0e\x11\x07\x06\x02\x02\x0f\x11\x05\
-	\x06\x04\x02\x10\x0e\x03\x02\x02\x02\x10\x0f\x03\x02\x02\x02\x11\x05\x03\
-	\x02\x02\x02\x12\x13\x07\x03\x02\x02\x13\x14\x07\x10\x02\x02\x14\x15\x07\
-	\x07\x02\x02\x15\x16\x05\x02\x02\x02\x16\x07\x03\x02\x02\x02\x17\x18\x09\
-	\x03\x02\x02\x18\x09\x03\x02\x02\x02\x19\x1a\x07\x11\x02\x02\x1a\x0b\x03\
-	\x02\x02\x02\x03\x10";
+	\x16\x31\x04\x02\x09\x02\x04\x03\x09\x03\x04\x04\x09\x04\x04\x05\x09\x05\
+	\x04\x06\x09\x06\x04\x07\x09\x07\x04\x08\x09\x08\x04\x09\x09\x09\x03\x02\
+	\x03\x02\x03\x02\x03\x02\x05\x02\x17\x0a\x02\x03\x03\x03\x03\x05\x03\x1b\
+	\x0a\x03\x03\x04\x07\x04\x1e\x0a\x04\x0c\x04\x0e\x04\x21\x0b\x04\x03\x05\
+	\x03\x05\x03\x05\x03\x05\x03\x05\x03\x05\x03\x06\x03\x06\x03\x07\x03\x07\
+	\x03\x08\x03\x08\x03\x09\x03\x09\x03\x09\x02\x02\x0a\x02\x04\x06\x08\x0a\
+	\x0c\x0e\x10\x02\x05\x03\x02\x04\x05\x03\x02\x12\x13\x03\x02\x14\x15\x02\
+	\x2d\x02\x16\x03\x02\x02\x02\x04\x1a\x03\x02\x02\x02\x06\x1f\x03\x02\x02\
+	\x02\x08\x22\x03\x02\x02\x02\x0a\x28\x03\x02\x02\x02\x0c\x2a\x03\x02\x02\
+	\x02\x0e\x2c\x03\x02\x02\x02\x10\x2e\x03\x02\x02\x02\x12\x17\x05\x0a\x06\
+	\x02\x13\x17\x05\x0c\x07\x02\x14\x17\x05\x0e\x08\x02\x15\x17\x05\x10\x09\
+	\x02\x16\x12\x03\x02\x02\x02\x16\x13\x03\x02\x02\x02\x16\x14\x03\x02\x02\
+	\x02\x16\x15\x03\x02\x02\x02\x17\x03\x03\x02\x02\x02\x18\x1b\x07\x06\x02\
+	\x02\x19\x1b\x05\x08\x05\x02\x1a\x18\x03\x02\x02\x02\x1a\x19\x03\x02\x02\
+	\x02\x1b\x05\x03\x02\x02\x02\x1c\x1e\x05\x04\x03\x02\x1d\x1c\x03\x02\x02\
+	\x02\x1e\x21\x03\x02\x02\x02\x1f\x1d\x03\x02\x02\x02\x1f\x20\x03\x02\x02\
+	\x02\x20\x07\x03\x02\x02\x02\x21\x1f\x03\x02\x02\x02\x22\x23\x07\x03\x02\
+	\x02\x23\x24\x07\x10\x02\x02\x24\x25\x07\x07\x02\x02\x25\x26\x05\x02\x02\
+	\x02\x26\x27\x07\x06\x02\x02\x27\x09\x03\x02\x02\x02\x28\x29\x09\x02\x02\
+	\x02\x29\x0b\x03\x02\x02\x02\x2a\x2b\x09\x03\x02\x02\x2b\x0d\x03\x02\x02\
+	\x02\x2c\x2d\x09\x04\x02\x02\x2d\x0f\x03\x02\x02\x02\x2e\x2f\x07\x11\x02\
+	\x02\x2f\x11\x03\x02\x02\x02\x05\x16\x1a\x1f";
 

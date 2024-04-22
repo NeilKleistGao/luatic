@@ -25,6 +25,16 @@ fn enter_stat(&mut self, _ctx: &StatContext<'input>) { }
  */
 fn exit_stat(&mut self, _ctx: &StatContext<'input>) { }
 /**
+ * Enter a parse tree produced by {@link LuaticParser#prgm}.
+ * @param ctx the parse tree
+ */
+fn enter_prgm(&mut self, _ctx: &PrgmContext<'input>) { }
+/**
+ * Exit a parse tree produced by {@link LuaticParser#prgm}.
+ * @param ctx the parse tree
+ */
+fn exit_prgm(&mut self, _ctx: &PrgmContext<'input>) { }
+/**
  * Enter a parse tree produced by {@link LuaticParser#global_stat}.
  * @param ctx the parse tree
  */
@@ -34,6 +44,26 @@ fn enter_global_stat(&mut self, _ctx: &Global_statContext<'input>) { }
  * @param ctx the parse tree
  */
 fn exit_global_stat(&mut self, _ctx: &Global_statContext<'input>) { }
+/**
+ * Enter a parse tree produced by {@link LuaticParser#boolean}.
+ * @param ctx the parse tree
+ */
+fn enter_boolean(&mut self, _ctx: &BooleanContext<'input>) { }
+/**
+ * Exit a parse tree produced by {@link LuaticParser#boolean}.
+ * @param ctx the parse tree
+ */
+fn exit_boolean(&mut self, _ctx: &BooleanContext<'input>) { }
+/**
+ * Enter a parse tree produced by {@link LuaticParser#integer}.
+ * @param ctx the parse tree
+ */
+fn enter_integer(&mut self, _ctx: &IntegerContext<'input>) { }
+/**
+ * Exit a parse tree produced by {@link LuaticParser#integer}.
+ * @param ctx the parse tree
+ */
+fn exit_integer(&mut self, _ctx: &IntegerContext<'input>) { }
 /**
  * Enter a parse tree produced by {@link LuaticParser#number}.
  * @param ctx the parse tree

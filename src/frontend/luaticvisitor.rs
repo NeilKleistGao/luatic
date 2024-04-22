@@ -21,10 +21,28 @@ pub trait LuaticVisitor<'input>: ParseTreeVisitor<'input,LuaticParserContextType
 	fn visit_stat(&mut self, ctx: &StatContext<'input>) { self.visit_children(ctx) }
 
 	/**
+	 * Visit a parse tree produced by {@link LuaticParser#prgm}.
+	 * @param ctx the parse tree
+	 */
+	fn visit_prgm(&mut self, ctx: &PrgmContext<'input>) { self.visit_children(ctx) }
+
+	/**
 	 * Visit a parse tree produced by {@link LuaticParser#global_stat}.
 	 * @param ctx the parse tree
 	 */
 	fn visit_global_stat(&mut self, ctx: &Global_statContext<'input>) { self.visit_children(ctx) }
+
+	/**
+	 * Visit a parse tree produced by {@link LuaticParser#boolean}.
+	 * @param ctx the parse tree
+	 */
+	fn visit_boolean(&mut self, ctx: &BooleanContext<'input>) { self.visit_children(ctx) }
+
+	/**
+	 * Visit a parse tree produced by {@link LuaticParser#integer}.
+	 * @param ctx the parse tree
+	 */
+	fn visit_integer(&mut self, ctx: &IntegerContext<'input>) { self.visit_children(ctx) }
 
 	/**
 	 * Visit a parse tree produced by {@link LuaticParser#number}.
@@ -58,10 +76,34 @@ pub trait LuaticVisitorCompat<'input>:ParseTreeVisitorCompat<'input, Node= Luati
 		}
 
 	/**
+	 * Visit a parse tree produced by {@link LuaticParser#prgm}.
+	 * @param ctx the parse tree
+	 */
+		fn visit_prgm(&mut self, ctx: &PrgmContext<'input>) -> Self::Return {
+			self.visit_children(ctx)
+		}
+
+	/**
 	 * Visit a parse tree produced by {@link LuaticParser#global_stat}.
 	 * @param ctx the parse tree
 	 */
 		fn visit_global_stat(&mut self, ctx: &Global_statContext<'input>) -> Self::Return {
+			self.visit_children(ctx)
+		}
+
+	/**
+	 * Visit a parse tree produced by {@link LuaticParser#boolean}.
+	 * @param ctx the parse tree
+	 */
+		fn visit_boolean(&mut self, ctx: &BooleanContext<'input>) -> Self::Return {
+			self.visit_children(ctx)
+		}
+
+	/**
+	 * Visit a parse tree produced by {@link LuaticParser#integer}.
+	 * @param ctx the parse tree
+	 */
+		fn visit_integer(&mut self, ctx: &IntegerContext<'input>) -> Self::Return {
 			self.visit_children(ctx)
 		}
 
@@ -97,8 +139,23 @@ where
         *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
 	}
 
+	fn visit_prgm(&mut self, ctx: &PrgmContext<'input>){
+		let result = <Self as LuaticVisitorCompat>::visit_prgm(self, ctx);
+        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
+	}
+
 	fn visit_global_stat(&mut self, ctx: &Global_statContext<'input>){
 		let result = <Self as LuaticVisitorCompat>::visit_global_stat(self, ctx);
+        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
+	}
+
+	fn visit_boolean(&mut self, ctx: &BooleanContext<'input>){
+		let result = <Self as LuaticVisitorCompat>::visit_boolean(self, ctx);
+        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
+	}
+
+	fn visit_integer(&mut self, ctx: &IntegerContext<'input>){
+		let result = <Self as LuaticVisitorCompat>::visit_integer(self, ctx);
         *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
 	}
 

@@ -1,16 +1,22 @@
 grammar Luatic;
 
 expr:
-  KW_TRUE
-  | KW_FALSE;
+  boolean
+  | integer
+  | number
+  | string;
 
 stat:
   PT_SEMI
   | global_stat;
 
-global_stat: KW_GLOBAL IDENT PT_EQL expr;
+prgm: stat*;
 
-number: INT | HEX | FLOAT | HEX_FLOAT;
+global_stat: KW_GLOBAL IDENT PT_EQL expr PT_SEMI;
+
+boolean: KW_TRUE | KW_FALSE;
+integer: INT | HEX;
+number: FLOAT | HEX_FLOAT;
 
 string: NORMALSTRING;
 
