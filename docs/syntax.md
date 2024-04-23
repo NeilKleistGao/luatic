@@ -22,7 +22,8 @@
 
 ### Types
 - Basic types: `3.14: number`, `"abcd": string`, `true: bool`, and `void`
-- Table: `{ ["abc"] = 42 }: { ["abc"]: number }`. keys can only be string/number/bool.
+- Table: `{ ["abc"] = 42 }: { ["abc"]: number }`. keys can only be string literals.
+- Array: `{1, 2, 3, 4}: {number, 4}`.
 - Function `(number, string) -> number`
 
 ### Variables
@@ -78,7 +79,14 @@ match ... {
 
 ### Loop
 ```lua
+-- TODO
 for (...; ...; ...) {
+  ...
+}
+```
+
+```lua
+for ... in ... {
   ...
 }
 ```
@@ -89,6 +97,12 @@ while (...) {
 }
 ```
 
+```lua
+do {
+  ...
+} while (...)
+```
+
 ### Comment
 ```lua
 -- hello comment!
@@ -96,6 +110,9 @@ while (...) {
 hello comment!
 --
 ```
+
+### Std
+TODO?
 
 ### Dialog
 ```
