@@ -1,0 +1,15 @@
+<<Welcome>> {
+  [DingZhen]: "I'm an innocent boy.";
+  [DingZhen]: {
+    "Welcome to Litang.",
+    "This is my village Ranrika"
+  }
+}
+
+<<ShutUp>> {
+  [Snow Leopard]: "(wuwuwu)";
+  [DingZhen]: {
+    "...",
+    "Snow Leopard! Shut up! ",
+  }
+}

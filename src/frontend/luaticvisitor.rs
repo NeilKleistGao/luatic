@@ -9,10 +9,16 @@ use super::luaticparser::*;
  */
 pub trait LuaticVisitor<'input>: ParseTreeVisitor<'input,LuaticParserContextType>{
 	/**
-	 * Visit a parse tree produced by {@link LuaticParser#expr}.
+	 * Visit a parse tree produced by {@link LuaticParser#dialog_block}.
 	 * @param ctx the parse tree
 	 */
-	fn visit_expr(&mut self, ctx: &ExprContext<'input>) { self.visit_children(ctx) }
+	fn visit_dialog_block(&mut self, ctx: &Dialog_blockContext<'input>) { self.visit_children(ctx) }
+
+	/**
+	 * Visit a parse tree produced by {@link LuaticParser#say_stat}.
+	 * @param ctx the parse tree
+	 */
+	fn visit_say_stat(&mut self, ctx: &Say_statContext<'input>) { self.visit_children(ctx) }
 
 	/**
 	 * Visit a parse tree produced by {@link LuaticParser#stat}.
@@ -33,76 +39,10 @@ pub trait LuaticVisitor<'input>: ParseTreeVisitor<'input,LuaticParserContextType
 	fn visit_block(&mut self, ctx: &BlockContext<'input>) { self.visit_children(ctx) }
 
 	/**
-	 * Visit a parse tree produced by {@link LuaticParser#global_stat}.
+	 * Visit a parse tree produced by {@link LuaticParser#say_block}.
 	 * @param ctx the parse tree
 	 */
-	fn visit_global_stat(&mut self, ctx: &Global_statContext<'input>) { self.visit_children(ctx) }
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#local_stat}.
-	 * @param ctx the parse tree
-	 */
-	fn visit_local_stat(&mut self, ctx: &Local_statContext<'input>) { self.visit_children(ctx) }
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#local_in_stat}.
-	 * @param ctx the parse tree
-	 */
-	fn visit_local_in_stat(&mut self, ctx: &Local_in_statContext<'input>) { self.visit_children(ctx) }
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#full_if_stat}.
-	 * @param ctx the parse tree
-	 */
-	fn visit_full_if_stat(&mut self, ctx: &Full_if_statContext<'input>) { self.visit_children(ctx) }
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#while_stat}.
-	 * @param ctx the parse tree
-	 */
-	fn visit_while_stat(&mut self, ctx: &While_statContext<'input>) { self.visit_children(ctx) }
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#do_stat}.
-	 * @param ctx the parse tree
-	 */
-	fn visit_do_stat(&mut self, ctx: &Do_statContext<'input>) { self.visit_children(ctx) }
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#for_in_stat}.
-	 * @param ctx the parse tree
-	 */
-	fn visit_for_in_stat(&mut self, ctx: &For_in_statContext<'input>) { self.visit_children(ctx) }
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#func_stat}.
-	 * @param ctx the parse tree
-	 */
-	fn visit_func_stat(&mut self, ctx: &Func_statContext<'input>) { self.visit_children(ctx) }
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#ret_stat}.
-	 * @param ctx the parse tree
-	 */
-	fn visit_ret_stat(&mut self, ctx: &Ret_statContext<'input>) { self.visit_children(ctx) }
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#boolean}.
-	 * @param ctx the parse tree
-	 */
-	fn visit_boolean(&mut self, ctx: &BooleanContext<'input>) { self.visit_children(ctx) }
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#integer}.
-	 * @param ctx the parse tree
-	 */
-	fn visit_integer(&mut self, ctx: &IntegerContext<'input>) { self.visit_children(ctx) }
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#number}.
-	 * @param ctx the parse tree
-	 */
-	fn visit_number(&mut self, ctx: &NumberContext<'input>) { self.visit_children(ctx) }
+	fn visit_say_block(&mut self, ctx: &Say_blockContext<'input>) { self.visit_children(ctx) }
 
 	/**
 	 * Visit a parse tree produced by {@link LuaticParser#string}.
@@ -111,61 +51,27 @@ pub trait LuaticVisitor<'input>: ParseTreeVisitor<'input,LuaticParserContextType
 	fn visit_string(&mut self, ctx: &StringContext<'input>) { self.visit_children(ctx) }
 
 	/**
-	 * Visit a parse tree produced by {@link LuaticParser#if_stat}.
+	 * Visit a parse tree produced by {@link LuaticParser#character}.
 	 * @param ctx the parse tree
 	 */
-	fn visit_if_stat(&mut self, ctx: &If_statContext<'input>) { self.visit_children(ctx) }
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#elif_stat}.
-	 * @param ctx the parse tree
-	 */
-	fn visit_elif_stat(&mut self, ctx: &Elif_statContext<'input>) { self.visit_children(ctx) }
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#else_state}.
-	 * @param ctx the parse tree
-	 */
-	fn visit_else_state(&mut self, ctx: &Else_stateContext<'input>) { self.visit_children(ctx) }
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#param_list}.
-	 * @param ctx the parse tree
-	 */
-	fn visit_param_list(&mut self, ctx: &Param_listContext<'input>) { self.visit_children(ctx) }
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#array}.
-	 * @param ctx the parse tree
-	 */
-	fn visit_array(&mut self, ctx: &ArrayContext<'input>) { self.visit_children(ctx) }
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#kv_pair}.
-	 * @param ctx the parse tree
-	 */
-	fn visit_kv_pair(&mut self, ctx: &Kv_pairContext<'input>) { self.visit_children(ctx) }
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#table}.
-	 * @param ctx the parse tree
-	 */
-	fn visit_table(&mut self, ctx: &TableContext<'input>) { self.visit_children(ctx) }
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#lambda}.
-	 * @param ctx the parse tree
-	 */
-	fn visit_lambda(&mut self, ctx: &LambdaContext<'input>) { self.visit_children(ctx) }
+	fn visit_character(&mut self, ctx: &CharacterContext<'input>) { self.visit_children(ctx) }
 
 }
 
 pub trait LuaticVisitorCompat<'input>:ParseTreeVisitorCompat<'input, Node= LuaticParserContextType>{
 	/**
-	 * Visit a parse tree produced by {@link LuaticParser#expr}.
+	 * Visit a parse tree produced by {@link LuaticParser#dialog_block}.
 	 * @param ctx the parse tree
 	 */
-		fn visit_expr(&mut self, ctx: &ExprContext<'input>) -> Self::Return {
+		fn visit_dialog_block(&mut self, ctx: &Dialog_blockContext<'input>) -> Self::Return {
+			self.visit_children(ctx)
+		}
+
+	/**
+	 * Visit a parse tree produced by {@link LuaticParser#say_stat}.
+	 * @param ctx the parse tree
+	 */
+		fn visit_say_stat(&mut self, ctx: &Say_statContext<'input>) -> Self::Return {
 			self.visit_children(ctx)
 		}
 
@@ -194,98 +100,10 @@ pub trait LuaticVisitorCompat<'input>:ParseTreeVisitorCompat<'input, Node= Luati
 		}
 
 	/**
-	 * Visit a parse tree produced by {@link LuaticParser#global_stat}.
+	 * Visit a parse tree produced by {@link LuaticParser#say_block}.
 	 * @param ctx the parse tree
 	 */
-		fn visit_global_stat(&mut self, ctx: &Global_statContext<'input>) -> Self::Return {
-			self.visit_children(ctx)
-		}
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#local_stat}.
-	 * @param ctx the parse tree
-	 */
-		fn visit_local_stat(&mut self, ctx: &Local_statContext<'input>) -> Self::Return {
-			self.visit_children(ctx)
-		}
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#local_in_stat}.
-	 * @param ctx the parse tree
-	 */
-		fn visit_local_in_stat(&mut self, ctx: &Local_in_statContext<'input>) -> Self::Return {
-			self.visit_children(ctx)
-		}
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#full_if_stat}.
-	 * @param ctx the parse tree
-	 */
-		fn visit_full_if_stat(&mut self, ctx: &Full_if_statContext<'input>) -> Self::Return {
-			self.visit_children(ctx)
-		}
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#while_stat}.
-	 * @param ctx the parse tree
-	 */
-		fn visit_while_stat(&mut self, ctx: &While_statContext<'input>) -> Self::Return {
-			self.visit_children(ctx)
-		}
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#do_stat}.
-	 * @param ctx the parse tree
-	 */
-		fn visit_do_stat(&mut self, ctx: &Do_statContext<'input>) -> Self::Return {
-			self.visit_children(ctx)
-		}
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#for_in_stat}.
-	 * @param ctx the parse tree
-	 */
-		fn visit_for_in_stat(&mut self, ctx: &For_in_statContext<'input>) -> Self::Return {
-			self.visit_children(ctx)
-		}
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#func_stat}.
-	 * @param ctx the parse tree
-	 */
-		fn visit_func_stat(&mut self, ctx: &Func_statContext<'input>) -> Self::Return {
-			self.visit_children(ctx)
-		}
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#ret_stat}.
-	 * @param ctx the parse tree
-	 */
-		fn visit_ret_stat(&mut self, ctx: &Ret_statContext<'input>) -> Self::Return {
-			self.visit_children(ctx)
-		}
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#boolean}.
-	 * @param ctx the parse tree
-	 */
-		fn visit_boolean(&mut self, ctx: &BooleanContext<'input>) -> Self::Return {
-			self.visit_children(ctx)
-		}
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#integer}.
-	 * @param ctx the parse tree
-	 */
-		fn visit_integer(&mut self, ctx: &IntegerContext<'input>) -> Self::Return {
-			self.visit_children(ctx)
-		}
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#number}.
-	 * @param ctx the parse tree
-	 */
-		fn visit_number(&mut self, ctx: &NumberContext<'input>) -> Self::Return {
+		fn visit_say_block(&mut self, ctx: &Say_blockContext<'input>) -> Self::Return {
 			self.visit_children(ctx)
 		}
 
@@ -298,66 +116,10 @@ pub trait LuaticVisitorCompat<'input>:ParseTreeVisitorCompat<'input, Node= Luati
 		}
 
 	/**
-	 * Visit a parse tree produced by {@link LuaticParser#if_stat}.
+	 * Visit a parse tree produced by {@link LuaticParser#character}.
 	 * @param ctx the parse tree
 	 */
-		fn visit_if_stat(&mut self, ctx: &If_statContext<'input>) -> Self::Return {
-			self.visit_children(ctx)
-		}
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#elif_stat}.
-	 * @param ctx the parse tree
-	 */
-		fn visit_elif_stat(&mut self, ctx: &Elif_statContext<'input>) -> Self::Return {
-			self.visit_children(ctx)
-		}
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#else_state}.
-	 * @param ctx the parse tree
-	 */
-		fn visit_else_state(&mut self, ctx: &Else_stateContext<'input>) -> Self::Return {
-			self.visit_children(ctx)
-		}
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#param_list}.
-	 * @param ctx the parse tree
-	 */
-		fn visit_param_list(&mut self, ctx: &Param_listContext<'input>) -> Self::Return {
-			self.visit_children(ctx)
-		}
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#array}.
-	 * @param ctx the parse tree
-	 */
-		fn visit_array(&mut self, ctx: &ArrayContext<'input>) -> Self::Return {
-			self.visit_children(ctx)
-		}
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#kv_pair}.
-	 * @param ctx the parse tree
-	 */
-		fn visit_kv_pair(&mut self, ctx: &Kv_pairContext<'input>) -> Self::Return {
-			self.visit_children(ctx)
-		}
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#table}.
-	 * @param ctx the parse tree
-	 */
-		fn visit_table(&mut self, ctx: &TableContext<'input>) -> Self::Return {
-			self.visit_children(ctx)
-		}
-
-	/**
-	 * Visit a parse tree produced by {@link LuaticParser#lambda}.
-	 * @param ctx the parse tree
-	 */
-		fn visit_lambda(&mut self, ctx: &LambdaContext<'input>) -> Self::Return {
+		fn visit_character(&mut self, ctx: &CharacterContext<'input>) -> Self::Return {
 			self.visit_children(ctx)
 		}
 
@@ -367,8 +129,13 @@ impl<'input,T> LuaticVisitor<'input> for T
 where
 	T: LuaticVisitorCompat<'input>
 {
-	fn visit_expr(&mut self, ctx: &ExprContext<'input>){
-		let result = <Self as LuaticVisitorCompat>::visit_expr(self, ctx);
+	fn visit_dialog_block(&mut self, ctx: &Dialog_blockContext<'input>){
+		let result = <Self as LuaticVisitorCompat>::visit_dialog_block(self, ctx);
+        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
+	}
+
+	fn visit_say_stat(&mut self, ctx: &Say_statContext<'input>){
+		let result = <Self as LuaticVisitorCompat>::visit_say_stat(self, ctx);
         *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
 	}
 
@@ -387,63 +154,8 @@ where
         *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
 	}
 
-	fn visit_global_stat(&mut self, ctx: &Global_statContext<'input>){
-		let result = <Self as LuaticVisitorCompat>::visit_global_stat(self, ctx);
-        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
-	}
-
-	fn visit_local_stat(&mut self, ctx: &Local_statContext<'input>){
-		let result = <Self as LuaticVisitorCompat>::visit_local_stat(self, ctx);
-        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
-	}
-
-	fn visit_local_in_stat(&mut self, ctx: &Local_in_statContext<'input>){
-		let result = <Self as LuaticVisitorCompat>::visit_local_in_stat(self, ctx);
-        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
-	}
-
-	fn visit_full_if_stat(&mut self, ctx: &Full_if_statContext<'input>){
-		let result = <Self as LuaticVisitorCompat>::visit_full_if_stat(self, ctx);
-        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
-	}
-
-	fn visit_while_stat(&mut self, ctx: &While_statContext<'input>){
-		let result = <Self as LuaticVisitorCompat>::visit_while_stat(self, ctx);
-        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
-	}
-
-	fn visit_do_stat(&mut self, ctx: &Do_statContext<'input>){
-		let result = <Self as LuaticVisitorCompat>::visit_do_stat(self, ctx);
-        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
-	}
-
-	fn visit_for_in_stat(&mut self, ctx: &For_in_statContext<'input>){
-		let result = <Self as LuaticVisitorCompat>::visit_for_in_stat(self, ctx);
-        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
-	}
-
-	fn visit_func_stat(&mut self, ctx: &Func_statContext<'input>){
-		let result = <Self as LuaticVisitorCompat>::visit_func_stat(self, ctx);
-        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
-	}
-
-	fn visit_ret_stat(&mut self, ctx: &Ret_statContext<'input>){
-		let result = <Self as LuaticVisitorCompat>::visit_ret_stat(self, ctx);
-        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
-	}
-
-	fn visit_boolean(&mut self, ctx: &BooleanContext<'input>){
-		let result = <Self as LuaticVisitorCompat>::visit_boolean(self, ctx);
-        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
-	}
-
-	fn visit_integer(&mut self, ctx: &IntegerContext<'input>){
-		let result = <Self as LuaticVisitorCompat>::visit_integer(self, ctx);
-        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
-	}
-
-	fn visit_number(&mut self, ctx: &NumberContext<'input>){
-		let result = <Self as LuaticVisitorCompat>::visit_number(self, ctx);
+	fn visit_say_block(&mut self, ctx: &Say_blockContext<'input>){
+		let result = <Self as LuaticVisitorCompat>::visit_say_block(self, ctx);
         *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
 	}
 
@@ -452,43 +164,8 @@ where
         *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
 	}
 
-	fn visit_if_stat(&mut self, ctx: &If_statContext<'input>){
-		let result = <Self as LuaticVisitorCompat>::visit_if_stat(self, ctx);
-        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
-	}
-
-	fn visit_elif_stat(&mut self, ctx: &Elif_statContext<'input>){
-		let result = <Self as LuaticVisitorCompat>::visit_elif_stat(self, ctx);
-        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
-	}
-
-	fn visit_else_state(&mut self, ctx: &Else_stateContext<'input>){
-		let result = <Self as LuaticVisitorCompat>::visit_else_state(self, ctx);
-        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
-	}
-
-	fn visit_param_list(&mut self, ctx: &Param_listContext<'input>){
-		let result = <Self as LuaticVisitorCompat>::visit_param_list(self, ctx);
-        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
-	}
-
-	fn visit_array(&mut self, ctx: &ArrayContext<'input>){
-		let result = <Self as LuaticVisitorCompat>::visit_array(self, ctx);
-        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
-	}
-
-	fn visit_kv_pair(&mut self, ctx: &Kv_pairContext<'input>){
-		let result = <Self as LuaticVisitorCompat>::visit_kv_pair(self, ctx);
-        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
-	}
-
-	fn visit_table(&mut self, ctx: &TableContext<'input>){
-		let result = <Self as LuaticVisitorCompat>::visit_table(self, ctx);
-        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
-	}
-
-	fn visit_lambda(&mut self, ctx: &LambdaContext<'input>){
-		let result = <Self as LuaticVisitorCompat>::visit_lambda(self, ctx);
+	fn visit_character(&mut self, ctx: &CharacterContext<'input>){
+		let result = <Self as LuaticVisitorCompat>::visit_character(self, ctx);
         *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
 	}
 

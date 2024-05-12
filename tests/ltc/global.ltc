@@ -1,8 +1,8 @@
-global x = true;
-global not_x = false;
+-- global x = true;
+-- global not_x = false;
 
-global pi = 3.14;
+-- global pi = 3.14;
 
-global _one = 1;
+-- global _one = 1;
 
-global key = "litangdingzhen";
+-- global key = "litangdingzhen";
