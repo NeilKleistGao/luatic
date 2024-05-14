@@ -35,6 +35,16 @@ fn enter_stat(&mut self, _ctx: &StatContext<'input>) { }
  */
 fn exit_stat(&mut self, _ctx: &StatContext<'input>) { }
 /**
+ * Enter a parse tree produced by {@link LuaticParser#lang_annotation}.
+ * @param ctx the parse tree
+ */
+fn enter_lang_annotation(&mut self, _ctx: &Lang_annotationContext<'input>) { }
+/**
+ * Exit a parse tree produced by {@link LuaticParser#lang_annotation}.
+ * @param ctx the parse tree
+ */
+fn exit_lang_annotation(&mut self, _ctx: &Lang_annotationContext<'input>) { }
+/**
  * Enter a parse tree produced by {@link LuaticParser#prgm}.
  * @param ctx the parse tree
  */

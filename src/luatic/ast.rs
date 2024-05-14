@@ -15,9 +15,9 @@ pub enum Statement {
 }
 
 #[derive(Debug)]
-pub struct Program (pub Vec<Statement>);
+pub struct Program (pub Vec<Statement>, pub String);
 impl Program {
-  pub fn new(stmts: Vec<Statement>) -> Program {
-    Program(stmts)
+  pub fn new(stmts: Vec<Statement>, default_lang: String) -> Program {
+    Program(stmts, default_lang)
   }
 }

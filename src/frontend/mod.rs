@@ -66,6 +66,10 @@ impl LuaticVisitorCompat<'_> for Visitor {
     VisitorResult::Expr(Expression::StrLit(ctx.CHARASTRING().unwrap().get_text()))
   }
 
+  fn visit_lang_annotation(&mut self, ctx: &Lang_annotationContext<'_>) -> Self::Return {
+    VisitorResult::Expr(Expression::StrLit(ctx.IDENT().unwrap().get_text()))
+  }
+
 //   fn visit_expr(&mut self, ctx: &luaticparser::ExprContext<'_>) -> Self::Return {
 //     self.visit_children(ctx)
 //   }
@@ -146,7 +150,15 @@ impl LuaticVisitorCompat<'_> for Visitor {
       });
     }
 
-    VisitorResult::Prgm(Program::new(statements))
+    let default_lang = match ctx.lang_annotation() {
+      Some(anno) => match self.visit_lang_annotation(&anno) {
+        VisitorResult::Expr(Expression::StrLit(s)) => s.clone(),
+        _ => panic!("unexpected error.")
+      },
+      _ => "en".to_string()
+    };
+
+    VisitorResult::Prgm(Program::new(statements, default_lang))
   }
 }
 

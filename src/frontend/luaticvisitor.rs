@@ -27,6 +27,12 @@ pub trait LuaticVisitor<'input>: ParseTreeVisitor<'input,LuaticParserContextType
 	fn visit_stat(&mut self, ctx: &StatContext<'input>) { self.visit_children(ctx) }
 
 	/**
+	 * Visit a parse tree produced by {@link LuaticParser#lang_annotation}.
+	 * @param ctx the parse tree
+	 */
+	fn visit_lang_annotation(&mut self, ctx: &Lang_annotationContext<'input>) { self.visit_children(ctx) }
+
+	/**
 	 * Visit a parse tree produced by {@link LuaticParser#prgm}.
 	 * @param ctx the parse tree
 	 */
@@ -80,6 +86,14 @@ pub trait LuaticVisitorCompat<'input>:ParseTreeVisitorCompat<'input, Node= Luati
 	 * @param ctx the parse tree
 	 */
 		fn visit_stat(&mut self, ctx: &StatContext<'input>) -> Self::Return {
+			self.visit_children(ctx)
+		}
+
+	/**
+	 * Visit a parse tree produced by {@link LuaticParser#lang_annotation}.
+	 * @param ctx the parse tree
+	 */
+		fn visit_lang_annotation(&mut self, ctx: &Lang_annotationContext<'input>) -> Self::Return {
 			self.visit_children(ctx)
 		}
 
@@ -141,6 +155,11 @@ where
 
 	fn visit_stat(&mut self, ctx: &StatContext<'input>){
 		let result = <Self as LuaticVisitorCompat>::visit_stat(self, ctx);
+        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
+	}
+
+	fn visit_lang_annotation(&mut self, ctx: &Lang_annotationContext<'input>){
+		let result = <Self as LuaticVisitorCompat>::visit_lang_annotation(self, ctx);
         *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
 	}
 

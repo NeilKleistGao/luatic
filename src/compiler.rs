@@ -30,6 +30,8 @@ fn read_to_string(path: &String) -> Result<String, String> {
   }
 }
 
+// fn export_csv(filename: String, seperator: Seperator, language_list: Vec<String>) -> Result<(), String> {}
+
 pub fn compile(filename: String, seperator: Seperator) -> Result<(), String> {
   let option = CompileOption::new(filename, seperator);
   let code = read_to_string(&option.filename)?;
