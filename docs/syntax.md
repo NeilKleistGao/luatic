@@ -144,7 +144,7 @@ TODO?
 
 ### Language Tags
 ```
--- lang: zh-CN
+#lang zh-CN
 -- single line
 -- must appear at the beginning of the file!
 ```

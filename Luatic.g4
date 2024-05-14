@@ -38,7 +38,7 @@ dialog_block: PT_LSF IDENT PT_RSF block;
 say_stat: character PT_COLON ((string PT_SEMI) | say_block);
 // TODO: logic stat
 stat: say_stat;
-lang_annotation: PT_DDASH KW_LANG PT_COLON IDENT;
+lang_annotation: ANNO_LANG IDENT;
 
 prgm: lang_annotation? dialog_block*; // TODO: stat*
 block: PT_LB stat* PT_RB;
@@ -91,7 +91,6 @@ character: CHARASTRING;
 // KW_AND: 'and';
 // KW_OR: 'or';
 // KW_NOT: 'not';
-KW_LANG: 'lang';
 
 // PUNCTUATION
 PT_SEMI: ';';
@@ -122,7 +121,8 @@ PT_XN: '~';
 PT_LSF: '<<';
 PT_RSF: '>>';
 PT_POW: '^';
-PT_DDASH: '--';
+
+ANNO_LANG: '#lang';
 
 // IDENTITY
 IDENT: [a-zA-Z_][a-zA-Z_0-9]*;
