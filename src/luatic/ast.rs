@@ -1,3 +1,4 @@
+#[derive(Debug)]
 pub enum Expression {
   // IntLit(i64),
   // NumLit(f64),
@@ -5,6 +6,7 @@ pub enum Expression {
   // BoolLit(bool)
 }
 
+#[derive(Debug)]
 pub enum Statement {
   // Global { name: String, value: Expression }
   Say { name: String, texts: Vec<String> },
@@ -12,6 +14,7 @@ pub enum Statement {
   Expr(Expression)
 }
 
+#[derive(Debug)]
 pub struct Program (Vec<Statement>);
 impl Program {
   pub fn new(stmts: Vec<Statement>) -> Program {

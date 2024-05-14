@@ -94,7 +94,7 @@ impl LuaticVisitorCompat<'_> for Visitor {
     let mut statements = Vec::<Statement>::new();
     for rs in &*ctx.string_all() {
       statements.push(match self.visit_string(rs.as_ref()) {
-        VisitorResult::Stmt(stmt) => stmt,
+        VisitorResult::Expr(expr) => Statement::Expr(expr),
         _ => panic!("unexpected error.")
       });
     }
@@ -106,14 +106,22 @@ impl LuaticVisitorCompat<'_> for Visitor {
       VisitorResult::Expr(Expression::StrLit(c)) => c,
       _ => panic!("unexpected error.")
     };
-    let texts = match self.visit_say_block(&*ctx.say_block().unwrap()) {
-      VisitorResult::Block(stmts) =>
-        stmts.iter().map(|s| match s {
-          Statement::Expr(Expression::StrLit(res)) => res.clone(),
-          _ => panic!("unexpected error.")
-        }).collect(),
-      _ => panic!("unexpected error.")
+
+    let texts = match ctx.say_block() {
+      Some(blk) => match self.visit_say_block(&blk) {
+        VisitorResult::Block(stmts) =>
+          stmts.iter().map(|s| match s {
+            Statement::Expr(Expression::StrLit(res)) => res.clone(),
+            _ => panic!("unexpected error.")
+          }).collect::<Vec<String>>(),
+        _ => panic!("unexpected error.")
+      }
+      _ => vec![match self.visit_string(&*ctx.string().unwrap()) {
+        VisitorResult::Expr(Expression::StrLit(s)) => s,
+        _ => panic!("unexpected error.")
+      }]
     };
+
     VisitorResult::Stmt(Statement::Say { name, texts })
   }
 
@@ -138,7 +146,7 @@ impl LuaticVisitorCompat<'_> for Visitor {
       });
     }
 
-    VisitorResult::Prgm(Program::new(vec![]))
+    VisitorResult::Prgm(Program::new(statements))
   }
 }
 

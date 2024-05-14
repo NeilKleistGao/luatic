@@ -35,7 +35,7 @@ grammar Luatic;
 //   ;
 
 dialog_block: PT_LSF IDENT PT_RSF block;
-say_stat: PT_LS character PT_RS PT_COLON ((string PT_SEMI) | say_block);
+say_stat: character PT_COLON ((string PT_SEMI) | say_block);
 // TODO: logic stat
 stat: say_stat;
 
