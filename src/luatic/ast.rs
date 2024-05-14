@@ -15,7 +15,7 @@ pub enum Statement {
 }
 
 #[derive(Debug)]
-pub struct Program (Vec<Statement>);
+pub struct Program (pub Vec<Statement>);
 impl Program {
   pub fn new(stmts: Vec<Statement>) -> Program {
     Program(stmts)

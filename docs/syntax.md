@@ -117,14 +117,14 @@ TODO?
 ### Dialog
 ```
 <<label name>> {
-  [name]: ""
-  [name(status)]: ""
-  ${--[[ execute code here. dialog scope. ]]--}
+  [name]: "";
+  [name](status): "";
+  --[[ execute code here. dialog scope. ]]--
   [name]: {
     ...
   }
-  [name]: "...${--[[ must return a string ]]--}..."
-  ${ goto another label; }
+  [name]: "...${--[[ must return a string ]]--}...";
+  goto another label;
 }
 
 <<pure code block>> ${
@@ -136,8 +136,8 @@ TODO?
 ```
 <<label name>> {
   select {
-    "..." => ${ ... },
-    "..." => ${ ... }
+    "..." => ...,
+    "..." => ...
   }
 }
 ```

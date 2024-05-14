@@ -16,7 +16,7 @@ mod tests {
 
       if ext.ends_with("ltc") {
         println!("test file {:?}", filename);
-        match compile(filename.to_str().unwrap().to_string()) {
+        match compile(filename.to_str().unwrap().to_string(), luatic::compiler::Seperator::Tab) {
           Ok(_) => (),
           Err(why) => println!("{:?} failed: {:?}", filename, why)
         }
