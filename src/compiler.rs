@@ -1,5 +1,7 @@
+use crate::binary::binary::write_binary;
 use crate::frontend::parse;
 use crate::luatic::ast::{Program, Statement, Expression};
+use crate::luatic::codegen::Generator;
 use crate::luatic::constants::{scan, ConstTable, Constant};
 
 use std::fmt::Write;
@@ -22,7 +24,7 @@ static EXT_NAME: &str = ".ltc";
   
 impl CompileOption {
   pub fn new(filename: String, seperator: Seperator) -> CompileOption {
-    let binary_name = filename.replace(EXT_NAME, ".luac");
+    let binary_name = filename.replace(EXT_NAME, ".lynx");
     let trans_name = filename.replace(EXT_NAME, ".csv");
     let map_name = filename.replace(EXT_NAME, ".map");
     let begin = match filename.rfind(std::path::MAIN_SEPARATOR) {
@@ -42,7 +44,7 @@ fn read_to_string(path: &String) -> Result<String, String> {
 }
 
 // TODO: allow language list?
-fn export_csv(filename: String, prefix: String, seperator: Seperator, language: &String, table: &ConstTable) -> Result<(), String> {
+fn export_csv(filename: String, prefix: String, seperator: Seperator, language: &String, table: ConstTable) -> Result<ConstTable, String> {
   let sep_char = match seperator {
     Seperator::Comma => ',',
     Seperator::Semicolon => ';',
@@ -52,20 +54,27 @@ fn export_csv(filename: String, prefix: String, seperator: Seperator, language: 
   let mut res = String::new();
   let _ = writeln!(&mut res, "{}{}{}", "keys", sep_char, language);
 
+  let mut new_table = vec![];
   let mut index = 0;
   for cs in table {
     match cs {
-      Constant::Text { string, translation } if *translation => {
-        let key = prefix.clone() + &index.to_string();
-        let _ = writeln!(&mut res, "{}{}{}", key, sep_char, string);
-        index += 1;
+      Constant::Text { string, translation } => {
+        let new_string = if translation {
+          let key = prefix.clone() + &index.to_string();
+          let _ = writeln!(&mut res, "{}{}{}", key, sep_char, string);
+          index += 1;
+          key
+        }
+        else {
+          string
+        };
+        new_table.push(Constant::Text { string: new_string, translation });
       }
-      _ => ()
     }
   }
 
   let _ = std::fs::write(filename, res);
-  Ok(())
+  Ok(new_table)
 }
 
 pub fn compile(filename: String, seperator: Seperator) -> Result<(), String> {
@@ -74,7 +83,14 @@ pub fn compile(filename: String, seperator: Seperator) -> Result<(), String> {
   let program = parse(code)?;
 
   let const_table = scan(&program);
-  let _ = export_csv(option.output.1, option.prefix, option.seperator, &program.1, &const_table)?;
+  let new_const_table = export_csv(option.output.1, option.prefix, option.seperator, &program.1, const_table)?;
+  let generator = Generator::new(program, new_const_table);
+  let chunk = match generator.generate_chunk(option.filename) {
+    Ok(ck) => ck,
+    Err(msg)  => return Err(msg)
+  };
 
-  Ok(())
+  // TODO: map files
+
+  write_binary(option.output.0, chunk)
 }

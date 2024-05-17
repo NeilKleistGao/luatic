@@ -6,7 +6,7 @@ use super::literals::Literal;
 use super::binary::Binary;
 use super::instructions::Instruction;
 
-struct FuncInfo {
+pub struct FuncInfo {
   pub constants: HashMap<Literal, u32>
 }
 

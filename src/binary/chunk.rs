@@ -80,10 +80,6 @@ impl Chunk {
   }
 }
 
-pub fn read_chunk() -> Result<Chunk, String> {
-  Err("not implemented".to_string())
-}
-
 fn validate_header(header: &Header) -> Result<(), String> {
   let mut flag = true;
   flag = flag && header.signature == MAGIC_NUMBER;
