@@ -28,6 +28,14 @@ impl Default for VisitorResult {
 }
   
 struct Visitor(VisitorResult);
+
+impl Visitor {
+  fn get_string_content(s: String) -> String {
+    let len = s.len();
+    s[1..(len - 1)].to_string()
+  }
+}
+
 impl ParseTreeVisitorCompat<'_> for Visitor {
   type Node = LuaticParserContextType;
   type Return = VisitorResult;
@@ -59,11 +67,11 @@ impl LuaticVisitorCompat<'_> for Visitor {
 //   }
 
   fn visit_string(&mut self, ctx: &luaticparser::StringContext<'_>) -> Self::Return {
-    VisitorResult::Expr(Expression::StrLit(ctx.NORMALSTRING().unwrap().get_text()))
+    VisitorResult::Expr(Expression::StrLit(Visitor::get_string_content(ctx.NORMALSTRING().unwrap().get_text())))
   }
 
   fn visit_character(&mut self, ctx: &CharacterContext<'_>) -> Self::Return {
-    VisitorResult::Expr(Expression::StrLit(ctx.CHARASTRING().unwrap().get_text()))
+    VisitorResult::Expr(Expression::StrLit(Visitor::get_string_content(ctx.CHARASTRING().unwrap().get_text())))
   }
 
   fn visit_lang_annotation(&mut self, ctx: &Lang_annotationContext<'_>) -> Self::Return {
