@@ -8,8 +8,13 @@ pub enum Constant {
 
 pub type ConstTable = Vec<Constant>;
 
-pub fn scan(prgm: &Program) -> ConstTable {
-  let mut consts = vec![];
+pub fn scan(prgm: &Program, entry_name: &String) -> ConstTable {
+  let mut consts = vec![
+    Constant::Text { string: entry_name.clone(), translation: false },
+    Constant::Text { string: "dialogues".to_string(), translation: false },
+    Constant::Text { string: "variables".to_string(), translation: false },
+    Constant::Text { string: "code".to_string(), translation: false }
+  ];
   for stmt in &prgm.0 {
     let mut res = scan_statement(stmt, false);
     consts.append(&mut res);

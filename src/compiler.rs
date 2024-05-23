@@ -82,7 +82,7 @@ pub fn compile(filename: String, seperator: Seperator) -> Result<(), String> {
   let code = read_to_string(&option.filename)?;
   let program = parse(code)?;
 
-  let const_table = scan(&program);
+  let const_table = scan(&program, &option.prefix);
   let new_const_table = export_csv(option.output.1, option.prefix, option.seperator, &program.1, const_table)?;
   let generator = Generator::new(program, new_const_table);
   let chunk = match generator.generate_chunk(option.filename) {
