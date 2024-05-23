@@ -7,7 +7,15 @@ use super::binary::Binary;
 use super::instructions::Instruction;
 
 pub struct FuncInfo {
-  pub constants: HashMap<Literal, u32>
+  pub constants: HashMap<Literal, u32>,
+  pub insts: Vec<Instruction>,
+  pub max_regs: u8
+}
+
+impl FuncInfo {
+  pub fn new(constants: HashMap<Literal, u32>, insts: Vec<Instruction>, max_regs: u8) -> FuncInfo {
+    FuncInfo { constants, insts, max_regs }
+  }
 }
 
 struct AbsLineInfo {
@@ -73,17 +81,19 @@ pub struct Prototype {
 
 impl Prototype {
   pub fn new(source: String, info: FuncInfo) -> Prototype {
+    let nullable_source = if source.is_empty() {
+      String::from("")
+    } else {
+      String::from("@") + &source
+    };
     Prototype {
-      source: String::from("@") + &source, // TODO: ignore if it is sub prototype
+      source: nullable_source,
       line_defined: 0,
       last_line_defined: 0,
       num_params: 0,
       is_vararg: 1,
-      max_stack_size: 2,
-      code: vec![
-        Instruction::var_arg_prep(),
-        Instruction::ret(),
-      ],
+      max_stack_size: info.max_regs,
+      code: info.insts,
       constants: write_constant_table(info.constants),
       up_values: vec![UpValue::empty()],
       proto: Vec::new(),

@@ -152,8 +152,31 @@ impl Instruction {
     Instruction(81) // TODO
   }
 
-  pub fn ret() -> Instruction {
-    Instruction(16842822) // TODO
+  /*
+   * first(A): the first position on the stack
+   * len1(B): the number of returned value + 1
+  */
+  pub fn ret(first: u8, len1: u8) -> Instruction {
+    let first_32: u32 = first.into();
+    let len1_32: u32 = len1.into();
+    // Instruction(0x46u32 | ((first_32 << 7) ) | (len1_32 << 16))
+    Instruction(0x46u32 | (first_32 << 8) | (len1_32 << 16))
+  }
+
+  pub fn ext_arg() -> Instruction {
+    Instruction(82) // TODO: ?
+  }
+
+  pub fn new_table() -> (Instruction, Instruction) { // * must followed by EXTRAARG
+    (Instruction(19), Instruction::ext_arg()) // TODO: loc
+  }
+
+  pub fn get_table_up() -> Instruction {
+    Instruction(11) // TODO
+  }
+
+  pub fn set_table_up() -> Instruction {
+    Instruction(15)
   }
 }
 
