@@ -34,7 +34,7 @@ impl Generator {
    */
   fn build_lynx(&self) -> Vec<Instruction> {
     let table_loc = 0; // * the stack is empty
-    let new_table = Instruction::new_table(table_loc);
+    let new_table = Instruction::new_table(table_loc, 4, 0);
     vec![
       Instruction::var_arg_prep(),
       new_table.0,

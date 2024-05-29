@@ -1,6 +1,7 @@
 use num_enum::TryFromPrimitive;
 
 use super::binary::Binary;
+use super::helper::*;
 
 #[derive(TryFromPrimitive)]
 #[repr(u8)]
@@ -169,10 +170,14 @@ impl Instruction {
 
   /*
    * loc(A): where to store the new table
+   * tsize(B): initial size of table
+   * asize(C): initial size of array
    */
-  pub fn new_table(loc: u8) -> (Instruction, Instruction) { // * must be followed by EXTRAARG
+  pub fn new_table(loc: u8, tsize: u8, asize: u8) -> (Instruction, Instruction) { // * must be followed by EXTRAARG
     let loc_32: u32 = loc.into();
-    (Instruction(0x13u32 | (loc_32 << 8)), Instruction::ext_arg()) // TODO: ext_arg?
+    let tsize_32: u32 = int2fb(tsize);
+    let asize_32: u32 = int2fb(asize);
+    (Instruction(0x13u32 | (loc_32 << 8) | (tsize_32 << 16) | (asize_32 << 24)), Instruction::ext_arg()) // TODO: ext_arg?
   }
 
   // TODO
