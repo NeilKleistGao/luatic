@@ -29,14 +29,16 @@ impl Generator {
     FuncInfo::new(constants, insts, 2)
   }
 
+  /*
+   * @see /docs/lynx.md
+   */
   fn build_lynx(&self) -> Vec<Instruction> {
-    let new_table = Instruction::new_table();
+    let table_loc = 0; // * the stack is empty
+    let new_table = Instruction::new_table(table_loc);
     vec![
       Instruction::var_arg_prep(),
       new_table.0,
       new_table.1,
-      Instruction::set_table_up(),
-      Instruction::get_table_up(),
       Instruction::ret(0, 2),
       Instruction::ret(0, 1)
     ]

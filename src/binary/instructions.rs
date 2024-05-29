@@ -167,16 +167,22 @@ impl Instruction {
     Instruction(82) // TODO: ?
   }
 
-  pub fn new_table() -> (Instruction, Instruction) { // * must followed by EXTRAARG
-    (Instruction(19), Instruction::ext_arg()) // TODO: loc
+  /*
+   * loc(A): where to store the new table
+   */
+  pub fn new_table(loc: u8) -> (Instruction, Instruction) { // * must be followed by EXTRAARG
+    let loc_32: u32 = loc.into();
+    (Instruction(0x13u32 | (loc_32 << 8)), Instruction::ext_arg()) // TODO: ext_arg?
   }
 
+  // TODO
   pub fn get_table_up() -> Instruction {
-    Instruction(11) // TODO
+    Instruction(0x0Bu32)
   }
 
+  // TODO
   pub fn set_table_up() -> Instruction {
-    Instruction(15)
+    Instruction(0x0Fu32)
   }
 }
 
