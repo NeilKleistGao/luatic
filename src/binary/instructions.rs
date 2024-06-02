@@ -180,6 +180,20 @@ impl Instruction {
     (Instruction(0x13u32 | (loc_32 << 7) | (tsize_32 << 16) | (asize_32 << 24)), Instruction::ext_arg()) // TODO: ext_arg?
   }
 
+  /*
+   * loc(A): where the table is on the stack
+   * key(B): where the key is in the constant table
+   * val(Ck): the value of the field
+   * is_k(k): constant/register
+   */
+  pub fn set_field(loc: u8, key: u8, val: u8, is_k: bool) -> Instruction {
+    let loc_32: u32 = loc.into();
+    let key_32: u32 = key.into();
+    let val_32: u32 = val.into();
+    let k_u32: u32 = if is_k { 1 << 15 } else { 0 };
+    Instruction(0x12u32 | (loc_32 << 7) | k_u32 | (key_32 << 16) | (val_32 << 24))
+  }
+
   // TODO
   pub fn get_table_up() -> Instruction {
     Instruction(0x0Bu32)

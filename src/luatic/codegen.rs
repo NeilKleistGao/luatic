@@ -8,17 +8,19 @@ pub struct Generator {
   max_regs: u8
 }
 
+type ConstHash = HashMap<Literal, u32>;
+
 impl Generator {
   pub fn new(program: Program, const_table: ConstTable) -> Generator {
     Generator { program, const_table, max_regs: 2 }
   }
 
-  fn create_func_info(table: ConstTable, insts: Vec<Instruction>, max_regs: u8) -> FuncInfo {
-    let mut constants: HashMap<Literal, u32> = HashMap::new();
-    for cs in table {
+  fn build_hash_table(const_table: &ConstTable) -> ConstHash {
+    let mut constants: ConstHash = HashMap::new();
+    for cs in const_table {
       match cs {
         Constant::Text { string, translation: _ } => {
-          let lit = Literal::Str(string);
+          let lit = Literal::Str(string.clone());
           if !constants.contains_key(&lit) {
             constants.insert(lit, u32::try_from(constants.len()).unwrap());
           }
@@ -26,31 +28,50 @@ impl Generator {
       }
     }
 
-    FuncInfo::new(constants, insts, 2)
+    constants
   }
 
-  fn build_dialogs(&self) -> Vec<Instruction> {
-    let table_loc = 1; // * as long as we do not erase the global table
-    let new_table = Instruction::new_table(table_loc, 0, 0);
-    vec![new_table.0, new_table.1] // TODO
+  fn create_func_info(table: ConstHash, insts: Vec<Instruction>, max_regs: u8) -> FuncInfo {
+    // TODO: max_regs
+    FuncInfo::new(table, insts, 4)
   }
 
-  fn build_variables(&self) -> Vec<Instruction> {
-    let table_loc = 1; // * as long as we do not erase the global table
-    let new_table = Instruction::new_table(table_loc, 0, 0);
-    vec![new_table.0, new_table.1] // TODO
+  fn find_constant(consts: &ConstHash, name: &str) -> u8 {
+    let key = Literal::Str(name.to_string());
+    match consts.get(&key) {
+      Some(id) => (*id) as u8,
+      _ => panic!("unexpected constant {}", name)
+    }
   }
 
-  fn build_commands(&self) -> Vec<Instruction> {
+  fn build_dialogs(&self, consts: &ConstHash) -> Vec<Instruction> {
     let table_loc = 1; // * as long as we do not erase the global table
     let new_table = Instruction::new_table(table_loc, 0, 0);
-    vec![new_table.0, new_table.1] // TODO
+    let mut res = vec![new_table.0, new_table.1]; // TODO
+    res.push(Instruction::set_field(0, Generator::find_constant(consts, "dialogues"), table_loc, false));
+    res
+  }
+
+  fn build_variables(&self, consts: &ConstHash) -> Vec<Instruction> {
+    let table_loc = 1; // * as long as we do not erase the global table
+    let new_table = Instruction::new_table(table_loc, 0, 0);
+    let mut res = vec![new_table.0, new_table.1]; // TODO
+    res.push(Instruction::set_field(0, Generator::find_constant(consts, "variables"), table_loc, false));
+    res
+  }
+
+  fn build_commands(&self, consts: &ConstHash) -> Vec<Instruction> {
+    let table_loc = 1; // * as long as we do not erase the global table
+    let new_table = Instruction::new_table(table_loc, 0, 0);
+    let mut res = vec![new_table.0, new_table.1]; // TODO
+    res.push(Instruction::set_field(0, Generator::find_constant(consts, "code"), table_loc, false));
+    res
   }
 
   /*
    * @see /docs/lynx.md
    */
-  fn build_lynx(&self) -> Vec<Instruction> {
+  fn build_lynx(&self, consts: &ConstHash) -> Vec<Instruction> {
     let table_loc = 0; // * the stack is empty
     let new_table = Instruction::new_table(table_loc, 4, 0);
     let mut res = vec![
@@ -59,11 +80,11 @@ impl Generator {
       new_table.1
     ];
 
-    let mut dialogs = self.build_dialogs();
+    let mut dialogs = self.build_dialogs(consts);
     res.append(&mut dialogs);
-    let mut variables = self.build_variables();
+    let mut variables = self.build_variables(consts);
     res.append(&mut variables);
-    let mut commands = self.build_commands();
+    let mut commands = self.build_commands(consts);
     res.append(&mut commands);
 
     res.push(Instruction::ret(0, 2));
@@ -73,8 +94,8 @@ impl Generator {
   }
 
   pub fn generate_chunk(self, source: String) -> Result<Chunk, String> {
-    let lynx_insts = self.build_lynx();
-    let lynx_table = self.const_table;
+    let lynx_table = Generator::build_hash_table(&self.const_table);
+    let lynx_insts = self.build_lynx(&lynx_table);
     Ok(Chunk::new(1, Prototype::new(source, Generator::create_func_info(lynx_table, lynx_insts, self.max_regs))))
   }
 }
