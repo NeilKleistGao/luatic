@@ -29,19 +29,47 @@ impl Generator {
     FuncInfo::new(constants, insts, 2)
   }
 
+  fn build_dialogs(&self) -> Vec<Instruction> {
+    let table_loc = 1; // * as long as we do not erase the global table
+    let new_table = Instruction::new_table(table_loc, 0, 0);
+    vec![new_table.0, new_table.1] // TODO
+  }
+
+  fn build_variables(&self) -> Vec<Instruction> {
+    let table_loc = 1; // * as long as we do not erase the global table
+    let new_table = Instruction::new_table(table_loc, 0, 0);
+    vec![new_table.0, new_table.1] // TODO
+  }
+
+  fn build_commands(&self) -> Vec<Instruction> {
+    let table_loc = 1; // * as long as we do not erase the global table
+    let new_table = Instruction::new_table(table_loc, 0, 0);
+    vec![new_table.0, new_table.1] // TODO
+  }
+
   /*
    * @see /docs/lynx.md
    */
   fn build_lynx(&self) -> Vec<Instruction> {
     let table_loc = 0; // * the stack is empty
     let new_table = Instruction::new_table(table_loc, 4, 0);
-    vec![
+    let mut res = vec![
       Instruction::var_arg_prep(),
       new_table.0,
-      new_table.1,
-      Instruction::ret(0, 2),
-      Instruction::ret(0, 1)
-    ]
+      new_table.1
+    ];
+
+    let mut dialogs = self.build_dialogs();
+    res.append(&mut dialogs);
+    let mut variables = self.build_variables();
+    res.append(&mut variables);
+    let mut commands = self.build_commands();
+    res.append(&mut commands);
+
+    res.push(Instruction::ret(0, 2));
+    res.push(Instruction::ret(0, 1));
+
+    res
   }
 
   pub fn generate_chunk(self, source: String) -> Result<Chunk, String> {

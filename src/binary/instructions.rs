@@ -177,7 +177,7 @@ impl Instruction {
     let loc_32: u32 = loc.into();
     let tsize_32: u32 = int2fb(tsize);
     let asize_32: u32 = int2fb(asize);
-    (Instruction(0x13u32 | (loc_32 << 8) | (tsize_32 << 16) | (asize_32 << 24)), Instruction::ext_arg()) // TODO: ext_arg?
+    (Instruction(0x13u32 | (loc_32 << 7) | (tsize_32 << 16) | (asize_32 << 24)), Instruction::ext_arg()) // TODO: ext_arg?
   }
 
   // TODO
